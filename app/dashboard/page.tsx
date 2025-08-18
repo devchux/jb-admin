@@ -10,6 +10,7 @@ import {
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { FunnelIcon } from '@heroicons/react/24/outline';
+import DashboardCharts from '@/components/DasboardCharts';
 
 const Dashboard = () => {
   const [dateFilter, setDateFilter] = useState('Monthly');
@@ -168,6 +169,8 @@ const Dashboard = () => {
           );
         })}
       </div>
+
+      <DashboardCharts dateFilter={dateFilter} setDateFilter={setDateFilter} />
     </div>
   );
 };
