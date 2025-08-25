@@ -15,36 +15,40 @@ const BroadcastHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showDropdown, setShowDropdown] = useState<number | null>(null);
 
-  const broadcasts = [
-    {
-      id: 1,
-      message: "Hello team, we're excited to announce our new product launch!",
-      audience: 'All Members',
-      date: '2025-07-20',
-      time: '10:35 PM',
-    },
-    {
-      id: 2,
-      message: 'Urgent: System maintenance scheduled for tonight.',
-      audience: 'Specific group',
-      date: '2025-07-20',
-      time: '10:35 PM',
-    },
-    {
-      id: 3,
-      message: 'Important update regarding the upcoming conference.',
-      audience: 'All Members',
-      date: '2025-07-20',
-      time: '10:35 PM',
-    },
-    {
-      id: 4,
-      message: 'New feature release: Check out the latest updates!',
-      audience: 'All Members',
-      date: '2025-07-20',
-      time: '10:35 PM',
-    },
-  ];
+  const broadcasts = useMemo(
+    () => [
+      {
+        id: 1,
+        message:
+          "Hello team, we're excited to announce our new product launch!",
+        audience: 'All Members',
+        date: '2025-07-20',
+        time: '10:35 PM',
+      },
+      {
+        id: 2,
+        message: 'Urgent: System maintenance scheduled for tonight.',
+        audience: 'Specific group',
+        date: '2025-07-20',
+        time: '10:35 PM',
+      },
+      {
+        id: 3,
+        message: 'Important update regarding the upcoming conference.',
+        audience: 'All Members',
+        date: '2025-07-20',
+        time: '10:35 PM',
+      },
+      {
+        id: 4,
+        message: 'New feature release: Check out the latest updates!',
+        audience: 'All Members',
+        date: '2025-07-20',
+        time: '10:35 PM',
+      },
+    ],
+    []
+  );
 
   const toggleDropdown = (id: number) => {
     setShowDropdown(showDropdown === id ? null : id);
@@ -65,7 +69,7 @@ const BroadcastHistory = () => {
       rows = rows.filter((r) => r.audience === selectedFilter);
     }
     return rows;
-  }, [searchTerm, selectedFilter]);
+  }, [searchTerm, selectedFilter, broadcasts]);
 
   return (
     <div className="w-full min-h-screen">
