@@ -1,24 +1,19 @@
 'use client';
 import { useState } from 'react';
 import {
-  Search,
-  Filter,
-  UserPlus,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  MoreVertical,
   FunnelIcon,
   UserIcon,
 } from 'lucide-react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 
 const CardPOS = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Select filter');
   const [currentPage, setCurrentPage] = useState(1);
-  const [showDropdown, setShowDropdown] = useState(null);
+  const [showDropdown, setShowDropdown] = useState<number | null>(null);
 
   const transactions = [
     {
@@ -59,11 +54,11 @@ const CardPOS = () => {
     },
   ];
 
-  const toggleDropdown = (userId) => {
+  const toggleDropdown = (userId: number) => {
     setShowDropdown(showDropdown === userId ? null : userId);
   };
 
-  const handleAction = (action, userId) => {
+  const handleAction = (action: string, userId: number) => {
     console.log(`${action} for user ${userId}`);
     setShowDropdown(null);
   };
@@ -175,7 +170,7 @@ const CardPOS = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {transactions.map((item, index) => (
                     <tr
-                      key={item.id}
+                      key={item.sn}
                       className="hover:bg-gray-50 transition-colors duration-150"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -199,7 +194,7 @@ const CardPOS = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => toggleDropdown(item.id)}
+                          onClick={() => toggleDropdown(item.sn)}
                             className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150"
                           >
                             Actions
@@ -207,18 +202,18 @@ const CardPOS = () => {
                           </button>
 
                           {/* Dropdown Menu */}
-                          {showDropdown === item.id && (
+                          {showDropdown === item.sn && (
                             <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
                               <div className="py-1">
                                 <button
-                                  onClick={() => handleAction('edit', item.id)}
+                                  onClick={() => handleAction('edit', item.sn)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
                                   Edit User Details
                                 </button>
                                 <button
                                   onClick={() =>
-                                    handleAction('deactivate', item.id)
+                                    handleAction('deactivate', item.sn)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
@@ -226,7 +221,7 @@ const CardPOS = () => {
                                 </button>
                                 <button
                                   onClick={() =>
-                                    handleAction('delete', item.id)
+                                    handleAction('delete', item.sn)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
