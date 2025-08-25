@@ -1,16 +1,9 @@
 'use client';
-import CustomerComplaints from '@/components/tables/help/CustomerComplaints';
-import SupportTickets from '@/components/tables/help/SupportTickets';
 import BroadcastHistory from '@/components/tables/notifications/History';
 import Notifications from '@/components/tables/notifications/Notifications';
-import CardPOS from '@/components/tables/transactions/CardPOS';
-import JaizToJaiz from '@/components/tables/transactions/JaizToJaiz';
-import JaizToOthers from '@/components/tables/transactions/JaiztoOthers';
-import OnlinePay from '@/components/tables/transactions/OnlinePay';
-import Ussd from '@/components/tables/transactions/Ussd';
 import React, { useState } from 'react';
 
-const page = () => {
+const Page = () => {
   const [activeTab, setActiveTab] = useState('history');
 
   const tabs = [
@@ -81,4 +74,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
