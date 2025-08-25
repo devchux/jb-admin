@@ -6,7 +6,7 @@ import OnlinePay from '@/components/tables/transactions/OnlinePay';
 import Ussd from '@/components/tables/transactions/Ussd';
 import React, { useState } from 'react';
 
-const page = () => {
+const Page = () => {
   const [activeTab, setActiveTab] = useState('jaiz-to-jaiz');
 
   const tabs = [
@@ -83,4 +83,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
