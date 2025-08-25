@@ -9,7 +9,12 @@ import {
   ReferenceLine,
 } from 'recharts';
 
-const DashboardCharts = () => {
+interface DashboardChartsProps {
+  dateFilter: string;
+  setDateFilter: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const DashboardCharts: React.FC<DashboardChartsProps> = () => {
   const [transactionFilter, setTransactionFilter] = useState('Monthly');
   const [enrollmentFilter, setEnrollmentFilter] = useState('Monthly');
 
@@ -27,7 +32,7 @@ const DashboardCharts = () => {
   // Enrollment Reports Data
   const enrollmentData = [
     { day: 1, activeUsers: 75, inactiveUsers: 58 },
-    { day: 5, inflows: 48, inactiveUsers: 38 },
+    { day: 5, activeUsers: 48, inactiveUsers: 38 },
     { day: 10, activeUsers: 62, inactiveUsers: 20 },
     { day: 15, activeUsers: 35, inactiveUsers: 22 },
     { day: 20, activeUsers: 85, inactiveUsers: 55 },
@@ -35,15 +40,15 @@ const DashboardCharts = () => {
     { day: 30, activeUsers: 48, inactiveUsers: 50 },
   ];
 
-  const CustomTooltip = ({ content, dataKey }) => {
-    if (!content) return null;
+  // const CustomTooltip = ({ content, dataKey }) => {
+  //   if (!content) return null;
 
-    return (
-      <div className="bg-blue-600 text-white px-3 py-2 rounded text-sm font-medium">
-        {content}
-      </div>
-    );
-  };
+  //   return (
+  //     <div className="bg-blue-600 text-white px-3 py-2 rounded text-sm font-medium">
+  //       {content}
+  //     </div>
+  //   );
+  // };
 
   const ChartContainer = ({
     title,
@@ -56,7 +61,19 @@ const DashboardCharts = () => {
     secondaryLabel,
     filter,
     setFilter,
-    highlightIndex = 2,
+  }: // highlightIndex = 2,
+  {
+    title: string;
+    data: { day: number; [key: string]: number }[];
+    primaryColor: string;
+    secondaryColor: string;
+    primaryKey: string;
+    secondaryKey: string;
+    primaryLabel: string;
+    secondaryLabel: string;
+    filter: string;
+    setFilter: React.Dispatch<React.SetStateAction<string>>;
+    highlightIndex?: number;
   }) => (
     <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
       {/* Chart Header */}
