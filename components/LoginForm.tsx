@@ -30,10 +30,10 @@ const LoginForm = () => {
     <Card className="w-full max-w-md shadow-lg border-login-border">
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-2xl font-semibold tracking-tight">
-          Welcome back
+          Jaiz Bank Admin
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          Enter your credentials to access your account
+          Enter your credentials to access the admin portal
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -85,7 +85,7 @@ const LoginForm = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-sm">
+          {/* <div className="flex items-center justify-between text-sm">
             <label className="flex items-center space-x-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -99,7 +99,7 @@ const LoginForm = () => {
             >
               Forgot password?
             </a>
-          </div>
+          </div> */}
 
           <Button
             type="submit"
@@ -109,7 +109,7 @@ const LoginForm = () => {
           </Button>
         </form>
 
-        <div className="mt-6 text-center">
+        {/* <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             Don't have an account?{' '}
             <a
@@ -119,7 +119,7 @@ const LoginForm = () => {
               Sign up
             </a>
           </p>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );
