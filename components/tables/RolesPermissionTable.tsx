@@ -1,13 +1,10 @@
 'use client';
 import { useState } from 'react';
 import {
-  Search,
-  Filter,
   UserPlus,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  MoreVertical,
   FunnelIcon,
 } from 'lucide-react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
@@ -16,7 +13,7 @@ const RolesPermissionsTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Select filter');
   const [currentPage, setCurrentPage] = useState(1);
-  const [showDropdown, setShowDropdown] = useState(null);
+  const [showDropdown, setShowDropdown] = useState<number | null>(null);
 
   const roles = [
     {
@@ -57,11 +54,11 @@ const RolesPermissionsTable = () => {
     user.roleName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const toggleDropdown = (userId) => {
+  const toggleDropdown = (userId: number) => {
     setShowDropdown(showDropdown === userId ? null : userId);
   };
 
-  const handleAction = (action, userId) => {
+  const handleAction = (action: string, userId: number) => {
     console.log(`${action} for user ${userId}`);
     setShowDropdown(null);
   };
