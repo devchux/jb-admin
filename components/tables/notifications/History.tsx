@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import CreateNewBroadcast from "@/components/modals/CreateNewBroadcast";
 import { PaginatedRequest } from "@/types/request";
 import Pagination from "@/components/Pagination";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 const BroadcastHistory = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +23,7 @@ const BroadcastHistory = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [openNew, setOpenNew] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useDebounce(
     () => {
@@ -40,12 +42,15 @@ const BroadcastHistory = () => {
     if (selectedFilter && selectedFilter !== "Select filter")
       params.sortBy = selectedFilter;
     try {
+      setLoading(true);
       const { data } = await notificationService.getAllNotifications(params);
       setNotifications(data.content);
       setTotalPages(data.totalPages || 1);
     } catch (err) {
       const error = err as AxiosError<{ error: string }>;
       toast.error(error.response?.data.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,6 +70,7 @@ const BroadcastHistory = () => {
 
   return (
     <div className="w-full min-h-screen">
+      {loading && <LoadingIndicator />}
       <div className="">
         {/* Header with title indicator */}
         <div className="flex items-center mb-6">

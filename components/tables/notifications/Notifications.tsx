@@ -11,6 +11,7 @@ import { useDebounce } from "react-use";
 import { useStore } from "@/store";
 import { PaginatedRequest } from "@/types/request";
 import Pagination from "@/components/Pagination";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 function Notifications() {
   const user = useStore((state) => state.user);
@@ -22,6 +23,7 @@ function Notifications() {
   const [showDropdown, setShowDropdown] = useState<string | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useDebounce(
     () => {
@@ -40,6 +42,7 @@ function Notifications() {
     if (selectedFilter && selectedFilter !== "Select filter")
       params.sortBy = selectedFilter;
     try {
+      setLoading(true);
       const { data } = await notificationService.getUserNotifications(
         user.id,
         params,
@@ -49,6 +52,8 @@ function Notifications() {
     } catch (err) {
       const error = err as AxiosError<{ error: string }>;
       toast.error(error.response?.data.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,6 +73,7 @@ function Notifications() {
 
   return (
     <div className="w-full min-h-screen">
+      {loading && <LoadingIndicator />}
       <div className="">
         {/* Header with title indicator */}
         <div className="flex items-center mb-6">
