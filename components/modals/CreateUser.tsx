@@ -130,6 +130,7 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
         permissionNames: user.permissions,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (
