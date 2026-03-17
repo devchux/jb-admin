@@ -8,6 +8,7 @@ import { roleService } from "@/services/role";
 import Pagination from "../Pagination";
 import { useDebounce } from "react-use";
 import CreateRole from "../modals/CreateRole";
+import LoadingIndicator from "../LoadingIndicator";
 
 const RolesPermissionsTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,10 +68,12 @@ const RolesPermissionsTable = () => {
 
   useEffect(() => {
     getRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, searchTerm, selectedFilter]);
 
   return (
     <div className="w-full min-h-screen">
+      {loading && <LoadingIndicator />}
       {/* Main Content */}
       {/* <div className="px-4 sm:px-6 lg:px-8 py-8"> */}
       <div className="">

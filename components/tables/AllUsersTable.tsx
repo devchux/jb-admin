@@ -10,6 +10,7 @@ import { PaginatedRequest } from "@/types/request";
 import { useDebounce } from "react-use";
 import Pagination from "../Pagination";
 import CreateUser from "../modals/CreateUser";
+import LoadingIndicator from "../LoadingIndicator";
 
 dayjs.extend(relativeTime);
 
@@ -72,10 +73,12 @@ const AllUsersTable = () => {
 
   useEffect(() => {
     getUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, searchTerm, selectedFilter]);
 
   return (
     <div className="w-full min-h-screen">
+      {loading && <LoadingIndicator />}
       {/* Main Content */}
       {/* <div className="px-4 sm:px-6 lg:px-8 py-8"> */}
       <div className="">

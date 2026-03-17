@@ -15,6 +15,7 @@ import { useDebounce } from "react-use";
 import { PaginatedRequest } from "@/types/request";
 import dayjs from "dayjs";
 import { downloadCsvFromString } from "@/lib/utils";
+import LoadingIndicator from "../LoadingIndicator";
 
 const AuditLog = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -86,6 +87,7 @@ const AuditLog = () => {
 
   return (
     <div className="w-full min-h-screen">
+      {loading && <LoadingIndicator />}
       {/* Main Content */}
       {/* <div className="px-4 sm:px-6 lg:px-8 py-8"> */}
       <div className="">
