@@ -1,14 +1,25 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Search, Bell } from 'lucide-react';
-import Image from 'next/image';
-import { Switch } from './ui/switch';
-import { MoreHorizontal } from 'lucide-react';
+import React, { useState } from "react";
+import { Search, Bell, LogOutIcon } from "lucide-react";
+import Image from "next/image";
+import { Switch } from "./ui/switch";
+import { MoreHorizontal } from "lucide-react";
+import { useStore } from "@/store";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { useRouter } from "next/navigation";
 
 const DashboardTopBar = () => {
   const [isEnabled, setIsEnabled] = useState(true);
+  const user = useStore((state) => state.user);
+  const reset = useStore((state) => state.reset);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    reset();
+    router.push("/");
+  };
 
   return (
     <header className="bg-white border-b border-none px-6 py-3">
@@ -19,13 +30,13 @@ const DashboardTopBar = () => {
           <Image
             width={56}
             height={61}
-            src={'/images/logo.png'}
+            src={"/images/logo.png"}
             alt="Jaiz Bank Logo"
             // className="w-14 h-14 rounded-full"
           />
 
           {/* Admin Portal indicator */}
-          <div className="flex items-center p-2 w-[145.42] h-[40] bg-white rounded-full border-1 border-[#D9F0E2]">
+          <div className="flex items-center p-2 w-[145.42] h-[40] bg-white rounded-full border border-[#D9F0E2]">
             {/* ShadCN Toggle Switch */}
             <Switch
               checked={isEnabled}
@@ -72,20 +83,34 @@ const DashboardTopBar = () => {
                 {/* User Info */}
                 <div className="text-left">
                   <h3 className="text-sm font-medium text-gray-900 font-sans">
-                    Jamin Saliba-Audu
+                    {user?.firstName} {user?.lastName}
                   </h3>
                   <p className="text-[10px] text-gray-500">
-                    Admin, Manager & Authoriser
+                    {user?.role?.name}
                   </p>
                 </div>
               </div>
               {/* More Options Menu */}
-              <div className="flex items-center justify-center w-6 h-6 bg-blue-900 rounded-full cursor-pointer">
-                <MoreHorizontal
-                  className="w-4 h-4 text-white"
-                  strokeWidth={1.5}
-                />
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center justify-center w-6 h-6 bg-blue-900 rounded-full cursor-pointer">
+                    <MoreHorizontal
+                      className="w-4 h-4 text-white"
+                      strokeWidth={1.5}
+                    />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <div className="py-1">
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
+                    >
+                      <LogOutIcon className="size-4" /> Logout
+                    </button>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>

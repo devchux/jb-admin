@@ -1,75 +1,67 @@
-'use client';
-import { useMemo, useState } from 'react';
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  FunnelIcon,
-  Megaphone,
-} from 'lucide-react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+"use client";
+import { useEffect, useState } from "react";
+import { ChevronDown, FunnelIcon, Megaphone } from "lucide-react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { useDebounce } from "react-use";
+import { notificationService } from "@/services/notification";
+import { Notification } from "@/types/common";
+import dayjs from "dayjs";
+import CreateNewBroadcast from "@/components/modals/CreateNewBroadcast";
+import { PaginatedRequest } from "@/types/request";
+import Pagination from "@/components/Pagination";
 
 const BroadcastHistory = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('Select filter');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [initialSearchTerm, setInitialSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("Select filter");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showDropdown, setShowDropdown] = useState<number | null>(null);
+  const [showDropdown, setShowDropdown] = useState<string | null>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [openNew, setOpenNew] = useState(false);
 
-  const broadcasts = useMemo(
-    () => [
-      {
-        id: 1,
-        message:
-          "Hello team, we're excited to announce our new product launch!",
-        audience: 'All Members',
-        date: '2025-07-20',
-        time: '10:35 PM',
-      },
-      {
-        id: 2,
-        message: 'Urgent: System maintenance scheduled for tonight.',
-        audience: 'Specific group',
-        date: '2025-07-20',
-        time: '10:35 PM',
-      },
-      {
-        id: 3,
-        message: 'Important update regarding the upcoming conference.',
-        audience: 'All Members',
-        date: '2025-07-20',
-        time: '10:35 PM',
-      },
-      {
-        id: 4,
-        message: 'New feature release: Check out the latest updates!',
-        audience: 'All Members',
-        date: '2025-07-20',
-        time: '10:35 PM',
-      },
-    ],
-    []
+  useDebounce(
+    () => {
+      setSearchTerm(debouncedSearchTerm);
+    },
+    2000,
+    [debouncedSearchTerm],
   );
 
-  const toggleDropdown = (id: number) => {
+  const getNotifications = async () => {
+    const params: PaginatedRequest = {
+      page: currentPage,
+      size: 10,
+    };
+    if (searchTerm) params.search = searchTerm;
+    if (selectedFilter && selectedFilter !== "Select filter")
+      params.sortBy = selectedFilter;
+    try {
+      const { data } = await notificationService.getAllNotifications(params);
+      setNotifications(data.content);
+      setTotalPages(data.totalPages || 1);
+    } catch (err) {
+      const error = err as AxiosError<{ error: string }>;
+      toast.error(error.response?.data.error);
+    }
+  };
+
+  const toggleDropdown = (id: string) => {
     setShowDropdown(showDropdown === id ? null : id);
   };
 
-  const handleAction = (action: string, id: number) => {
+  const handleAction = (action: string, id: string) => {
     console.log(`${action} for broadcast ${id}`);
     setShowDropdown(null);
   };
 
-  const filtered = useMemo(() => {
-    let rows = broadcasts;
-    if (searchTerm.trim()) {
-      const q = searchTerm.toLowerCase();
-      rows = rows.filter((r) => r.message.toLowerCase().includes(q));
-    }
-    if (selectedFilter !== 'Select filter' && selectedFilter !== 'All') {
-      rows = rows.filter((r) => r.audience === selectedFilter);
-    }
-    return rows;
-  }, [searchTerm, selectedFilter, broadcasts]);
+  useEffect(() => {
+    getNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, searchTerm, selectedFilter]);
 
   return (
     <div className="w-full min-h-screen">
@@ -83,15 +75,16 @@ const BroadcastHistory = () => {
         </div>
 
         {/* Top Controls */}
-        <div className="flex w-full justify-between items-center my-[40px]">
+        <div className="flex w-full justify-between items-center my-10">
           {/* Search */}
           <div className="flex items-center flex-2/4 h-5 bg-white p-4 pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full">
             <MagnifyingGlassIcon className="w-6 h-6 text-[#dddddd]" />
-            <div className="h-[38px] pl-4 border-[#dddddd] border-r-1"></div>
+            <div className="h-9.5 pl-4 border-[#dddddd] border-r"></div>
             <input
               placeholder="Search by name"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={initialSearchTerm}
+              onChange={(e) => setInitialSearchTerm(e.target.value)}
+              onKeyDown={() => setDebouncedSearchTerm(initialSearchTerm)}
               className="flex flex-1 pl-6 text-sm focus:outline-none focus:border-transparent"
             />
           </div>
@@ -103,22 +96,27 @@ const BroadcastHistory = () => {
                 Filter by
                 <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />
               </span>
-              <div className="h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
+              <div className="h-9.5 pl-2 border-[#dddddd] border-r"></div>
               <select
                 value={selectedFilter}
                 onChange={(e) => setSelectedFilter(e.target.value)}
                 className="bg-white w-full flex-3/5 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none pr-8"
               >
                 <option>Select filter</option>
-                <option>All</option>
-                <option>All Members</option>
-                <option>Specific group</option>
+                <option value="title">Title</option>
+                <option value="message">Message</option>
+                <option value="createdAt">Date Created</option>
+                <option value="sentAt">Date Sent</option>
+                <option value="scheduledAt">Date Scheduled</option>
               </select>
             </div>
           </div>
 
           {/* CTA */}
-          <button className="bg-[#193F7F] text-white px-4 py-3 text-sm rounded-full transition-colors flex items-center space-x-2">
+          <button
+            onClick={() => setOpenNew(true)}
+            className="bg-[#193F7F] text-white px-4 py-3 text-sm rounded-full transition-colors flex items-center space-x-2"
+          >
             <Megaphone className="h-4 w-4" />
             <span>Send New Broadcast</span>
           </button>
@@ -149,7 +147,7 @@ const BroadcastHistory = () => {
               </thead>
 
               <tbody className="bg-white divide-y divide-gray-200">
-                {filtered.map((item, idx) => (
+                {notifications.map((item, idx) => (
                   <tr
                     key={item.id}
                     className="hover:bg-gray-50 transition-colors duration-150"
@@ -158,16 +156,17 @@ const BroadcastHistory = () => {
                       {idx + 1}
                     </td>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 max-w-[420px]">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 max-w-105">
                       <div className="leading-5">{item.message}</div>
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {item.audience}
+                      {item.type}
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
-                      {item.date} • {item.time}
+                      {dayjs(item.createdAt).format("DD/MM/YYYY")} •{" "}
+                      {dayjs(item.createdAt).format("HH:mm:ss")}
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
@@ -184,21 +183,21 @@ const BroadcastHistory = () => {
                           <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
                             <div className="py-1">
                               <button
-                                onClick={() => handleAction('view', item.id)}
+                                onClick={() => handleAction("view", item.id)}
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                               >
                                 View Details
                               </button>
                               <button
                                 onClick={() =>
-                                  handleAction('duplicate', item.id)
+                                  handleAction("duplicate", item.id)
                                 }
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                               >
                                 Duplicate
                               </button>
                               <button
-                                onClick={() => handleAction('delete', item.id)}
+                                onClick={() => handleAction("delete", item.id)}
                                 className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                               >
                                 Delete
@@ -214,59 +213,19 @@ const BroadcastHistory = () => {
             </table>
           </div>
 
-          {/* Pagination */}
-          <div className="bg-white px-6 py-4 border-t border-[#EEEEEE]">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Previous
-              </button>
-
-              <div className="flex items-center space-x-2">
-                {[1, 2, 3].map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                      currentPage === page
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-                <span className="text-gray-500">...</span>
-                {[8, 9, 10].map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                      currentPage === page
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors duration-150"
-              >
-                Next
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </button>
-            </div>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+          />
         </div>
       </div>
+
+      <CreateNewBroadcast
+        open={openNew}
+        onOpenChange={setOpenNew}
+        onSuccess={getNotifications}
+      />
 
       {/* Click outside to close dropdown */}
       {showDropdown && (

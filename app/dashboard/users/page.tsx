@@ -1,16 +1,16 @@
-'use client';
-import AllUsersTable from '@/components/tables/AllUsersTable';
-import AuditLog from '@/components/tables/AuditLog';
-import RolesPermissionsTable from '@/components/tables/RolesPermissionTable';
-import React, { useState } from 'react';
+"use client";
+import AllUsersTable from "@/components/tables/AllUsersTable";
+import AuditLog from "@/components/tables/AuditLog";
+import RolesPermissionsTable from "@/components/tables/RolesPermissionTable";
+import React, { useState } from "react";
 
 const Page = () => {
-  const [activeTab, setActiveTab] = useState('all-users');
+  const [activeTab, setActiveTab] = useState("all-users");
 
   const tabs = [
-    { id: 'all-users', label: 'All Users' },
-    { id: 'roles-permissions', label: 'Roles and Permissions' },
-    { id: 'audit-logs', label: 'Audit Logs' },
+    { id: "all-users", label: "All Users" },
+    { id: "roles-permissions", label: "Roles and Permissions" },
+    { id: "audit-logs", label: "Audit Logs" },
   ];
 
   type Tab = { id: string; label: string };
@@ -29,10 +29,10 @@ const Page = () => {
       {tabs.map((tab) => (
         <button
           key={tab.id}
-          className={`px-6 py-[11px] rounded-full text-sm  ${
+          className={`px-6 py-2.75 rounded-full text-sm  ${
             activeTab === tab.id
-              ? 'bg-[#193F7F] text-white font-semibold'
-              : ' text-[#193F7F]'
+              ? "bg-[#193F7F] text-white font-semibold"
+              : " text-[#193F7F]"
           }`}
           onClick={() => setActiveTab(tab.id)}
         >
@@ -52,9 +52,9 @@ const Page = () => {
       />
       {/* Content Section */}
       <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
-        {activeTab === 'all-users' && <AllUsersTable />}
-        {activeTab === 'roles-permissions' && <RolesPermissionsTable />}
-        {activeTab === 'audit-logs' && <AuditLog />}
+        {activeTab === "all-users" && <AllUsersTable />}
+        {activeTab === "roles-permissions" && <RolesPermissionsTable />}
+        {activeTab === "audit-logs" && <AuditLog />}
       </div>
     </>
   );

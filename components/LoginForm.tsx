@@ -1,29 +1,58 @@
-'use client';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+"use client";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+} from "@/components/ui/card";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { adminService } from "@/services/admin";
+import { useStore } from "@/store";
+
+const defaultValues = {
+  username: "",
+  password: "",
+};
+
+const schema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const form = useForm({ defaultValues, resolver: zodResolver(schema) });
   const router = useRouter();
+  const { setToken, setUser } = useStore();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Login attempt:', { email, password: '***' });
-    // route to dashboard
-    router.push('/dashboard');
+  const handleSubmit = async (data: z.infer<typeof schema>) => {
+    try {
+      setLoading(true);
+      const response = await adminService.loginAdminUser(data);
+      setToken(
+        response.data.data.access_token,
+        response.data.data.refresh_token,
+      );
+      setUser(response.data.data.user);
+      router.push("/dashboard");
+    } catch (err) {
+      const error = err as AxiosError<{ error: string }>;
+      toast.error(error.response?.data.error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,21 +66,19 @@ const LoginForm = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-medium">
-              Email
+              Username
             </Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                placeholder="Enter your username"
                 className="pl-10 border-login-border focus:ring-2 focus:ring-login-focus focus:border-transparent transition-all duration-200"
-                required
+                {...form.register("username", { required: true })}
               />
             </div>
           </div>
@@ -64,12 +91,10 @@ const LoginForm = () => {
               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 className="pl-10 pr-10 border-login-border focus:ring-2 focus:ring-login-focus focus:border-transparent transition-all duration-200"
-                required
+                {...form.register("password", { required: true })}
               />
               <button
                 type="button"
@@ -103,6 +128,7 @@ const LoginForm = () => {
 
           <Button
             type="submit"
+            isLoading={loading}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2.5 transition-all duration-200 shadow-sm"
           >
             Sign in

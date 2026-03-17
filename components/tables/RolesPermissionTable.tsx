@@ -1,67 +1,73 @@
-'use client';
-import { useState } from 'react';
-import {
-  UserPlus,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  FunnelIcon,
-} from 'lucide-react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+"use client";
+import { useEffect, useState } from "react";
+import { UserPlus, ChevronDown, FunnelIcon } from "lucide-react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { Role } from "@/types/common";
+import { PaginatedRequest } from "@/types/request";
+import { roleService } from "@/services/role";
+import Pagination from "../Pagination";
+import { useDebounce } from "react-use";
+import CreateRole from "../modals/CreateRole";
 
 const RolesPermissionsTable = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('Select filter');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [initialSearchTerm, setInitialSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("Select filter");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showDropdown, setShowDropdown] = useState<number | null>(null);
+  const [showDropdown, setShowDropdown] = useState<string | null>(null);
 
-  const roles = [
-    {
-      id: 1,
-      roleName: 'Super Admin',
-      roleDescription: 'Full access to all features and settings.',
-      permissions: 'Manage Account',
-      additionalPermissions: 10,
-      status: 'Active',
-    },
-    {
-      id: 2,
-      roleName: 'Admin',
-      roleDescription: 'Full access to all features and settings.',
-      permissions: 'Manage Account',
-      additionalPermissions: 10,
-      status: 'Active',
-    },
-    {
-      id: 3,
-      roleName: 'Editor',
-      roleDescription: 'Can create, edit, and publish content.',
-      permissions: 'Modify Accounts',
-      additionalPermissions: 10,
-      status: 'Active',
-    },
-    {
-      id: 4,
-      roleName: 'Viewer',
-      roleDescription: 'Can only view content and data.',
-      permissions: 'View Accounts',
-      additionalPermissions: 5,
-      status: 'Deactivated',
-    },
-  ];
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-  const filteredUsers = roles.filter((user) =>
-    user.roleName.toLowerCase().includes(searchTerm.toLowerCase())
+  useDebounce(
+    () => {
+      setSearchTerm(debouncedSearchTerm);
+    },
+    2000,
+    [debouncedSearchTerm],
   );
 
-  const toggleDropdown = (userId: number) => {
+  const toggleCreateRoleModal = (value: boolean) => {
+    setOpen(value);
+    if (!value) setSelectedRole(null);
+  };
+
+  const toggleDropdown = (userId: string) => {
     setShowDropdown(showDropdown === userId ? null : userId);
   };
 
-  const handleAction = (action: string, userId: number) => {
-    console.log(`${action} for user ${userId}`);
+  const handleAction = (action: string, role: Role) => {
+    console.log(`${action} for user ${role.id}`);
     setShowDropdown(null);
   };
+
+  const getRoles = async () => {
+    const params: PaginatedRequest = {
+      page: currentPage,
+      size: 10,
+    };
+    if (searchTerm) params.search = searchTerm;
+    if (selectedFilter && selectedFilter !== "Select filter")
+      params.sortBy = selectedFilter;
+    try {
+      setLoading(true);
+      const response = await roleService.getRoles();
+      setRoles(response.data.content);
+      setTotalPages(response.data.totalPages);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getRoles();
+  }, [currentPage, searchTerm, selectedFilter]);
 
   return (
     <div className="w-full min-h-screen">
@@ -78,14 +84,15 @@ const RolesPermissionsTable = () => {
           </div>
 
           {/* Header Section */}
-          <div className="flex w-full justify-between items-center my-[40px]">
+          <div className="flex w-full justify-between items-center my-10">
             <div className="flex items-center flex-2/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full ">
               <MagnifyingGlassIcon className="w-6 h-6 text-[#dddddd]" />
-              <div className=" h-[38px] pl-4 border-[#dddddd] border-r-1"></div>
+              <div className=" h-9.5 pl-4 border-[#dddddd] border-r"></div>
               <input
                 placeholder="Search by name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={initialSearchTerm}
+                onChange={(e) => setInitialSearchTerm(e.target.value)}
+                onKeyDown={() => setDebouncedSearchTerm(initialSearchTerm)}
                 className=" flex flex-1 pl-6 text-sm focus:outline-none focus:border-transparent"
               />
             </div>
@@ -94,9 +101,9 @@ const RolesPermissionsTable = () => {
               <div className="flex flex-1 items-center space-x-2">
                 <span className="text-xs text-[#dddddd] flex flex-row items-center">
                   Filter by
-                  <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{' '}
+                  <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
-                <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
+                <div className=" h-9.5 pl-2 border-[#dddddd] border-r"></div>
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
@@ -109,7 +116,10 @@ const RolesPermissionsTable = () => {
               </div>
             </div>
 
-            <button className=" bg-[#193F7F]   text-center  text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2">
+            <button
+              onClick={() => setOpen(true)}
+              className=" bg-[#193F7F]   text-center  text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2"
+            >
               <UserPlus className="h-4 w-4" />
               <span>Add New Role</span>
             </button>
@@ -142,42 +152,42 @@ const RolesPermissionsTable = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredUsers.map((user, index) => (
+                  {roles.map((role, index) => (
                     <tr
-                      key={user.id}
+                      key={role.id}
                       className="hover:bg-gray-50 transition-colors duration-150"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {user.roleName}
+                        {role.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {user.roleDescription}
+                        {role.description}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-xs text-[#193F7F]">
-                        {user.permissions}
-                        {'   '}
+                        {role.permissions[0]}
+                        {"   "}
                         <span className="text-xs text-[#67787F] ml-1">
-                          {'  '}+ {user.additionalPermissions} More
+                          {"  "}+ {role.permissions.length - 1} More
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            user.status === 'Active'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-[#FFD9E0] text-[#f40000]'
+                            role.active
+                              ? "bg-green-100 text-green-800"
+                              : "bg-[#FFD9E0] text-[#f40000]"
                           }`}
                         >
-                          {user.status}
+                          {role.active ? "Active" : "Inactive"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => toggleDropdown(user.id)}
+                            onClick={() => toggleDropdown(role.id)}
                             className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150"
                           >
                             Actions
@@ -185,30 +195,28 @@ const RolesPermissionsTable = () => {
                           </button>
 
                           {/* Dropdown Menu */}
-                          {showDropdown === user.id && (
+                          {showDropdown === role.id && (
                             <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
                               <div className="py-1">
                                 <button
-                                  onClick={() => handleAction('edit', user.id)}
+                                  onClick={() => handleAction("edit", role)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
-                                  Edit User Details
+                                  Edit Role Details
                                 </button>
                                 <button
                                   onClick={() =>
-                                    handleAction('deactivate', user.id)
+                                    handleAction("deactivate", role)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
                                   Deactivate
                                 </button>
                                 <button
-                                  onClick={() =>
-                                    handleAction('delete', user.id)
-                                  }
+                                  onClick={() => handleAction("delete", role)}
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
-                                  Delete User
+                                  Delete Role
                                 </button>
                               </div>
                             </div>
@@ -221,60 +229,20 @@ const RolesPermissionsTable = () => {
               </table>
             </div>
 
-            {/* Pagination */}
-            <div className="bg-white px-6 py-4 border-t border-[#EEEEEE]">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
-                </button>
-
-                <div className="flex items-center space-x-2">
-                  {[1, 2, 3].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                        currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                  <span className="text-gray-500">...</span>
-                  {[8, 9, 10].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                        currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors duration-150"
-                >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </button>
-              </div>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+            />
           </div>
         </div>
       </div>
+
+      <CreateRole
+        open={open}
+        onOpenChange={toggleCreateRoleModal}
+        role={selectedRole}
+      />
 
       {/* Click outside to close dropdown */}
       {showDropdown && (

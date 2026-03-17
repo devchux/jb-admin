@@ -1,62 +1,74 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useEffect, useState } from "react";
 import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   FunnelIcon,
-} from 'lucide-react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
+} from "lucide-react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline";
+import { AuditLog as AuditLogType } from "@/types/common";
+import { auditLogService } from "@/services/audit-log";
+import { toast } from "sonner";
+import { useDebounce } from "react-use";
+import { PaginatedRequest } from "@/types/request";
+import dayjs from "dayjs";
+import { downloadCsvFromString } from "@/lib/utils";
 
 const AuditLog = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('Select filter');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [initialSearchTerm, setInitialSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("Select filter");
   const [currentPage, setCurrentPage] = useState(1);
-const [showDropdown, setShowDropdown] = useState<number | null>(null);
+  const [showDropdown, setShowDropdown] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [userActivities, setUserActivities] = useState<AuditLogType[]>([]);
 
-  const userActivities = [
-    {
-      id: 1,
-      userName: 'Abdul Isaq',
-      role: 'Super Admin',
-      action: 'User login',
-      timestamp: '2025-07-20',
-      time: '10:35 PM',
-      ipAddress: '192.168.1.100',
+  useDebounce(
+    () => {
+      setSearchTerm(debouncedSearchTerm);
     },
-    {
-      id: 2,
-      userName: 'Jemima Adetayo',
-      role: 'Admin',
-      action: 'Edited Customer care role',
-      timestamp: '2025-07-20',
-      time: '10:35 PM',
-      ipAddress: '192.168.1',
-    },
-    {
-      id: 3,
-      userName: 'Bello Musa',
-      role: 'Editor',
-      action: 'User logout',
-      timestamp: '2025-07-20',
-      time: '10:35 PM',
-      ipAddress: '192.168.1.129',
-    },
-    {
-      id: 4,
-      userName: 'Ridwan Suleja',
-      role: 'Finance Officer',
-      action: 'Export Transaction Report',
-      timestamp: '2025-07-20',
-      time: '10:35 PM',
-      ipAddress: '192.168.1.265',
-    },
-  ];
-
-  const filteredUsers = userActivities.filter((user) =>
-    user.userName.toLowerCase().includes(searchTerm.toLowerCase())
+    2000,
+    [debouncedSearchTerm],
   );
+
+  const getAuditLogs = async () => {
+    const params: PaginatedRequest = {
+      page: currentPage,
+      size: 10,
+    };
+    if (searchTerm) params.search = searchTerm;
+    if (selectedFilter && selectedFilter !== "Select filter")
+      params.sortBy = selectedFilter;
+    try {
+      setLoading(true);
+      const response = await auditLogService.getLogs(params);
+      setUserActivities(response.data.content);
+    } catch {
+      toast.error("Failed to fetch audit logs");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleExport = async () => {
+    const ids = userActivities.map((user) => user.id);
+    if (ids.length === 0) {
+      toast.error("No audit logs to export");
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await auditLogService.exportLog(ids);
+      downloadCsvFromString(response.data, "audit-logs");
+    } catch {
+      toast.error("Failed to export audit logs");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleDropdown = (userId: number) => {
     setShowDropdown(showDropdown === userId ? null : userId);
@@ -66,6 +78,11 @@ const [showDropdown, setShowDropdown] = useState<number | null>(null);
     console.log(`${action} for user ${userId}`);
     setShowDropdown(null);
   };
+
+  useEffect(() => {
+    getAuditLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, searchTerm, selectedFilter]);
 
   return (
     <div className="w-full min-h-screen">
@@ -80,14 +97,15 @@ const [showDropdown, setShowDropdown] = useState<number | null>(null);
           </div>
 
           {/* Header Section */}
-          <div className="flex w-full justify-between items-center my-[40px]">
+          <div className="flex w-full justify-between items-center my-10">
             <div className="flex items-center flex-2/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full ">
               <MagnifyingGlassIcon className="w-6 h-6 text-[#dddddd]" />
-              <div className=" h-[38px] pl-4 border-[#dddddd] border-r-1"></div>
+              <div className=" h-9.5 pl-4 border-[#dddddd] border-r"></div>
               <input
                 placeholder="Search by name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={initialSearchTerm}
+                onChange={(e) => setInitialSearchTerm(e.target.value)}
+                onKeyDown={() => setDebouncedSearchTerm(initialSearchTerm)}
                 className=" flex flex-1 pl-6 text-sm focus:outline-none focus:border-transparent"
               />
             </div>
@@ -96,24 +114,26 @@ const [showDropdown, setShowDropdown] = useState<number | null>(null);
               <div className="flex flex-1 items-center space-x-2">
                 <span className="text-xs text-[#dddddd] flex flex-row items-center">
                   Filter by
-                  <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{' '}
+                  <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
-                <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
+                <div className=" h-9.5 pl-2 border-[#dddddd] border-r"></div>
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
                   className="bg-white  w-full flex-3/5  rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none pr-8"
                 >
                   <option>Select filter</option>
-                  <option>Super Admin</option>
-                  <option>Admin</option>
-                  <option>Editor</option>
-                  <option>Financial Officer</option>
+                  <option value="email">Email</option>
+                  <option value="action">Action</option>
+                  <option value="timestamp">Timestamp</option>
                 </select>
               </div>
             </div>
 
-            <button className=" bg-[#193F7F] text-center    text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2">
+            <button
+              onClick={handleExport}
+              className=" bg-[#193F7F] text-center    text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2"
+            >
               <ArrowUpOnSquareIcon className="h-4 w-4" />
               <span>Export Audit Report</span>
             </button>
@@ -149,7 +169,7 @@ const [showDropdown, setShowDropdown] = useState<number | null>(null);
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredUsers.map((user, index) => (
+                  {userActivities.map((user, index) => (
                     <tr
                       key={user.id}
                       className="hover:bg-gray-50 transition-colors duration-150"
@@ -158,16 +178,17 @@ const [showDropdown, setShowDropdown] = useState<number | null>(null);
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {user.userName}
+                        {user.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {user.role}
+                        {/* {user.role} */}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {user.action}
                       </td>
                       <td className="px-6 py-4 text-xs whitespace-nowrap">
-                        {user.timestamp} • {user.time}
+                        {dayjs(user.timestamp).format("DD-MM-YYYY")} •{" "}
+                        {dayjs(user.timestamp).format("HH:mm:ss")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
                         {user.ipAddress}
@@ -187,26 +208,18 @@ const [showDropdown, setShowDropdown] = useState<number | null>(null);
                             <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
                               <div className="py-1">
                                 <button
-                                  onClick={() => handleAction('edit', user.id)}
+                                  onClick={() => handleAction("edit", user.id)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
-                                  Edit User Details
+                                  View Details
                                 </button>
                                 <button
                                   onClick={() =>
-                                    handleAction('deactivate', user.id)
-                                  }
-                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-                                >
-                                  Deactivate
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handleAction('delete', user.id)
+                                    handleAction("delete", user.id)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
-                                  Delete User
+                                  Flag Activity
                                 </button>
                               </div>
                             </div>
@@ -238,8 +251,8 @@ const [showDropdown, setShowDropdown] = useState<number | null>(null);
                       onClick={() => setCurrentPage(page)}
                       className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
                         currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >
                       {page}
@@ -252,8 +265,8 @@ const [showDropdown, setShowDropdown] = useState<number | null>(null);
                       onClick={() => setCurrentPage(page)}
                       className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
                         currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >
                       {page}
