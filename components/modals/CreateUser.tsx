@@ -183,6 +183,30 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
 
             <div>
               <Label className="text-[#4E7397] font-medium text-[13px] mb-2 block">
+                Email
+              </Label>
+              <Input
+                placeholder="Email"
+                className="h-14 rounded-xl border-[#E2E8F0] text-[#25272E] px-4 text-[15px] font-normal placeholder:text-[#25272E] focus-visible:ring-1 focus-visible:ring-[#193F7F] focus-visible:border-[#193F7F]"
+                {...form.register("email", { required: true })}
+                error={form.formState.errors.email?.message}
+              />
+            </div>
+
+            <div>
+              <Label className="text-[#4E7397] font-medium text-[13px] mb-2 block">
+                Phone Number
+              </Label>
+              <Input
+                placeholder="Phone Number"
+                className="h-14 rounded-xl border-[#E2E8F0] text-[#25272E] px-4 text-[15px] font-normal placeholder:text-[#25272E] focus-visible:ring-1 focus-visible:ring-[#193F7F] focus-visible:border-[#193F7F]"
+                {...form.register("phoneNumber", { required: true })}
+                error={form.formState.errors.phoneNumber?.message}
+              />
+            </div>
+
+            <div>
+              <Label className="text-[#4E7397] font-medium text-[13px] mb-2 block">
                 Assign Role
               </Label>
               <Select onValueChange={onRoleChange}>
