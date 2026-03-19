@@ -57,7 +57,7 @@ const RolesPermissionsTable = () => {
     try {
       setLoading(true);
       const response = await roleService.getRoles();
-      setRoles(response.data.content);
+      setRoles(response.data);
       setTotalPages(response.data.totalPages);
     } catch (error) {
       console.log(error);

@@ -82,7 +82,7 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
   const getRoles = async () => {
     try {
       const response = await roleService.getRoles();
-      setRoles(response.data.content);
+      setRoles(response.data);
     } catch {
       toast.error("Failed to fetch roles");
     }
