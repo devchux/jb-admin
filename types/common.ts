@@ -105,3 +105,20 @@ export type Transaction = {
     loginName: string;
   };
 };
+
+export type TicketStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
+
+export type SupportTicket = {
+  id: string;
+  userId: string;
+  email: string;
+  phoneNumber: string;
+  subject: string;
+  message: string;
+  status: TicketStatus;
+  response: string;
+  assignedTo: string;
+  createdAt: string;
+  lastModifiedAt: string;
+  resolvedAt: string;
+};

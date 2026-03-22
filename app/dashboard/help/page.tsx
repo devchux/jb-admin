@@ -1,17 +1,17 @@
-'use client';
-import CustomerComplaints from '@/components/tables/help/CustomerComplaints';
-import SupportTickets from '@/components/tables/help/SupportTickets';
-import React, { useState } from 'react';
+"use client";
+import CustomerComplaints from "@/components/tables/help/CustomerComplaints";
+import SupportTickets from "@/components/tables/help/SupportTickets";
+import React, { useState } from "react";
 
 const Page = () => {
-  const [activeTab, setActiveTab] = useState('customer-complaints');
+  const [activeTab, setActiveTab] = useState("customer-complaints");
 
   const tabs = [
-    { id: 'customer-complaints', label: 'Customer Complaints Log', count: 120 },
+    { id: "customer-complaints", label: "Customer Complaints Log", count: 0 },
     {
-      id: 'support-tickets',
-      label: 'Support Tickets',
-      count: 120,
+      id: "support-tickets",
+      label: "Support Tickets",
+      count: 0,
     },
   ];
 
@@ -33,13 +33,13 @@ const Page = () => {
           <button
             className={`px-6 py-[11px] rounded-full text-sm  ${
               activeTab === tab.id
-                ? 'bg-[#193F7F] text-white font-semibold'
-                : ' text-[#193F7F]'
+                ? "bg-[#193F7F] text-white font-semibold"
+                : " text-[#193F7F]"
             }`}
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.label}
-            {activeTab === tab.id && (
+            {activeTab === tab.id && tab.count > 0 && (
               <span
                 className={`ml-1 text-[#fff] px-2 py-1 rounded-full text-xs font-medium`}
               >
@@ -47,7 +47,7 @@ const Page = () => {
               </span>
             )}
           </button>
-          {activeTab !== tab.id && (
+          {activeTab !== tab.id && tab.count > 0 && (
             <span className={` text-[#8D8D8D]  text-xs font-medium`}>
               {tab.count}
             </span>
@@ -67,8 +67,8 @@ const Page = () => {
       />
       {/* Content Section */}
       <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
-        {activeTab === 'customer-complaints' && <CustomerComplaints />}
-        {activeTab === 'support-tickets' && <SupportTickets />}
+        {activeTab === "customer-complaints" && <CustomerComplaints />}
+        {activeTab === "support-tickets" && <SupportTickets />}
       </div>
     </>
   );

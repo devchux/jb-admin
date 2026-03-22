@@ -1,70 +1,57 @@
-'use client';
-import { useState } from 'react';
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  FunnelIcon,
-  UserIcon,
-} from 'lucide-react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+"use client";
+import { useEffect, useState } from "react";
+import { ChevronDown, FunnelIcon, UserIcon } from "lucide-react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { SupportTicket } from "@/types/common";
+import dayjs from "dayjs";
+import { supportTicketService } from "@/services/support-ticket";
+import { toast } from "sonner";
+import Pagination from "@/components/Pagination";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 const SupportTickets = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('Select filter');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("Select filter");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showDropdown, setShowDropdown] = useState<number | null>(null);
+  const [showDropdown, setShowDropdown] = useState<string | null>(null);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const transactions = [
-    {
-      sn: 1,
-      transactionId: 'NGNX79EE544RXUE780',
-      transactionAmount: '1,000.00',
-      sourceUserAccount: 'Admin',
-      beneficiaryAccount: 'Admin',
-      date: '2025-07-20',
-      time: '10:35 PM',
-    },
-    {
-      sn: 2,
-      transactionId: 'NGNX79EE544RXUE780',
-      transactionAmount: '75,000,000.00',
-      sourceUserAccount: 'Editor',
-      beneficiaryAccount: 'Editor',
-      date: '2025-07-20',
-      time: '10:35 PM',
-    },
-    {
-      sn: 3,
-      transactionId: 'NGNX79EE544RXUE780',
-      transactionAmount: '324,026.09',
-      sourceUserAccount: 'Viewer',
-      beneficiaryAccount: 'Viewer',
-      date: '2025-07-20',
-      time: '10:35 PM',
-    },
-    {
-      sn: 4,
-      transactionId: 'NGNX79EE544RXUE780',
-      transactionAmount: '324,026.09',
-      sourceUserAccount: 'Admin',
-      beneficiaryAccount: 'Admin',
-      date: '2025-07-20',
-      time: '10:35 PM',
-    },
-  ];
+  const getTickets = async () => {
+    try {
+      setLoading(true);
+      const { data } = await supportTicketService.getTickets({
+        page: currentPage - 1,
+        size: 10,
+        search: searchTerm,
+      });
+      setTickets(data.content);
+      setTotalPages(data.totalPages);
+    } catch {
+      toast.error("Failed to fetch support tickets");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const toggleDropdown = (userId: number) => {
+  const toggleDropdown = (userId: string) => {
     setShowDropdown(showDropdown === userId ? null : userId);
   };
 
-  const handleAction = (action: string, userId: number) => {
+  const handleAction = (action: string, userId: string) => {
     console.log(`${action} for user ${userId}`);
     setShowDropdown(null);
   };
 
+  useEffect(() => {
+    getTickets();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
+
   return (
     <div className="w-full min-h-screen">
+      {loading && <LoadingIndicator />}
       {/* Main Content */}
       {/* <div className="px-4 sm:px-6 lg:px-8 py-8"> */}
       <div className="">
@@ -94,7 +81,7 @@ const SupportTickets = () => {
               <div className="flex flex-1 items-center space-x-2">
                 <span className="text-xs text-[#dddddd] flex flex-row items-center">
                   Account
-                  <UserIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{' '}
+                  <UserIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
                 <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
                 <select
@@ -115,7 +102,7 @@ const SupportTickets = () => {
               <div className="flex flex-1 items-center space-x-2">
                 <span className="text-xs text-[#dddddd] flex flex-row items-center">
                   Filter by
-                  <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{' '}
+                  <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
                 <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
                 <select
@@ -148,16 +135,19 @@ const SupportTickets = () => {
                       S/N
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                      Transaction ID
+                      Email
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                      Transaction Amount
+                      Phone Number
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                      Source User Account
+                      Subject
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                      Beneficiary Account
+                      Message
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                      Status
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Timestamp
@@ -168,33 +158,37 @@ const SupportTickets = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {transactions.map((item, index) => (
+                  {tickets.map((item, index) => (
                     <tr
-                      key={item.sn}
+                      key={item.id}
                       className="hover:bg-gray-50 transition-colors duration-150"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.transactionId}
+                        {item.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.transactionAmount}
+                        {item.phoneNumber}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.sourceUserAccount}
+                        {item.subject}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.beneficiaryAccount}
+                        {item.message}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {item.status}
                       </td>
                       <td className="px-6 py-4 text-xs whitespace-nowrap">
-                        {item.date} • {item.time}
+                        {dayjs(item.lastModifiedAt).format("YYYY-MM-DD")} •{" "}
+                        {dayjs(item.lastModifiedAt).format("hh:mm A")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">
                           <button
-                          onClick={() => toggleDropdown(item.sn)}
+                            onClick={() => toggleDropdown(item.id)}
                             className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150"
                           >
                             Actions
@@ -202,18 +196,18 @@ const SupportTickets = () => {
                           </button>
 
                           {/* Dropdown Menu */}
-                          {showDropdown === item.sn && (
+                          {showDropdown === item.id && (
                             <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
                               <div className="py-1">
                                 <button
-                                  onClick={() => handleAction('edit', item.sn)}
+                                  onClick={() => handleAction("edit", item.id)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
                                   Edit User Details
                                 </button>
                                 <button
                                   onClick={() =>
-                                    handleAction('deactivate', item.sn)
+                                    handleAction("deactivate", item.id)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
@@ -221,7 +215,7 @@ const SupportTickets = () => {
                                 </button>
                                 <button
                                   onClick={() =>
-                                    handleAction('delete', item.sn)
+                                    handleAction("delete", item.id)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
@@ -239,56 +233,11 @@ const SupportTickets = () => {
             </div>
 
             {/* Pagination */}
-            <div className="bg-white px-6 py-4 border-t border-[#EEEEEE]">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
-                </button>
-
-                <div className="flex items-center space-x-2">
-                  {[1, 2, 3].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                        currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                  <span className="text-gray-500">...</span>
-                  {[8, 9, 10].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                        currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors duration-150"
-                >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </button>
-              </div>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+            />
           </div>
         </div>
       </div>

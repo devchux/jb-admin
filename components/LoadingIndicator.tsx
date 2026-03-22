@@ -1,9 +1,9 @@
-import { LoaderPinwheel } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function LoadingIndicator() {
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black/40 z-9999 h-dvh">
-      <LoaderPinwheel className="animate-spin" />
+      <Loader2 className="animate-spin" />
     </div>
   );
 }

@@ -1,4 +1,10 @@
-import { AuditLog, Notification, Transaction, User } from "./common";
+import {
+  AuditLog,
+  Notification,
+  SupportTicket,
+  Transaction,
+  User,
+} from "./common";
 
 export type PaginatedResponse<T> = {
   totalElements: number;
@@ -52,3 +58,5 @@ export type UserListResponse = PaginatedResponse<User>;
 export type AuditLogListResponse = PaginatedResponse<AuditLog>;
 
 export type TransactionListResponse = PaginatedResponse<Transaction>;
+
+export type SupportTicketListResponse = PaginatedResponse<SupportTicket>;
