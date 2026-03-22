@@ -1,17 +1,17 @@
-'use client';
-import BroadcastHistory from '@/components/tables/notifications/History';
-import Notifications from '@/components/tables/notifications/Notifications';
-import React, { useState } from 'react';
+"use client";
+import BroadcastHistory from "@/components/tables/notifications/History";
+import Notifications from "@/components/tables/notifications/Notifications";
+import React, { useState } from "react";
 
 const Page = () => {
-  const [activeTab, setActiveTab] = useState('history');
+  const [activeTab, setActiveTab] = useState("history");
 
   const tabs = [
-    { id: 'history', label: 'Broadcast History', count: 120 },
+    { id: "history", label: "Broadcast History", count: 0 },
     {
-      id: 'notifications',
-      label: 'My Notifications',
-      count: 10,
+      id: "notifications",
+      label: "My Notifications",
+      count: 0,
     },
   ];
 
@@ -33,13 +33,13 @@ const Page = () => {
           <button
             className={`px-6 py-[11px] rounded-full text-sm  ${
               activeTab === tab.id
-                ? 'bg-[#193F7F] text-white font-semibold'
-                : ' text-[#193F7F]'
+                ? "bg-[#193F7F] text-white font-semibold"
+                : " text-[#193F7F]"
             }`}
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.label}
-            {activeTab === tab.id && (
+            {activeTab === tab.id && tab.count > 0 && (
               <span
                 className={`ml-1 text-[#fff] px-2 py-1 rounded-full text-xs font-medium`}
               >
@@ -47,7 +47,7 @@ const Page = () => {
               </span>
             )}
           </button>
-          {activeTab !== tab.id && (
+          {activeTab !== tab.id && tab.count > 0 && (
             <span className={` text-[#8D8D8D]  text-xs font-medium`}>
               {tab.count}
             </span>
@@ -67,8 +67,8 @@ const Page = () => {
       />
       {/* Content Section */}
       <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
-        {activeTab === 'notifications' && <Notifications />}
-        {activeTab === 'history' && <BroadcastHistory />}
+        {activeTab === "notifications" && <Notifications />}
+        {activeTab === "history" && <BroadcastHistory />}
       </div>
     </>
   );

@@ -5,8 +5,8 @@ import { CreateRoleRequest } from "@/types/request";
 import { useStore } from "@/store";
 
 class RoleService {
-  getRoles() {
-    return apiService.get("base", "/admin/roles");
+  getRoles(params?: Record<string, string>) {
+    return apiService.get("base", "/admin/roles", params);
   }
 
   getPermissions(): Promise<AxiosResponse<Permission[]>> {

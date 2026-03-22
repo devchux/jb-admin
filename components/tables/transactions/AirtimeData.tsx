@@ -1,56 +1,31 @@
 "use client";
 import { useEffect, useState } from "react";
-import { UserPlus, ChevronDown, FunnelIcon } from "lucide-react";
+import { ChevronDown, FunnelIcon, UserIcon } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import { Role } from "@/types/common";
-import { roleService } from "@/services/role";
-import { useDebounce } from "react-use";
-import CreateRole from "../modals/CreateRole";
-import LoadingIndicator from "../LoadingIndicator";
+import { Transaction } from "@/types/common";
+import { transactionService } from "@/services/transaction";
+import Pagination from "@/components/Pagination";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import dayjs from "dayjs";
 
-const RolesPermissionsTable = () => {
+const AirtimeDataTransactions = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [initialSearchTerm, setInitialSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("Select filter");
+  const [currentPage, setCurrentPage] = useState(1);
   const [showDropdown, setShowDropdown] = useState<string | null>(null);
-
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [totalPages, setTotalPages] = useState(0);
 
-  useDebounce(
-    () => {
-      setSearchTerm(debouncedSearchTerm);
-    },
-    2000,
-    [debouncedSearchTerm],
-  );
-
-  const toggleCreateRoleModal = (value: boolean) => {
-    setOpen(value);
-    if (!value) setSelectedRole(null);
-  };
-
-  const toggleDropdown = (userId: string) => {
-    setShowDropdown(showDropdown === userId ? null : userId);
-  };
-
-  const handleAction = (action: string, role: Role) => {
-    console.log(`${action} for user ${role.id}`);
-    setShowDropdown(null);
-  };
-
-  const getRoles = async () => {
-    const params: Record<string, string> = {};
-    if (searchTerm) params.search = searchTerm;
-    if (selectedFilter && selectedFilter !== "Select filter")
-      params.sortBy = selectedFilter;
+  const getTransactions = async () => {
     try {
       setLoading(true);
-      const response = await roleService.getRoles(params);
-      setRoles(response.data);
+      const response = await transactionService.getAirtimeDataTransactions({
+        page: currentPage - 1,
+        size: 10,
+      });
+      setTransactions(response.data.content);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.log(error);
     } finally {
@@ -58,10 +33,19 @@ const RolesPermissionsTable = () => {
     }
   };
 
+  const toggleDropdown = (userId: string | null) => {
+    setShowDropdown(showDropdown === userId ? null : userId);
+  };
+
+  const handleAction = (action: string, userId: string) => {
+    console.log(`${action} for user ${userId}`);
+    setShowDropdown(null);
+  };
+
   useEffect(() => {
-    getRoles();
+    (async () => await getTransactions())();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, selectedFilter]);
+  }, [currentPage]);
 
   return (
     <div className="w-full min-h-screen">
@@ -74,22 +58,42 @@ const RolesPermissionsTable = () => {
           <div className="flex items-center mb-6">
             <div className="w-3 h-8 bg-[#193F7F] rounded-full mr-3"></div>
             <h1 className="text-xl font-semibold text-gray-900">
-              Roles and Permissions
+              Airtime & Data Transactions
             </h1>
           </div>
 
           {/* Header Section */}
-          <div className="flex w-full justify-between items-center my-10">
+          <div className="flex w-full justify-between items-center my-[40px]">
             <div className="flex items-center flex-2/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full ">
               <MagnifyingGlassIcon className="w-6 h-6 text-[#dddddd]" />
-              <div className=" h-9.5 pl-4 border-[#dddddd] border-r"></div>
+              <div className=" h-[38px] pl-4 border-[#dddddd] border-r-1"></div>
               <input
                 placeholder="Search by name"
-                value={initialSearchTerm}
-                onChange={(e) => setInitialSearchTerm(e.target.value)}
-                onKeyDown={() => setDebouncedSearchTerm(initialSearchTerm)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className=" flex flex-1 pl-6 text-sm focus:outline-none focus:border-transparent"
               />
+            </div>
+
+            <div className="flex w-full items-center flex-1/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full">
+              <div className="flex flex-1 items-center space-x-2">
+                <span className="text-xs text-[#dddddd] flex flex-row items-center">
+                  Account
+                  <UserIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
+                </span>
+                <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
+                <select
+                  value={selectedFilter}
+                  onChange={(e) => setSelectedFilter(e.target.value)}
+                  className="bg-white  w-full flex-3/5  rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none pr-8"
+                >
+                  <option>All Accounts</option>
+                  <option>Super Admin</option>
+                  <option>Admin</option>
+                  <option>Editor</option>
+                  <option>Financial Officer</option>
+                </select>
+              </div>
             </div>
 
             <div className="flex w-full items-center flex-1/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full">
@@ -98,26 +102,25 @@ const RolesPermissionsTable = () => {
                   Filter by
                   <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
-                <div className=" h-9.5 pl-2 border-[#dddddd] border-r"></div>
+                <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="bg-white  w-full flex-3/5  rounded-lg px-3 py-2 text-sm  outline-none appearance-none pr-8"
+                  className="bg-white  w-full flex-3/5  rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none pr-8"
                 >
                   <option>Select filter</option>
-                  <option>Active</option>
-                  <option>Inactive</option>
+                  <option>Super Admin</option>
+                  <option>Admin</option>
+                  <option>Editor</option>
+                  <option>Financial Officer</option>
                 </select>
               </div>
             </div>
 
-            <button
-              onClick={() => setOpen(true)}
-              className=" bg-[#193F7F]   text-center  text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2"
-            >
-              <UserPlus className="h-4 w-4" />
-              <span>Add New Role</span>
-            </button>
+            {/* <button className=" bg-[#193F7F] text-center    text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2">
+              <ArrowUpOnSquareIcon className="h-4 w-4" />
+              <span>Export Audit Report</span>
+            </button> */}
           </div>
 
           {/* Users Table */}
@@ -130,16 +133,19 @@ const RolesPermissionsTable = () => {
                       S/N
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                      Role Name
+                      Transaction ID
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                      Role Description
+                      Transaction Amount
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                      Permissions
+                      Source User Account
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                      Status
+                      Beneficiary Account
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                      Timestamp
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Action
@@ -147,42 +153,34 @@ const RolesPermissionsTable = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {roles.map((role, index) => (
+                  {transactions.map((item, index) => (
                     <tr
-                      key={role.id}
+                      key={item.id}
                       className="hover:bg-gray-50 transition-colors duration-150"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {role.name}
+                        {item.data.transactionKey}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {role.description}
+                        {item.amount}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-xs text-[#193F7F]">
-                        {role.permissions[0]}
-                        {"   "}
-                        <span className="text-xs text-[#67787F] ml-1">
-                          {"  "}+ {role.permissions.length - 1} More
-                        </span>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {item.data.accountNumber}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            role.active
-                              ? "bg-green-100 text-green-800"
-                              : "bg-[#FFD9E0] text-[#f40000]"
-                          }`}
-                        >
-                          {role.active ? "Active" : "Inactive"}
-                        </span>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {item.creditAccount}
+                      </td>
+                      <td className="px-6 py-4 text-xs whitespace-nowrap">
+                        {dayjs(item.data.activationDate).format("YYYY-MM-DD")} •{" "}
+                        {dayjs(item.data.activationDate).format("hh:mm A")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => toggleDropdown(role.id)}
+                            onClick={() => toggleDropdown(item.id)}
                             className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150"
                           >
                             Actions
@@ -190,28 +188,14 @@ const RolesPermissionsTable = () => {
                           </button>
 
                           {/* Dropdown Menu */}
-                          {showDropdown === role.id && (
+                          {showDropdown === item.id && (
                             <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
                               <div className="py-1">
                                 <button
-                                  onClick={() => handleAction("edit", role)}
+                                  onClick={() => handleAction("edit", item.id)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
-                                  Edit Role Details
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handleAction("deactivate", role)
-                                  }
-                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-                                >
-                                  Deactivate
-                                </button>
-                                <button
-                                  onClick={() => handleAction("delete", role)}
-                                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
-                                >
-                                  Delete Role
+                                  View Details
                                 </button>
                               </div>
                             </div>
@@ -223,15 +207,16 @@ const RolesPermissionsTable = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination */}
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              setCurrentPage={(page) => setCurrentPage(page)}
+            />
           </div>
         </div>
       </div>
-
-      <CreateRole
-        open={open}
-        onOpenChange={toggleCreateRoleModal}
-        role={selectedRole}
-      />
 
       {/* Click outside to close dropdown */}
       {showDropdown && (
@@ -244,4 +229,4 @@ const RolesPermissionsTable = () => {
   );
 };
 
-export default RolesPermissionsTable;
+export default AirtimeDataTransactions;

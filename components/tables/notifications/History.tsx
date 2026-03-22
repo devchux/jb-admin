@@ -35,7 +35,7 @@ const BroadcastHistory = () => {
 
   const getNotifications = async () => {
     const params: PaginatedRequest = {
-      page: currentPage,
+      page: currentPage - 1,
       size: 10,
     };
     if (searchTerm) params.search = searchTerm;
@@ -172,7 +172,7 @@ const BroadcastHistory = () => {
 
                     <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
                       {dayjs(item.createdAt).format("DD/MM/YYYY")} •{" "}
-                      {dayjs(item.createdAt).format("HH:mm:ss")}
+                      {dayjs(item.createdAt).format("hh:mm A")}
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">

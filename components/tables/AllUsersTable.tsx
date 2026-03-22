@@ -42,7 +42,7 @@ const AllUsersTable = () => {
 
   const getUsers = async () => {
     const params: PaginatedRequest = {
-      page: currentPage,
+      page: currentPage - 1,
       size: 10,
     };
     if (searchTerm) params.search = searchTerm;

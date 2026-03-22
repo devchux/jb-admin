@@ -1,11 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  FunnelIcon,
-} from "lucide-react";
+import { ChevronDown, FunnelIcon } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline";
 import { AuditLog as AuditLogType } from "@/types/common";
@@ -16,6 +11,7 @@ import { PaginatedRequest } from "@/types/request";
 import dayjs from "dayjs";
 import { downloadCsvFromString } from "@/lib/utils";
 import LoadingIndicator from "../LoadingIndicator";
+import Pagination from "../Pagination";
 
 const AuditLog = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +19,7 @@ const AuditLog = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("Select filter");
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [showDropdown, setShowDropdown] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [userActivities, setUserActivities] = useState<AuditLogType[]>([]);
@@ -37,7 +34,7 @@ const AuditLog = () => {
 
   const getAuditLogs = async () => {
     const params: PaginatedRequest = {
-      page: currentPage,
+      page: currentPage - 1,
       size: 10,
     };
     if (searchTerm) params.search = searchTerm;
@@ -47,6 +44,7 @@ const AuditLog = () => {
       setLoading(true);
       const response = await auditLogService.getLogs(params);
       setUserActivities(response.data.content);
+      setTotalPages(response.data.totalPages);
     } catch {
       toast.error("Failed to fetch audit logs");
     } finally {
@@ -190,7 +188,7 @@ const AuditLog = () => {
                       </td>
                       <td className="px-6 py-4 text-xs whitespace-nowrap">
                         {dayjs(user.timestamp).format("DD-MM-YYYY")} •{" "}
-                        {dayjs(user.timestamp).format("HH:mm:ss")}
+                        {dayjs(user.timestamp).format("hh:mm A")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
                         {user.ipAddress}
@@ -235,56 +233,11 @@ const AuditLog = () => {
             </div>
 
             {/* Pagination */}
-            <div className="bg-white px-6 py-4 border-t border-[#EEEEEE]">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
-                </button>
-
-                <div className="flex items-center space-x-2">
-                  {[1, 2, 3].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                        currentPage === page
-                          ? "bg-blue-600 text-white"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                  <span className="text-gray-500">...</span>
-                  {[8, 9, 10].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                        currentPage === page
-                          ? "bg-blue-600 text-white"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors duration-150"
-                >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </button>
-              </div>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+            />
           </div>
         </div>
       </div>
