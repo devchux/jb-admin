@@ -144,10 +144,11 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
           <div className="flex items-start justify-between mb-8">
             <div>
               <DialogTitle className="text-2xl font-semibold text-[#0B1527] mb-2">
-                Create New User
+                {user ? "Edit User" : "Create New User"}
               </DialogTitle>
               <DialogDescription className="text-sm text-[#4E7397]">
-                Fill details to create a new user or the admin portal.
+                Fill details to {user ? "update" : "create a new"} user on the
+                admin portal.
               </DialogDescription>
             </div>
             <DialogClose asChild>
@@ -210,7 +211,7 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
               <Label className="text-[#4E7397] font-medium text-[13px] mb-2 block">
                 Assign Role
               </Label>
-              <Select onValueChange={onRoleChange}>
+              <Select value={form.watch("roleId")} onValueChange={onRoleChange}>
                 <SelectTrigger className="h-14! w-full rounded-xl border-[#E7ECF2] text-[#25272E] px-4 font-normal focus:ring-1 focus:ring-[#193F7F]">
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
