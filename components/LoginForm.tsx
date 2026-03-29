@@ -1,15 +1,9 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -49,105 +43,123 @@ const LoginForm = () => {
       router.push("/dashboard");
     } catch (err) {
       const error = err as AxiosError<{ error: string }>;
-      toast.error(error.response?.data.error);
+      toast.error(error.response?.data?.error || "Login Failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg border-login-border">
-      <CardHeader className="space-y-1 text-center">
-        <CardTitle className="text-2xl font-semibold tracking-tight">
-          Jaiz Bank Admin
-        </CardTitle>
-        <CardDescription className="text-muted-foreground">
-          Enter your credentials to access the admin portal
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium">
+    <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#E2E8F0] overflow-hidden flex flex-col items-center">
+      {/* Top Banner / Accent */}
+      <div className="w-full h-2 bg-[#193F7F]"></div>
+
+      <div className="p-10 w-full flex flex-col items-center">
+        {/* Logo Section */}
+        <div className="mb-4 mt-2 w-full flex justify-center">
+          <Image
+            src="/images/logo.png"
+            alt="Jaiz Bank Logo"
+            width={80}
+            height={50}
+            className="object-contain"
+            priority
+          />
+        </div>
+
+        <div className="text-center mb-8 space-y-2 w-full">
+          <h1 className="text-[26px] font-bold text-[#0B1527] tracking-tight">
+            Welcome Back
+          </h1>
+          <p className="text-[14px] text-[#4E7397]">
+            Please enter your credentials to access the admin portal.
+          </p>
+        </div>
+
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="w-full space-y-6"
+        >
+          {/* Username Field */}
+          <div className="space-y-2.5">
+            <Label
+              htmlFor="username"
+              className="text-[#4E7397] font-medium text-[13px] ml-1"
+            >
               Username
             </Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <div className="relative group">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-[#A0AEC0] group-focus-within:text-[#193F7F] transition-colors" />
               <Input
                 id="username"
                 type="text"
                 placeholder="Enter your username"
-                className="pl-10 border-login-border focus:ring-2 focus:ring-login-focus focus:border-transparent transition-all duration-200"
-                {...form.register("username", { required: true })}
+                className="pl-12 h-14 rounded-xl border-[#E2E8F0] text-[#1A202C] text-[15px] font-medium placeholder:text-[#A0AEC0] placeholder:font-normal focus-visible:ring-1 focus-visible:ring-[#193F7F] focus-visible:border-[#193F7F] transition-all bg-white"
+                {...form.register("username")}
               />
             </div>
+            {form.formState.errors.username && (
+              <p className="text-[#E11D48] text-xs ml-1 font-medium mt-1">
+                {form.formState.errors.username.message}
+              </p>
+            )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium">
+          {/* Password Field */}
+          <div className="space-y-2.5">
+            <Label
+              htmlFor="password"
+              className="text-[#4E7397] font-medium text-[13px] ml-1"
+            >
               Password
             </Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <div className="relative group">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-[#A0AEC0] group-focus-within:text-[#193F7F] transition-colors" />
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
-                className="pl-10 pr-10 border-login-border focus:ring-2 focus:ring-login-focus focus:border-transparent transition-all duration-200"
-                {...form.register("password", { required: true })}
+                className="pl-12 pr-12 h-14 rounded-xl border-[#E2E8F0] text-[#1A202C] text-[15px] font-medium placeholder:text-[#A0AEC0] placeholder:font-normal focus-visible:ring-1 focus-visible:ring-[#193F7F] focus-visible:border-[#193F7F] transition-all bg-white"
+                {...form.register("password")}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A0AEC0] hover:text-[#193F7F] transition-colors focus:outline-none"
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
+                  <EyeOff className="h-5 w-5" />
                 ) : (
-                  <Eye className="h-4 w-4" />
+                  <Eye className="h-5 w-5" />
                 )}
               </button>
             </div>
+            {form.formState.errors.password && (
+              <p className="text-[#E11D48] text-xs ml-1 font-medium mt-1">
+                {form.formState.errors.password.message}
+              </p>
+            )}
           </div>
 
-          {/* <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                className="rounded border-login-border text-primary focus:ring-login-focus"
-              />
-              <span className="text-muted-foreground">Remember me</span>
-            </label>
-            <a
-              href="#"
-              className="text-primary hover:text-primary/80 transition-colors"
+          {/* Submit Button */}
+          <div className="pt-2">
+            <Button
+              type="submit"
+              isLoading={loading}
+              className="w-full h-14 rounded-xl bg-[#193F7F] hover:bg-[#132A55] text-white font-semibold text-[15px] shadow-[0_4px_14px_0_rgba(25,63,127,0.39)] transition-all hover:shadow-[0_6px_20px_rgba(25,63,127,0.23)] hover:-translate-y-[1px]"
             >
-              Forgot password?
-            </a>
-          </div> */}
-
-          <Button
-            type="submit"
-            isLoading={loading}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2.5 transition-all duration-200 shadow-sm"
-          >
-            Sign in
-          </Button>
+              Sign In
+            </Button>
+          </div>
         </form>
 
-        {/* <div className="mt-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{' '}
-            <a
-              href="#"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
-            >
-              Sign up
-            </a>
+        <div className="mt-8 text-center w-full border-t border-[#EEF2F6] pt-6">
+          <p className="text-[13px] text-[#A0AEC0] font-medium">
+            Protected securely by Jaiz Internal Systems
           </p>
-        </div> */}
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 };
 
