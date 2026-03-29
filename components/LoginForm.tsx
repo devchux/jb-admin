@@ -152,12 +152,6 @@ const LoginForm = () => {
             </Button>
           </div>
         </form>
-
-        <div className="mt-8 text-center w-full border-t border-[#EEF2F6] pt-6">
-          <p className="text-[13px] text-[#A0AEC0] font-medium">
-            Protected securely by Jaiz Internal Systems
-          </p>
-        </div>
       </div>
     </div>
   );
