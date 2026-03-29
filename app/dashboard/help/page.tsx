@@ -4,10 +4,10 @@ import SupportTickets from "@/components/tables/help/SupportTickets";
 import React, { useState } from "react";
 
 const Page = () => {
-  const [activeTab, setActiveTab] = useState("customer-complaints");
+  const [activeTab, setActiveTab] = useState("support-tickets");
 
   const tabs = [
-    { id: "customer-complaints", label: "Customer Complaints Log", count: 0 },
+    // { id: "customer-complaints", label: "Customer Complaints Log", count: 0 },
     {
       id: "support-tickets",
       label: "Support Tickets",

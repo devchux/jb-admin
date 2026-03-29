@@ -60,3 +60,19 @@ export type AuditLogListResponse = PaginatedResponse<AuditLog>;
 export type TransactionListResponse = PaginatedResponse<Transaction>;
 
 export type SupportTicketListResponse = PaginatedResponse<SupportTicket>;
+
+export type DashboardSummaryResponse = {
+  totalUsers: number;
+  activeUsers: number;
+  inactiveUsers: number;
+  totalTransactions: number;
+  totalTransactionAmount: number;
+  totalInflows: number;
+  totalOutflows: number;
+};
+
+export type ChartResponse = {
+  labels: string[];
+  inflows: number[];
+  outflows: number[];
+};

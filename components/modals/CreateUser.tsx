@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import SuccessModal from "@/components/modals/Success";
 import { useForm } from "react-hook-form";
 import { Permission, Role, User } from "@/types/common";
 import z from "zod";
@@ -58,6 +59,7 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const togglePermission = (key: string) => {
     const currentPermissions = form.getValues("permissionNames");
@@ -102,12 +104,11 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
       setLoading(true);
       if (user) {
         await userService.updateUser(user.id, data);
-        toast.success("User updated successfully");
       } else {
         await userService.createUser(data);
-        toast.success("User created successfully");
       }
-      onOpenChange?.(false);
+      setShowSuccess(true);
+      form.reset();
     } catch (err) {
       const error = err as AxiosError<{ error: string }>;
       toast.error(error.response?.data?.error || "Failed to create user");
@@ -281,6 +282,21 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
           </div>
         </form>
       </DialogContent>
+
+      <SuccessModal
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+        title={user ? "User updated successfully" : "User created successfully"}
+        description={
+          user
+            ? "The user details have been updated."
+            : "A new user has been added to the system."
+        }
+        onDone={() => {
+          setShowSuccess(false);
+          onOpenChange?.(false);
+        }}
+      />
     </Dialog>
   );
 };

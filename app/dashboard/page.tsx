@@ -1,64 +1,74 @@
-'use client';
-import React, { useState } from 'react';
-import {
-  Users,
-  ArrowUpRight,
-  FileText,
-  TrendingUp,
-  TrendingDown,
-} from 'lucide-react';
+"use client";
+import React, { useEffect, useState } from "react";
+import { Users, ArrowUpRight, FileText, TrendingDown } from "lucide-react";
 
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { FunnelIcon } from '@heroicons/react/24/outline';
-import DashboardCharts from '@/components/DasboardCharts';
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { FunnelIcon } from "@heroicons/react/24/outline";
+import DashboardCharts from "@/components/DasboardCharts";
+import { DashboardSummaryResponse } from "@/types/response";
+import { formatNumber } from "@/lib/utils";
+import { dashboardService } from "@/services/dashboard";
 
 const Dashboard = () => {
-  const [dateFilter, setDateFilter] = useState('Monthly');
+  const [dateFilter, setDateFilter] = useState("ALL_TIME");
+  const [summary, setSummary] = useState<DashboardSummaryResponse | null>(null);
 
   const metrics = [
     {
       id: 1,
-      title: 'Internal Users',
-      value: '107',
+      title: "Internal Users",
+      value: formatNumber(summary?.totalUsers || 0),
       growth: 6.2,
       isPositive: true,
       icon: Users,
-      bgColor: 'bg-purple-100',
-      iconColor: 'text-purple-600',
+      bgColor: "bg-purple-100",
+      iconColor: "text-purple-600",
     },
     {
       id: 2,
-      title: 'Transaction Inflows',
-      value: '15K',
+      title: "Transaction Inflows",
+      value: formatNumber(summary?.totalInflows || 0),
       growth: 5.4,
       isPositive: true,
       icon: ArrowUpRight,
-      bgColor: 'bg-green-100',
-      iconColor: 'text-green-600',
+      bgColor: "bg-green-100",
+      iconColor: "text-green-600",
     },
     {
       id: 3,
-      title: 'Complaint Logs',
-      value: '55',
+      title: "Complaint Logs",
+      value: "55",
       growth: 5.4,
       isPositive: true,
       icon: FileText,
-      bgColor: 'bg-yellow-100',
-      iconColor: 'text-yellow-600',
+      bgColor: "bg-yellow-100",
+      iconColor: "text-yellow-600",
     },
     {
       id: 4,
-      title: 'Transaction Outflows',
-      value: '2K',
+      title: "Transaction Outflows",
+      value: formatNumber(summary?.totalOutflows || 0),
       growth: 3.2,
       isPositive: false,
       icon: TrendingDown,
-      bgColor: 'bg-red-100',
-      iconColor: 'text-red-600',
+      bgColor: "bg-red-100",
+      iconColor: "text-red-600",
     },
   ];
 
-  const dateOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
+  const getSummary = async () => {
+    try {
+      const { data } = await dashboardService.getSummary(dateFilter);
+      setSummary(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getSummary();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dateFilter]);
 
   return (
     <div className="px-6">
@@ -83,7 +93,7 @@ const Dashboard = () => {
           <div className="flex flex-1 items-center space-x-2">
             <span className="text-xs text-[#dddddd] flex flex-row items-center">
               Date Filter by
-              <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{' '}
+              <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
             </span>
             <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
             <select
@@ -91,11 +101,11 @@ const Dashboard = () => {
               onChange={(e) => setDateFilter(e.target.value)}
               className="flex flex-1 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-transparent"
             >
-              {dateOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
+              <option value="DAILY">Daily</option>
+              <option value="WEEKLY">Weekly</option>
+              <option value="MONTHLY">Monthly</option>
+              <option value="YEARLY">Yearly</option>
+              <option value="ALL_TIME">All Time</option>
             </select>
           </div>
         </div>
@@ -141,7 +151,7 @@ const Dashboard = () => {
                       <h3 className="text-2xl font-bold text-gray-900">
                         {metric.value}
                       </h3>
-                      <div className="flex items-center space-x-1 ml-4">
+                      {/* <div className="flex items-center space-x-1 ml-4">
                         {metric.isPositive ? (
                           <TrendingUp className="w-4 h-4 text-green-500" />
                         ) : (
@@ -150,13 +160,13 @@ const Dashboard = () => {
                         <span
                           className={`text-sm font-medium ${
                             metric.isPositive
-                              ? 'text-green-600'
-                              : 'text-red-600'
+                              ? "text-green-600"
+                              : "text-red-600"
                           }`}
                         >
                           {metric.growth}%
                         </span>
-                      </div>
+                      </div> */}
                     </div>
                     <p className="text-sm text-gray-600">{metric.title}</p>
                   </div>

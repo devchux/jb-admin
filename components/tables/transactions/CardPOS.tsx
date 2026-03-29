@@ -1,56 +1,56 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   FunnelIcon,
   UserIcon,
-} from 'lucide-react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+} from "lucide-react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
 const CardPOS = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('Select filter');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("Select filter");
   const [currentPage, setCurrentPage] = useState(1);
   const [showDropdown, setShowDropdown] = useState<number | null>(null);
 
   const transactions = [
     {
       sn: 1,
-      transactionId: 'NGNX79EE544RXUE780',
-      transactionAmount: '1,000.00',
-      sourceUserAccount: 'Admin',
-      beneficiaryAccount: 'Admin',
-      date: '2025-07-20',
-      time: '10:35 PM',
+      transactionId: "NGNX79EE544RXUE780",
+      transactionAmount: "1,000.00",
+      sourceUserAccount: "Admin",
+      beneficiaryAccount: "Admin",
+      date: "2025-07-20",
+      time: "10:35 PM",
     },
     {
       sn: 2,
-      transactionId: 'NGNX79EE544RXUE780',
-      transactionAmount: '75,000,000.00',
-      sourceUserAccount: 'Editor',
-      beneficiaryAccount: 'Editor',
-      date: '2025-07-20',
-      time: '10:35 PM',
+      transactionId: "NGNX79EE544RXUE780",
+      transactionAmount: "75,000,000.00",
+      sourceUserAccount: "Editor",
+      beneficiaryAccount: "Editor",
+      date: "2025-07-20",
+      time: "10:35 PM",
     },
     {
       sn: 3,
-      transactionId: 'NGNX79EE544RXUE780',
-      transactionAmount: '324,026.09',
-      sourceUserAccount: 'Viewer',
-      beneficiaryAccount: 'Viewer',
-      date: '2025-07-20',
-      time: '10:35 PM',
+      transactionId: "NGNX79EE544RXUE780",
+      transactionAmount: "324,026.09",
+      sourceUserAccount: "Viewer",
+      beneficiaryAccount: "Viewer",
+      date: "2025-07-20",
+      time: "10:35 PM",
     },
     {
       sn: 4,
-      transactionId: 'NGNX79EE544RXUE780',
-      transactionAmount: '324,026.09',
-      sourceUserAccount: 'Admin',
-      beneficiaryAccount: 'Admin',
-      date: '2025-07-20',
-      time: '10:35 PM',
+      transactionId: "NGNX79EE544RXUE780",
+      transactionAmount: "324,026.09",
+      sourceUserAccount: "Admin",
+      beneficiaryAccount: "Admin",
+      date: "2025-07-20",
+      time: "10:35 PM",
     },
   ];
 
@@ -94,7 +94,7 @@ const CardPOS = () => {
               <div className="flex flex-1 items-center space-x-2">
                 <span className="text-xs text-[#dddddd] flex flex-row items-center">
                   Account
-                  <UserIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{' '}
+                  <UserIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
                 <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
                 <select
@@ -115,7 +115,7 @@ const CardPOS = () => {
               <div className="flex flex-1 items-center space-x-2">
                 <span className="text-xs text-[#dddddd] flex flex-row items-center">
                   Filter by
-                  <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{' '}
+                  <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
                 <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
                 <select
@@ -194,7 +194,7 @@ const CardPOS = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">
                           <button
-                          onClick={() => toggleDropdown(item.sn)}
+                            onClick={() => toggleDropdown(item.sn)}
                             className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150"
                           >
                             Actions
@@ -206,14 +206,14 @@ const CardPOS = () => {
                             <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
                               <div className="py-1">
                                 <button
-                                  onClick={() => handleAction('edit', item.sn)}
+                                  onClick={() => handleAction("edit", item.sn)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
                                   Edit User Details
                                 </button>
                                 <button
                                   onClick={() =>
-                                    handleAction('deactivate', item.sn)
+                                    handleAction("deactivate", item.sn)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
@@ -221,7 +221,7 @@ const CardPOS = () => {
                                 </button>
                                 <button
                                   onClick={() =>
-                                    handleAction('delete', item.sn)
+                                    handleAction("delete", item.sn)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
@@ -257,8 +257,8 @@ const CardPOS = () => {
                       onClick={() => setCurrentPage(page)}
                       className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
                         currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >
                       {page}
@@ -271,8 +271,8 @@ const CardPOS = () => {
                       onClick={() => setCurrentPage(page)}
                       className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
                         currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >
                       {page}

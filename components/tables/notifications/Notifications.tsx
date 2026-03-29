@@ -12,6 +12,7 @@ import { useStore } from "@/store";
 import { PaginatedRequest } from "@/types/request";
 import Pagination from "@/components/Pagination";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import BroadcastDetails from "@/components/modals/BroadcastDetails";
 
 function Notifications() {
   const user = useStore((state) => state.user);
@@ -24,6 +25,10 @@ function Notifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // Modal State
+  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useDebounce(
     () => {
@@ -62,7 +67,15 @@ function Notifications() {
   };
 
   const handleAction = (action: string, id: string) => {
-    console.log(`${action} for broadcast ${id}`);
+    if (action === "view") {
+      const notification = notifications.find((n) => n.id === id);
+      if (notification) {
+        setSelectedNotification(notification);
+        setIsDetailsOpen(true);
+      }
+    } else {
+      console.log(`${action} for broadcast ${id}`);
+    }
     setShowDropdown(null);
   };
 
@@ -223,6 +236,13 @@ function Notifications() {
           onClick={() => setShowDropdown(null)}
         ></div>
       )}
+
+      {/* Broadcast Details Modal */}
+      <BroadcastDetails
+        open={isDetailsOpen}
+        onOpenChange={setIsDetailsOpen}
+        broadcast={selectedNotification}
+      />
     </div>
   );
 }

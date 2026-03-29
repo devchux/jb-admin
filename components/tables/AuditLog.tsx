@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { downloadCsvFromString } from "@/lib/utils";
 import LoadingIndicator from "../LoadingIndicator";
 import Pagination from "../Pagination";
+import AuditLogDetails from "../modals/AuditLogDetails";
 
 const AuditLog = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +24,10 @@ const AuditLog = () => {
   const [showDropdown, setShowDropdown] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [userActivities, setUserActivities] = useState<AuditLogType[]>([]);
+
+  // Modal state
+  const [selectedLog, setSelectedLog] = useState<AuditLogType | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useDebounce(
     () => {
@@ -73,8 +78,17 @@ const AuditLog = () => {
     setShowDropdown(showDropdown === userId ? null : userId);
   };
 
-  const handleAction = (action: string, userId: number) => {
-    console.log(`${action} for user ${userId}`);
+  const handleAction = (action: string, logId: number) => {
+    if (action === "edit") {
+      const log = userActivities.find((l) => l.id === logId);
+      console.log({ log });
+      if (log) {
+        setSelectedLog(log);
+        setIsDetailsOpen(true);
+      }
+    } else {
+      console.log(`${action} for log ${logId}`);
+    }
     setShowDropdown(null);
   };
 
@@ -249,6 +263,13 @@ const AuditLog = () => {
           onClick={() => setShowDropdown(null)}
         ></div>
       )}
+
+      {/* Audit Log Details Modal */}
+      <AuditLogDetails
+        open={isDetailsOpen}
+        onOpenChange={setIsDetailsOpen}
+        auditLog={selectedLog}
+      />
     </div>
   );
 };

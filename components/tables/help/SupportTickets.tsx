@@ -8,6 +8,7 @@ import { supportTicketService } from "@/services/support-ticket";
 import { toast } from "sonner";
 import Pagination from "@/components/Pagination";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import SupportTicketDetails from "@/components/modals/SupportTicketDetails";
 
 const SupportTickets = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,6 +18,10 @@ const SupportTickets = () => {
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // Modal State
+  const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const getTickets = async () => {
     try {
@@ -39,8 +44,16 @@ const SupportTickets = () => {
     setShowDropdown(showDropdown === userId ? null : userId);
   };
 
-  const handleAction = (action: string, userId: string) => {
-    console.log(`${action} for user ${userId}`);
+  const handleAction = (action: string, ticketId: string) => {
+    if (action === "view") {
+      const ticket = tickets.find((t) => t.id === ticketId);
+      if (ticket) {
+        setSelectedTicket(ticket);
+        setIsDetailsOpen(true);
+      }
+    } else {
+      console.log(`${action} for ticket ${ticketId}`);
+    }
     setShowDropdown(null);
   };
 
@@ -200,26 +213,10 @@ const SupportTickets = () => {
                             <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
                               <div className="py-1">
                                 <button
-                                  onClick={() => handleAction("edit", item.id)}
+                                  onClick={() => handleAction("view", item.id)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
-                                  Edit User Details
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handleAction("deactivate", item.id)
-                                  }
-                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-                                >
-                                  Deactivate
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handleAction("delete", item.id)
-                                  }
-                                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
-                                >
-                                  Delete User
+                                  View Details
                                 </button>
                               </div>
                             </div>
@@ -249,6 +246,13 @@ const SupportTickets = () => {
           onClick={() => setShowDropdown(null)}
         ></div>
       )}
+
+      {/* Support Ticket Details Modal */}
+      <SupportTicketDetails
+        open={isDetailsOpen}
+        onOpenChange={setIsDetailsOpen}
+        ticket={selectedTicket}
+      />
     </div>
   );
 };

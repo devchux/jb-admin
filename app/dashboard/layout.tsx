@@ -1,6 +1,12 @@
 import { ReactNode } from 'react';
+import { Metadata } from 'next';
 import NavBar from '@/components/NavBar';
 import DashboardTopBar from '@/components/Topbar';
+
+export const metadata: Metadata = {
+  title: 'Dashboard Overview',
+  description: 'Overview of the Jaiz Admin Dashboard metrics and reports.',
+};
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (

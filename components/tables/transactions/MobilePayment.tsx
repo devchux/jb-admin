@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import Pagination from "@/components/Pagination";
 import { transactionService } from "@/services/transaction";
 import { Transaction } from "@/types/common";
+import TransactionDetails from "@/components/modals/TransactionDetails";
 
 const MobilePayments = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +17,10 @@ const MobilePayments = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+
+  // Modal State
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const getTransactions = async () => {
     try {
@@ -38,8 +43,16 @@ const MobilePayments = () => {
     setShowDropdown(showDropdown === userId ? null : userId);
   };
 
-  const handleAction = (action: string, userId: string) => {
-    console.log(`${action} for user ${userId}`);
+  const handleAction = (action: string, transactionId: string) => {
+    if (action === "edit" || action === "view") {
+      const transaction = transactions.find((t) => t.id === transactionId);
+      if (transaction) {
+        setSelectedTransaction(transaction);
+        setIsDetailsOpen(true);
+      }
+    } else {
+      console.log(`${action} for transaction ${transactionId}`);
+    }
     setShowDropdown(null);
   };
 
@@ -226,6 +239,13 @@ const MobilePayments = () => {
           onClick={() => setShowDropdown(null)}
         ></div>
       )}
+
+      {/* Transaction Details Modal */}
+      <TransactionDetails
+        open={isDetailsOpen}
+        onOpenChange={setIsDetailsOpen}
+        transaction={selectedTransaction}
+      />
     </div>
   );
 };

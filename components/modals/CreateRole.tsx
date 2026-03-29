@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import SuccessModal from "@/components/modals/Success";
 import { useForm } from "react-hook-form";
 import { Permission, Role } from "@/types/common";
 import z from "zod";
@@ -44,6 +45,7 @@ const CreateRole = ({ open, onOpenChange, role }: CreateRoleProps) => {
   const form = useForm({ defaultValues, resolver: zodResolver(schema) });
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const togglePermission = (key: string) => {
     const currentPermissions = form.getValues("permissionNames");
@@ -73,12 +75,11 @@ const CreateRole = ({ open, onOpenChange, role }: CreateRoleProps) => {
       setLoading(true);
       if (role) {
         await roleService.updateRole(role.id, data);
-        toast.success("Role updated successfully");
       } else {
         await roleService.createRole(data);
-        toast.success("Role created successfully");
       }
-      onOpenChange?.(false);
+      setShowSuccess(true);
+      form.reset();
     } catch (err) {
       const error = err as AxiosError<{ error: string }>;
       toast.error(error.response?.data?.error || "Failed to create user");
@@ -204,6 +205,21 @@ const CreateRole = ({ open, onOpenChange, role }: CreateRoleProps) => {
           </div>
         </form>
       </DialogContent>
+
+      <SuccessModal
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+        title={role ? "Role updated successfully" : "Role created successfully"}
+        description={
+          role
+            ? "The role details and permissions have been updated."
+            : "A new role has been fully configured and saved."
+        }
+        onDone={() => {
+          setShowSuccess(false);
+          onOpenChange?.(false);
+        }}
+      />
     </Dialog>
   );
 };

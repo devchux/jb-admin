@@ -15,6 +15,10 @@ export type CreateBroadcastNotificationRequest = {
   message: string;
   scheduledAt: string;
   createdBy: string;
+  type: "BROADCAST" | "INDIVIDUAL";
+  targetGroups: string[];
+  targetUsers: string[];
+  targetUserId: string;
 };
 
 export type CreateUserRequest = {

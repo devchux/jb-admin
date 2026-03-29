@@ -11,6 +11,7 @@ import { useDebounce } from "react-use";
 import Pagination from "../Pagination";
 import CreateUser from "../modals/CreateUser";
 import LoadingIndicator from "../LoadingIndicator";
+import { toast } from "sonner";
 
 dayjs.extend(relativeTime);
 
@@ -53,8 +54,8 @@ const AllUsersTable = () => {
       const response = await userService.getAllUsers(params);
       setUsers(response.data.content);
       setTotalPages(response.data.totalPages);
-    } catch (error) {
-      console.log(error);
+    } catch {
+      toast.error("Failed to fetch users");
     } finally {
       setLoading(false);
     }
