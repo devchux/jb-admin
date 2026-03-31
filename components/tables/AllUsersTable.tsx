@@ -12,10 +12,14 @@ import Pagination from "../Pagination";
 import CreateUser from "../modals/CreateUser";
 import LoadingIndicator from "../LoadingIndicator";
 import { toast } from "sonner";
+import ConfirmModal from "../modals/ConfirmModal";
+import { useStore } from "@/store";
+import { se } from "date-fns/locale";
 
 dayjs.extend(relativeTime);
 
 const AllUsersTable = () => {
+  const authUser = useStore((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const [initialSearchTerm, setInitialSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -27,6 +31,24 @@ const AllUsersTable = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [confirmModal, setConfirmModal] = useState(false);
+
+  const confirmModalProps = {
+    activate: {
+      title: "Activate user",
+      description: "Are you sure you want to activate this user?",
+      successTitle: "User Activated",
+      successDescription: "The user has been successfully activated.",
+      onProceed: () => userService.activateUser(selectedUser?.userId || ""),
+    },
+    deactivate: {
+      title: "Deactivate user",
+      description: "Are you sure you want to deactivate this user?",
+      successTitle: "User Deactivated",
+      successDescription: "The user has been successfully deactivated.",
+      onProceed: () => userService.deactivateUser(selectedUser?.userId || ""),
+    },
+  };
 
   useDebounce(
     () => {
@@ -66,10 +88,13 @@ const AllUsersTable = () => {
   };
 
   const handleAction = (action: string, user: User) => {
-    console.log(`${action} for user ${user.id}`);
     setSelectedUser(user);
     setShowDropdown(null);
-    if (action === "edit") setOpen(true);
+    if (action === "edit") {
+      setOpen(true);
+    } else if (action === "activate" || action === "deactivate") {
+      setConfirmModal(true);
+    }
   };
 
   useEffect(() => {
@@ -136,8 +161,8 @@ const AllUsersTable = () => {
           </div>
 
           {/* Users Table */}
-          <div className=" rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
+          <div className=" rounded-lg">
+            <div>
               <table className="w-full">
                 <thead className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
                   <tr>
@@ -217,19 +242,23 @@ const AllUsersTable = () => {
                                   Edit User Details
                                 </button>
                                 <button
+                                  disabled={authUser.id === user.id}
                                   onClick={() =>
-                                    handleAction("deactivate", user)
+                                    handleAction(
+                                      user.active ? "deactivate" : "activate",
+                                      user,
+                                    )
                                   }
-                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
+                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
                                 >
-                                  Deactivate
+                                  {user.active ? "Deactivate" : "Activate"} User
                                 </button>
-                                <button
+                                {/* <button
                                   onClick={() => handleAction("delete", user)}
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
                                   Delete User
-                                </button>
+                                </button> */}
                               </div>
                             </div>
                           )}
@@ -255,6 +284,13 @@ const AllUsersTable = () => {
         open={open}
         onOpenChange={toggleCreateUserModal}
         user={selectedUser}
+      />
+
+      <ConfirmModal
+        open={confirmModal}
+        onOpenChange={setConfirmModal}
+        onSuccess={getUsers}
+        {...confirmModalProps[selectedUser?.active ? "deactivate" : "activate"]}
       />
 
       {/* Click outside to close dropdown */}

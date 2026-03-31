@@ -1,11 +1,11 @@
-import { PaginatedRequest } from "@/types/request";
+import { SupportTicketRequest } from "@/types/request";
 import { apiService } from "./api";
 import { AxiosResponse } from "axios";
 import { SupportTicketListResponse } from "@/types/response";
 
 class SupportTicketService {
   getTickets(
-    params: PaginatedRequest,
+    params: SupportTicketRequest,
   ): Promise<AxiosResponse<SupportTicketListResponse>> {
     return apiService.get("base", "/admin/support-tickets", params);
   }

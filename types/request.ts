@@ -19,6 +19,7 @@ export type CreateBroadcastNotificationRequest = {
   targetGroups: string[];
   targetUsers: string[];
   targetUserId: string;
+  draft: boolean;
 };
 
 export type CreateUserRequest = {
@@ -35,3 +36,7 @@ export type CreateRoleRequest = {
   description: string;
   permissionNames: string[];
 };
+
+export type SupportTicketRequest = PaginatedRequest & {
+  status?: string;
+}

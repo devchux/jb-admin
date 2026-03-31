@@ -26,6 +26,14 @@ class UserService {
       createdBy: adminId,
     });
   }
+
+  activateUser(id: string): Promise<AxiosResponse<void>> {
+    return apiService.put("base", `/v1/admin/users/${id}/activate`);
+  }
+
+  deactivateUser(id: string): Promise<AxiosResponse<void>> {
+    return apiService.put("base", `/v1/admin/users/${id}/deactivate`);
+  }
 }
 
 export const userService = new UserService();

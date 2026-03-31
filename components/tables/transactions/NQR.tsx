@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ChevronDown, FunnelIcon, UserIcon } from "lucide-react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { ChevronDown } from "lucide-react";
 import { Transaction } from "@/types/common";
 import { transactionService } from "@/services/transaction";
 import Pagination from "@/components/Pagination";
@@ -10,8 +9,8 @@ import dayjs from "dayjs";
 import TransactionDetails from "@/components/modals/TransactionDetails";
 
 const NQRTransactions = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("Select filter");
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [selectedFilter, setSelectedFilter] = useState("Select filter");
   const [currentPage, setCurrentPage] = useState(1);
   const [showDropdown, setShowDropdown] = useState<string | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -76,7 +75,7 @@ const NQRTransactions = () => {
           </div>
 
           {/* Header Section */}
-          <div className="flex w-full justify-between items-center my-[40px]">
+          {/* <div className="flex w-full justify-between items-center my-[40px]">
             <div className="flex items-center flex-2/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full ">
               <MagnifyingGlassIcon className="w-6 h-6 text-[#dddddd]" />
               <div className=" h-[38px] pl-4 border-[#dddddd] border-r-1"></div>
@@ -129,12 +128,7 @@ const NQRTransactions = () => {
                 </select>
               </div>
             </div>
-
-            {/* <button className=" bg-[#193F7F] text-center    text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2">
-              <ArrowUpOnSquareIcon className="h-4 w-4" />
-              <span>Export Audit Report</span>
-            </button> */}
-          </div>
+          </div> */}
 
           {/* Users Table */}
           <div className=" rounded-lg overflow-hidden">

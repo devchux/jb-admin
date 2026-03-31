@@ -13,12 +13,13 @@ import { downloadCsvFromString } from "@/lib/utils";
 import LoadingIndicator from "../LoadingIndicator";
 import Pagination from "../Pagination";
 import AuditLogDetails from "../modals/AuditLogDetails";
+import { exportService } from "@/services/export";
 
 const AuditLog = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [initialSearchTerm, setInitialSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("Select filter");
+  const [selectedFilter, setSelectedFilter] = useState("ALL_TIME");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [showDropdown, setShowDropdown] = useState<number | null>(null);
@@ -43,8 +44,6 @@ const AuditLog = () => {
       size: 10,
     };
     if (searchTerm) params.search = searchTerm;
-    if (selectedFilter && selectedFilter !== "Select filter")
-      params.sortBy = selectedFilter;
     try {
       setLoading(true);
       const response = await auditLogService.getLogs(params);
@@ -58,14 +57,9 @@ const AuditLog = () => {
   };
 
   const handleExport = async () => {
-    const ids = userActivities.map((user) => user.id);
-    if (ids.length === 0) {
-      toast.error("No audit logs to export");
-      return;
-    }
     try {
       setLoading(true);
-      const response = await auditLogService.exportLog(ids);
+      const response = await exportService.audit(selectedFilter);
       downloadCsvFromString(response.data, "audit-logs");
     } catch {
       toast.error("Failed to export audit logs");
@@ -95,7 +89,7 @@ const AuditLog = () => {
   useEffect(() => {
     getAuditLogs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, searchTerm, selectedFilter]);
+  }, [currentPage, searchTerm]);
 
   return (
     <div className="w-full min-h-screen">
@@ -124,22 +118,23 @@ const AuditLog = () => {
               />
             </div>
 
-            <div className="flex w-full items-center flex-1/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full">
+            <div className="flex w-full items-center flex-1/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-gray-200 rounded-full">
               <div className="flex flex-1 items-center space-x-2">
                 <span className="text-xs text-[#dddddd] flex flex-row items-center">
                   Filter by
                   <FunnelIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
-                <div className=" h-9.5 pl-2 border-[#dddddd] border-r"></div>
+                <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
                 <select
                   value={selectedFilter}
                   onChange={(e) => setSelectedFilter(e.target.value)}
-                  className="bg-white  w-full flex-3/5  rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none pr-8"
+                  className="flex flex-1 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-transparent"
                 >
-                  <option>Select filter</option>
-                  <option value="email">Email</option>
-                  <option value="action">Action</option>
-                  <option value="timestamp">Timestamp</option>
+                  <option value="DAILY">Daily</option>
+                  <option value="WEEKLY">Weekly</option>
+                  <option value="MONTHLY">Monthly</option>
+                  <option value="YEARLY">Yearly</option>
+                  <option value="ALL_TIME">All Time</option>
                 </select>
               </div>
             </div>
