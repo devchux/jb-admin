@@ -131,7 +131,7 @@ const NQRTransactions = () => {
           </div> */}
 
           {/* Users Table */}
-          <div className=" rounded-lg overflow-hidden">
+          <div className=" rounded-lg">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-[#F7F8FA] border-b border-[#EEEEEE]">

@@ -149,8 +149,8 @@ const AuditLog = () => {
           </div>
 
           {/* Users Table */}
-          <div className=" rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
+          <div className=" rounded-lg">
+            <div>
               <table className="w-full">
                 <thead className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
                   <tr>
