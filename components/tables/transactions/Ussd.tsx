@@ -140,7 +140,7 @@ const Ussd = () => {
 
           {/* Users Table */}
           <div className=" rounded-lg">
-            <div className="overflow-x-auto">
+            <div>
               <table className="w-full">
                 <thead className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
                   <tr>
