@@ -166,7 +166,7 @@ function Notifications() {
                       {idx + 1}
                     </td>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 max-w-105">
+                    <td className="px-6 py-4 text-sm text-gray-900 max-w-105">
                       <div className="leading-5">{item.message}</div>
                     </td>
 

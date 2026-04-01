@@ -222,14 +222,14 @@ const AuditLog = () => {
                                 >
                                   View Details
                                 </button>
-                                <button
+                                {/* <button
                                   onClick={() =>
                                     handleAction("delete", user.id)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
                                   Flag Activity
-                                </button>
+                                </button> */}
                               </div>
                             </div>
                           )}
