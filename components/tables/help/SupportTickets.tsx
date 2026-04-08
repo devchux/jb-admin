@@ -14,7 +14,7 @@ import { SupportTicketRequest } from "@/types/request";
 const SupportTickets = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("ALL_TIME");
-  const [sortBy, setSortBy] = useState("");
+  const [status, setStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showDropdown, setShowDropdown] = useState<string | null>(null);
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
@@ -32,7 +32,7 @@ const SupportTickets = () => {
     };
     if (searchTerm) params["search"] = searchTerm;
     if (selectedFilter) params["status"] = selectedFilter.toUpperCase();
-    if (sortBy) params["sortBy"] = sortBy;
+    if (status) params["status"] = status.toUpperCase();
     try {
       setLoading(true);
       const { data } = await supportTicketService.getTickets(params);
@@ -65,7 +65,7 @@ const SupportTickets = () => {
   useEffect(() => {
     getTickets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, searchTerm, selectedFilter, sortBy]);
+  }, [currentPage, searchTerm, selectedFilter, status]);
 
   return (
     <div className="w-full min-h-screen">
@@ -98,21 +98,20 @@ const SupportTickets = () => {
             <div className="flex w-full items-center flex-1/4 h-5 bg-white p-4  pr-4 py-6 mr-8 border border-[#EEEEEE] rounded-full">
               <div className="flex flex-1 items-center space-x-2">
                 <span className="text-xs text-[#dddddd] flex flex-row items-center">
-                  Sort By
+                  Status
                   <UserIcon className="w-4 h-4 ml-1 text-[#dddddd]" />{" "}
                 </span>
                 <div className=" h-[38px] pl-2 border-[#dddddd] border-r-1"></div>
                 <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
                   className="bg-white  w-full flex-3/5  rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none pr-8"
                 >
-                  <option>Select filter</option>
-                  <option value="subject">Subject</option>
-                  <option value="phoneNumber">Phone Number</option>
-                  <option value="email">Email</option>
-                  <option value="resolvedAt">Date Resolved</option>
-                  <option value="createdAt">Date Created</option>
+                  <option value="">All</option>
+                  <option value="open">Open</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="resolved">Resolved</option>
+                  <option value="closed">Closed</option>
                 </select>
               </div>
             </div>
