@@ -1,14 +1,16 @@
 "use client";
+import AllAppUsersTable from "@/components/tables/AllAppUsersTable";
 import AllUsersTable from "@/components/tables/AllUsersTable";
 import AuditLog from "@/components/tables/AuditLog";
 import RolesPermissionsTable from "@/components/tables/RolesPermissionTable";
 import React, { useState } from "react";
 
 const Page = () => {
-  const [activeTab, setActiveTab] = useState("all-users");
+  const [activeTab, setActiveTab] = useState("all-admin-users");
 
   const tabs = [
-    { id: "all-users", label: "All Users" },
+    { id: "all-users", label: "All App Users" },
+    { id: "all-admin-users", label: "All Admin Users" },
     { id: "roles-permissions", label: "Roles and Permissions" },
     { id: "audit-logs", label: "Audit Logs" },
   ];
@@ -53,6 +55,7 @@ const Page = () => {
       {/* Content Section */}
       <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
         {activeTab === "all-users" && <AllUsersTable />}
+        {activeTab === "all-admin-users" && <AllAppUsersTable />}
         {activeTab === "roles-permissions" && <RolesPermissionsTable />}
         {activeTab === "audit-logs" && <AuditLog />}
       </div>

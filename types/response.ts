@@ -1,4 +1,5 @@
 import {
+  AppUser,
   AuditLog,
   Notification,
   SupportTicket,
@@ -54,6 +55,8 @@ export type LoginResponse = {
 export type NotificationListResponse = PaginatedResponse<Notification>;
 
 export type UserListResponse = PaginatedResponse<User>;
+
+export type AppUserListResponse = PaginatedResponse<AppUser>;
 
 export type AuditLogListResponse = PaginatedResponse<AuditLog>;
 

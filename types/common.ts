@@ -27,6 +27,25 @@ export type User = {
   permissions: string[];
 };
 
+export type AppUser = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  otherName: string;
+  dateOfBirth: string;
+  phoneNumber: string;
+  userId: string;
+  photo: string;
+  dateTimeCreated: string;
+  dateTimeModified: string;
+  modifiedBy: string;
+  hasLoginPin: boolean;
+  failedLoginAttempts: number;
+  accountLocked: boolean;
+  lockoutTimestamp: string;
+};
+
 export type Notification = {
   id: string;
   title: string;
