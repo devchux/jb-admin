@@ -198,7 +198,9 @@ const AdminAccessMetrics = () => {
                     <Cell key={entry.name} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => value.toLocaleString()} />
+                <Tooltip
+                  formatter={(value) => Number(value || 0).toLocaleString()}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
