@@ -2,16 +2,18 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Bell, LogOutIcon } from "lucide-react";
+import { Search, Bell, KeyRound, LogOutIcon } from "lucide-react";
 import Image from "next/image";
 import { Switch } from "./ui/switch";
 import { MoreHorizontal } from "lucide-react";
 import { useStore } from "@/store";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useRouter } from "next/navigation";
+import ChangePassword from "./modals/ChangePassword";
 
 const DashboardTopBar = () => {
   const [isEnabled, setIsEnabled] = useState(true);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const user = useStore((state) => state.user);
   const reset = useStore((state) => state.reset);
   const router = useRouter();
@@ -103,6 +105,12 @@ const DashboardTopBar = () => {
                 <PopoverContent>
                   <div className="py-1">
                     <button
+                      onClick={() => setChangePasswordOpen(true)}
+                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 cursor-pointer"
+                    >
+                      <KeyRound className="size-4" /> Change Password
+                    </button>
+                    <button
                       onClick={handleLogout}
                       className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
                     >
@@ -115,6 +123,11 @@ const DashboardTopBar = () => {
           </div>
         </div>
       </div>
+
+      <ChangePassword
+        open={changePasswordOpen}
+        onOpenChange={setChangePasswordOpen}
+      />
     </header>
   );
 };

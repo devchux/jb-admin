@@ -1,7 +1,9 @@
 import {
   AppUser,
   AuditLog,
+  GeneratedReport,
   Notification,
+  ReportPreviewRow,
   SupportTicket,
   Transaction,
   User,
@@ -54,6 +56,8 @@ export type LoginResponse = {
 
 export type NotificationListResponse = PaginatedResponse<Notification>;
 
+export type GeneratedReportListResponse = PaginatedResponse<GeneratedReport>;
+
 export type UserListResponse = PaginatedResponse<User>;
 
 export type AppUserListResponse = PaginatedResponse<AppUser>;
@@ -78,4 +82,52 @@ export type ChartResponse = {
   labels: string[];
   inflows: number[];
   outflows: number[];
+};
+
+export type AppUserMetricsResponse = {
+  totalRegisteredUsers: number;
+  newEnrollmentsToday: number;
+  activeUsersToday: number;
+  failedEnrollmentAttempts: number;
+  failedLoginAttempts: number;
+  lockedProfiles: number;
+};
+
+export type TransactionMetricsResponse = {
+  totalTransactions: number;
+  totalTransactionValue: number;
+  successRate: number;
+  failedTransactions: number;
+  pendingTransactions: number;
+  reversedTransactions?: number;
+};
+
+export type AdminAccessMetricsResponse = {
+  totalAdminUsers: number;
+  activeAdminUsers: number;
+  activePercentage: number;
+  inactiveAdminUsers: number;
+  lockedAccounts: number;
+  pendingFirstLogin: number;
+  passwordResetRequired: number;
+  noRecentLogin: number;
+};
+
+export type BroadcastMetricsResponse = {
+  totalBroadcasts: number;
+  scheduled: number;
+  sent: number;
+  draft: number;
+  failed: number;
+};
+
+export type ReportPreviewResponse = {
+  reportType: string;
+  reportName: string;
+  dateRange: string;
+  serviceType: string;
+  statusFilter: string;
+  totalRows: number;
+  sampleSize: number;
+  rows: ReportPreviewRow[];
 };

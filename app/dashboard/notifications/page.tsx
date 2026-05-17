@@ -1,4 +1,5 @@
 "use client";
+import BroadcastMetrics from "@/components/dashboard/BroadcastMetrics";
 import BroadcastHistory from "@/components/tables/notifications/History";
 import Notifications from "@/components/tables/notifications/Notifications";
 import React, { useState } from "react";
@@ -59,6 +60,7 @@ const Page = () => {
 
   return (
     <>
+      <BroadcastMetrics />
       {/* Navigation Section */}
       <NavSection
         tabs={tabs}

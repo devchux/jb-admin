@@ -92,6 +92,7 @@ async function proxy(request: NextRequest) {
   const params = new URLSearchParams(url.searchParams);
   params.delete("service");
   params.delete("endpoint");
+  params.delete("responseType");
 
   if (!params.get("_t")) params.set("_t", Date.now().toString());
 

@@ -1,4 +1,5 @@
 "use client";
+import AdminAccessMetrics from "@/components/dashboard/AdminAccessMetrics";
 import AllAppUsersTable from "@/components/tables/AllAppUsersTable";
 import AllUsersTable from "@/components/tables/AllUsersTable";
 import AuditLog from "@/components/tables/AuditLog";
@@ -46,6 +47,7 @@ const Page = () => {
 
   return (
     <>
+      <AdminAccessMetrics />
       {/* Navigation Section */}
       <NavSection
         tabs={tabs}
@@ -54,8 +56,8 @@ const Page = () => {
       />
       {/* Content Section */}
       <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
-        {activeTab === "all-users" && <AllUsersTable />}
-        {activeTab === "all-admin-users" && <AllAppUsersTable />}
+        {activeTab === "all-admin-users" && <AllUsersTable />}
+        {activeTab === "all-users" && <AllAppUsersTable />}
         {activeTab === "roles-permissions" && <RolesPermissionsTable />}
         {activeTab === "audit-logs" && <AuditLog />}
       </div>

@@ -1,4 +1,5 @@
 "use client";
+import TransactionMetrics from "@/components/dashboard/TransactionMetrics";
 import AirtimeDataTransactions from "@/components/tables/transactions/AirtimeData";
 import ElectricityTransactions from "@/components/tables/transactions/Electricity";
 import JaizToJaiz from "@/components/tables/transactions/JaizToJaiz";
@@ -12,32 +13,56 @@ const Page = () => {
   const [activeTab, setActiveTab] = useState("jaiz-to-jaiz");
 
   const tabs = [
-    { id: "jaiz-to-jaiz", label: "Jaiz to Jaiz Transfers", count: 0 },
+    {
+      id: "jaiz-to-jaiz",
+      label: "Jaiz to Jaiz Transfers",
+      count: 0,
+      metricService: "JAIZ_TO_JAIZ",
+    },
     {
       id: "jaiz-to-other-banks",
       label: "Jaiz to Other Banks Transfers",
       count: 0,
+      metricService: "INTERBANK",
     },
-    { id: "omni-payments", label: "Omni Bill Payments", count: 0 },
-    { id: "mobile-payments", label: "Mobile Bill Payments", count: 0 },
+    {
+      id: "omni-payments",
+      label: "Omni Bill Payments",
+      count: 0,
+      metricService: "ALL_SERVICES",
+    },
+    {
+      id: "mobile-payments",
+      label: "Mobile Bill Payments",
+      count: 0,
+      metricService: "ALL_SERVICES",
+    },
     {
       id: "electricity-transactions",
       label: "Electricity",
       count: 0,
+      metricService: "ELECTRICITY",
     },
     {
       id: "nqr-transactions",
       label: "NQR",
       count: 0,
+      metricService: "ALL_SERVICES",
     },
     {
       id: "airtime-data",
       label: "Airtime & Data",
       count: 0,
+      metricService: "AIRTIME_DATA",
     },
   ];
 
-  type Tab = { id: string; label: string; count: number };
+  type Tab = {
+    id: string;
+    label: string;
+    count: number;
+    metricService: string;
+  };
   type NavSectionProps = {
     tabs: Tab[];
     activeTab: string;
@@ -79,6 +104,9 @@ const Page = () => {
     </nav>
   );
 
+  const activeTabDetails =
+    tabs.find((tab) => tab.id === activeTab) || tabs[0];
+
   return (
     <>
       {/* Navigation Section */}
@@ -87,6 +115,12 @@ const Page = () => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
+
+      <TransactionMetrics
+        service={activeTabDetails.metricService}
+        title={`${activeTabDetails.label} Metrics`}
+      />
+
       {/* Content Section */}
       <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
         {activeTab === "jaiz-to-jaiz" && <JaizToJaiz />}

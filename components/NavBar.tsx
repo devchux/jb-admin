@@ -10,6 +10,7 @@ import {
   Settings,
   HelpCircle,
   Megaphone,
+  FileBarChart,
 } from 'lucide-react';
 
 const navItems = [
@@ -27,13 +28,15 @@ const navItems = [
     href: '/dashboard/notifications',
     icon: Megaphone,
   },
+  { label: 'Reports', href: '/dashboard/reports', icon: FileBarChart },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex w-full border-0 gap-6 items-center justify-between px-6 py-4 pt-8 bg-white  rounded-b-4xl shadow-mild">
+    <nav className="px-6 py-4 pt-8 bg-white  rounded-b-4xl shadow-mild">
+    <div className="flex w-full border-0 gap-6 items-center justify-between max-w-[90rem] mx-auto">
       {navItems.map(({ label, href, icon: Icon }) => {
         // const isActive = pathname.startsWith(href);
         const isActive = pathname === href;
@@ -53,6 +56,6 @@ export default function Sidebar() {
           </Link>
         );
       })}
-    </nav>
+    </div></nav>
   );
 }

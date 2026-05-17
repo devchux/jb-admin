@@ -3,11 +3,47 @@ export type LoginRequest = {
   password: string;
 };
 
+export type RefreshTokenRequest = {
+  refreshToken: string;
+};
+
+export type ForgotPasswordRequest = {
+  username: string;
+};
+
+export type ResetPasswordRequest = {
+  userId: string;
+  password: string;
+  otp: string;
+};
+
 export type PaginatedRequest = {
   page: number;
   size: number;
   sortBy?: string;
   search?: string;
+};
+
+export type TransactionMetricsRequest = {
+  dateFilter?: string;
+  startDate?: string;
+  endDate?: string;
+  service?: string;
+  status?: string;
+};
+
+export type AdminAccessMetricsRequest = {
+  noRecentLoginCutoff?: string;
+};
+
+export type ReportRequest = {
+  reportType: string;
+  dateRange: string;
+  startDate?: string | null;
+  endDate?: string | null;
+  serviceType: string;
+  statusFilter: string;
+  format: string;
 };
 
 export type CreateBroadcastNotificationRequest = {
@@ -20,6 +56,7 @@ export type CreateBroadcastNotificationRequest = {
   targetUsers: string[];
   targetUserId: string;
   draft: boolean;
+  channel?: "IN_APP" | "PUSH_NOTIFICATION" | "SMS";
 };
 
 export type CreateUserRequest = {
@@ -29,6 +66,11 @@ export type CreateUserRequest = {
   lastName: string;
   roleId: string;
   permissionNames: string[];
+};
+
+export type ChangePasswordRequest = {
+  oldPassword: string;
+  newPassword: string;
 };
 
 export type CreateRoleRequest = {

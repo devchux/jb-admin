@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { Users, ArrowUpRight, FileText, TrendingDown } from "lucide-react";
 
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { FunnelIcon } from "@heroicons/react/24/outline";
 import DashboardCharts from "@/components/DasboardCharts";
+import AppUserMetrics from "@/components/dashboard/AppUserMetrics";
+import DashboardTransactionStatus from "@/components/dashboard/DashboardTransactionStatus";
 import { DashboardSummaryResponse } from "@/types/response";
 import { downloadCsvFromString, formatNumber } from "@/lib/utils";
 import { dashboardService } from "@/services/dashboard";
@@ -195,6 +196,10 @@ const Dashboard = () => {
           );
         })}
       </div>
+
+      <DashboardTransactionStatus />
+
+      <AppUserMetrics />
 
       <DashboardCharts dateFilter={dateFilter} setDateFilter={setDateFilter} />
     </div>

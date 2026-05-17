@@ -50,9 +50,15 @@ export type Notification = {
   id: string;
   title: string;
   message: string;
+  messagePreview?: string;
   type: "BROADCAST" | "INDIVIDUAL";
+  audience?: string;
+  channel?: string;
+  status?: string;
   targetUserId: string;
   sent: boolean;
+  draft?: boolean;
+  failed?: boolean;
   scheduledAt: string;
   createdAt: string;
   sentAt: string;
@@ -140,4 +146,31 @@ export type SupportTicket = {
   createdAt: string;
   lastModifiedAt: string;
   resolvedAt: string;
+};
+
+export type GeneratedReport = {
+  id: string;
+  reportType: string;
+  reportName: string;
+  dateRange: string;
+  startDate: string | null;
+  endDate: string | null;
+  serviceType: string;
+  statusFilter: string;
+  generatedBy: string;
+  generatedAt: string;
+  rows: number;
+  format: string;
+  status: string;
+  fileName: string;
+};
+
+export type ReportPreviewRow = {
+  reference: string;
+  date: string;
+  channel: string;
+  type: string;
+  amount: number;
+  status: string;
+  details: string;
 };

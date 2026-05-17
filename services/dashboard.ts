@@ -1,6 +1,12 @@
 import { AxiosResponse } from "axios";
 import { apiService } from "./api";
-import { ChartResponse, DashboardSummaryResponse } from "@/types/response";
+import {
+  AppUserMetricsResponse,
+  ChartResponse,
+  DashboardSummaryResponse,
+  TransactionMetricsResponse,
+} from "@/types/response";
+import { TransactionMetricsRequest } from "@/types/request";
 
 class DashboardService {
   getSummary(
@@ -26,6 +32,20 @@ class DashboardService {
       "base",
       "/dashboard/admin/transactions/chart",
       filter ? { filter } : {},
+    );
+  }
+
+  getAppUserMetrics(): Promise<AxiosResponse<AppUserMetricsResponse>> {
+    return apiService.get("base", "/dashboard/admin/app-users/metrics");
+  }
+
+  getTransactionMetrics(
+    params?: TransactionMetricsRequest,
+  ): Promise<AxiosResponse<TransactionMetricsResponse>> {
+    return apiService.get(
+      "base",
+      "/dashboard/admin/transactions/metrics",
+      params,
     );
   }
 }

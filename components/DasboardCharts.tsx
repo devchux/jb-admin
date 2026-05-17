@@ -123,9 +123,7 @@ const ChartContainer = ({
             axisLine={false}
             tickLine={false}
             tick={{ fill: "#6B7280", fontSize: 12 }}
-            domain={[0, 100]}
-            ticks={[0, 20, 40, 60, 80, 100]}
-            tickFormatter={(value) => `${value}%`}
+            tickFormatter={(value) => value.toLocaleString()}
           />
 
           <Tooltip
@@ -134,11 +132,7 @@ const ChartContainer = ({
           />
 
           {/* Grid lines */}
-          <ReferenceLine y={20} stroke="#E5E7EB" strokeDasharray="2 2" />
-          <ReferenceLine y={40} stroke="#E5E7EB" strokeDasharray="2 2" />
-          <ReferenceLine y={60} stroke="#E5E7EB" strokeDasharray="2 2" />
-          <ReferenceLine y={80} stroke="#E5E7EB" strokeDasharray="2 2" />
-          <ReferenceLine y={100} stroke="#E5E7EB" strokeDasharray="2 2" />
+          <ReferenceLine y={0} stroke="#E5E7EB" strokeDasharray="2 2" />
 
           <Bar
             dataKey={primaryKey}

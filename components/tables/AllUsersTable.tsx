@@ -14,9 +14,10 @@ import LoadingIndicator from "../LoadingIndicator";
 import { toast } from "sonner";
 import ConfirmModal from "../modals/ConfirmModal";
 import { useStore } from "@/store";
-import { se } from "date-fns/locale";
 
 dayjs.extend(relativeTime);
+
+type ConfirmAction = "activate" | "deactivate" | "unlock";
 
 const AllUsersTable = () => {
   const authUser = useStore((state) => state.user);
@@ -31,6 +32,8 @@ const AllUsersTable = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [confirmAction, setConfirmAction] =
+    useState<ConfirmAction>("activate");
   const [confirmModal, setConfirmModal] = useState(false);
 
   const confirmModalProps = {
@@ -47,6 +50,17 @@ const AllUsersTable = () => {
       successTitle: "User Deactivated",
       successDescription: "The user has been successfully deactivated.",
       onProceed: () => userService.deactivateUser(selectedUser?.userId || ""),
+    },
+    unlock: {
+      title: "Unlock user account",
+      description: "Are you sure you want to unlock this user's account?",
+      successTitle: "Account Unlocked",
+      successDescription: "The user's account has been successfully unlocked.",
+      onProceed: () =>
+        userService.unlockAdminUserAccount(
+          selectedUser?.userId || "",
+          authUser?.userId || "",
+        ),
     },
   };
 
@@ -92,7 +106,12 @@ const AllUsersTable = () => {
     setShowDropdown(null);
     if (action === "edit") {
       setOpen(true);
-    } else if (action === "activate" || action === "deactivate") {
+    } else if (
+      action === "activate" ||
+      action === "deactivate" ||
+      action === "unlock"
+    ) {
+      setConfirmAction(action);
       setConfirmModal(true);
     }
   };
@@ -243,6 +262,13 @@ const AllUsersTable = () => {
                                 </button>
                                 <button
                                   disabled={authUser.id === user.id}
+                                  onClick={() => handleAction("unlock", user)}
+                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
+                                >
+                                  Unlock Account
+                                </button>
+                                <button
+                                  disabled={authUser.id === user.id}
                                   onClick={() =>
                                     handleAction(
                                       user.active ? "deactivate" : "activate",
@@ -290,7 +316,7 @@ const AllUsersTable = () => {
         open={confirmModal}
         onOpenChange={setConfirmModal}
         onSuccess={getUsers}
-        {...confirmModalProps[selectedUser?.active ? "deactivate" : "activate"]}
+        {...confirmModalProps[confirmAction]}
       />
 
       {/* Click outside to close dropdown */}

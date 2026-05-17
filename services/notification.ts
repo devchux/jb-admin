@@ -3,7 +3,10 @@ import {
   PaginatedRequest,
 } from "@/types/request";
 import { apiService } from "./api";
-import { NotificationListResponse } from "@/types/response";
+import {
+  BroadcastMetricsResponse,
+  NotificationListResponse,
+} from "@/types/response";
 import { AxiosResponse } from "axios";
 
 class NotificationService {
@@ -28,6 +31,20 @@ class NotificationService {
     request: CreateBroadcastNotificationRequest,
   ): Promise<AxiosResponse<Notification>> {
     return apiService.post("base", "/admin/notifications/broadcast", request);
+  }
+
+  getBroadcastMetrics(): Promise<AxiosResponse<BroadcastMetricsResponse>> {
+    return apiService.get("base", "/admin/notifications/broadcast/metrics");
+  }
+
+  getBroadcastList(
+    request: PaginatedRequest,
+  ): Promise<AxiosResponse<NotificationListResponse>> {
+    return apiService.get(
+      "base",
+      "/admin/notifications/broadcast/list",
+      request,
+    );
   }
 }
 

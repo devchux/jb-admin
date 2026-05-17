@@ -43,7 +43,7 @@ const BroadcastHistory = () => {
       params.sortBy = selectedFilter;
     try {
       setLoading(true);
-      const { data } = await notificationService.getAllNotifications(params);
+      const { data } = await notificationService.getBroadcastList(params);
       setNotifications(data.content);
       setTotalPages(data.totalPages || 1);
     } catch (err) {
@@ -87,7 +87,7 @@ const BroadcastHistory = () => {
             <MagnifyingGlassIcon className="w-6 h-6 text-[#dddddd]" />
             <div className="h-9.5 pl-4 border-[#dddddd] border-r"></div>
             <input
-              placeholder="Search by name"
+              placeholder="Search by title, message, creator, or channel"
               value={initialSearchTerm}
               onChange={(e) => setInitialSearchTerm(e.target.value)}
               onKeyDown={() => setDebouncedSearchTerm(initialSearchTerm)}
@@ -138,10 +138,16 @@ const BroadcastHistory = () => {
                     S/N
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
-                    Message
+                    Title / Message
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Audience
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    Channel
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    Status
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Sent At
@@ -163,16 +169,45 @@ const BroadcastHistory = () => {
                     </td>
 
                     <td className="px-6 py-4 text-sm text-gray-900 max-w-105">
-                      <div className="leading-5">{item.message}</div>
+                      <div className="font-medium leading-5">{item.title}</div>
+                      <div className="text-xs text-gray-500 leading-5">
+                        {item.messagePreview || item.message}
+                      </div>
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {item.type}
+                      {item.audience || item.type}
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {item.channel || "IN_APP"}
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          item.status === "SENT"
+                            ? "bg-green-100 text-green-800"
+                            : item.status === "FAILED"
+                              ? "bg-red-100 text-red-800"
+                              : item.status === "SCHEDULED"
+                                ? "bg-orange-100 text-orange-800"
+                                : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {item.status || (item.sent ? "SENT" : "PENDING")}
+                      </span>
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
-                      {dayjs(item.createdAt).format("DD/MM/YYYY")} •{" "}
-                      {dayjs(item.createdAt).format("hh:mm A")}
+                      {item.sentAt ? (
+                        <>
+                          {dayjs(item.sentAt).format("DD/MM/YYYY")} •{" "}
+                          {dayjs(item.sentAt).format("hh:mm A")}
+                        </>
+                      ) : (
+                        "Not sent"
+                      )}
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
