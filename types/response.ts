@@ -102,6 +102,43 @@ export type TransactionMetricsResponse = {
   reversedTransactions?: number;
 };
 
+export type BillPaymentSummaryResponse = {
+  totalBillPayments: number;
+  totalValue: number;
+  successful: number;
+  failed: number;
+  pending: number;
+  reversed: number;
+  successRate: number;
+};
+
+export type OperationsSummaryItem = {
+  service: string;
+  label: string;
+  totalTransactions: number;
+  totalValue: number;
+  successful: number;
+  failed: number;
+  pending: number;
+  reversed: number;
+  successRate: number;
+};
+
+export type OperationsSummaryResponse = {
+  items: OperationsSummaryItem[];
+};
+
+export type TransactionStatusDistributionItem = {
+  status: string;
+  count: number;
+  percentage: number;
+};
+
+export type TransactionStatusDistributionResponse = {
+  totalTransactions: number;
+  statuses: TransactionStatusDistributionItem[];
+};
+
 export type AdminAccessMetricsResponse = {
   totalAdminUsers: number;
   activeAdminUsers: number;

@@ -32,6 +32,28 @@ export type TransactionMetricsRequest = {
   status?: string;
 };
 
+export type BillPaymentMetricsRequest = {
+  dateFilter?: string;
+  startDate?: string;
+  endDate?: string;
+  category?: string;
+  status?: string;
+};
+
+export type OperationsSummaryRequest = {
+  dateFilter?: string;
+  startDate?: string;
+  endDate?: string;
+  status?: string;
+};
+
+export type TransactionStatusDistributionRequest = {
+  dateFilter?: string;
+  startDate?: string;
+  endDate?: string;
+  service?: string;
+};
+
 export type AdminAccessMetricsRequest = {
   noRecentLoginCutoff?: string;
 };

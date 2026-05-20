@@ -1,6 +1,7 @@
 import { apiService } from "./api";
 import {
   AdminAccessMetricsRequest,
+  BillPaymentMetricsRequest,
   TransactionMetricsRequest,
 } from "@/types/request";
 
@@ -43,6 +44,10 @@ class ExportService {
       "/admin/export/admin-access-metrics",
       params,
     );
+  }
+
+  billPayments(params?: BillPaymentMetricsRequest) {
+    return apiService.getBlob("base", "/admin/export/bill-payments", params);
   }
 }
 

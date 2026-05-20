@@ -43,3 +43,11 @@ export const formatNumber = (num: number) => {
     return num.toString();
   }
 };
+
+export const formatCurrencyCompact = (amount: number) =>
+  new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    notation: "compact",
+    maximumFractionDigits: amount >= 1000000 ? 1 : 0,
+  }).format(amount || 0);

@@ -1,4 +1,6 @@
 "use client";
+import BillPaymentDashboard from "@/components/dashboard/BillPaymentDashboard";
+import OperationsSummary from "@/components/dashboard/OperationsSummary";
 import TransactionMetrics from "@/components/dashboard/TransactionMetrics";
 import AirtimeDataTransactions from "@/components/tables/transactions/AirtimeData";
 import ElectricityTransactions from "@/components/tables/transactions/Electricity";
@@ -109,6 +111,13 @@ const Page = () => {
 
   return (
     <>
+      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6 mb-6">
+        <OperationsSummary variant="transfers" compact />
+        <OperationsSummary variant="bill-payments" compact />
+      </div>
+
+      <BillPaymentDashboard />
+
       {/* Navigation Section */}
       <NavSection
         tabs={tabs}

@@ -61,7 +61,7 @@ const serviceTypes = [
   "ELECTRICITY",
 ];
 
-const statusFilters = ["ALL_STATUS", "SUCCESSFUL", "FAILED", "PENDING"];
+const statusFilters = ["ALL_STATUS", "SUCCESS", "FAILED", "PENDING", "REVERSED"];
 
 const formatOption = (value: string) =>
   value

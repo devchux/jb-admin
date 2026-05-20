@@ -2,11 +2,19 @@ import { AxiosResponse } from "axios";
 import { apiService } from "./api";
 import {
   AppUserMetricsResponse,
+  BillPaymentSummaryResponse,
   ChartResponse,
   DashboardSummaryResponse,
+  OperationsSummaryResponse,
   TransactionMetricsResponse,
+  TransactionStatusDistributionResponse,
 } from "@/types/response";
-import { TransactionMetricsRequest } from "@/types/request";
+import {
+  BillPaymentMetricsRequest,
+  OperationsSummaryRequest,
+  TransactionMetricsRequest,
+  TransactionStatusDistributionRequest,
+} from "@/types/request";
 
 class DashboardService {
   getSummary(
@@ -45,6 +53,52 @@ class DashboardService {
     return apiService.get(
       "base",
       "/dashboard/admin/transactions/metrics",
+      params,
+    );
+  }
+
+  getTransactionStatusDistribution(
+    params?: TransactionStatusDistributionRequest,
+  ): Promise<AxiosResponse<TransactionStatusDistributionResponse>> {
+    return apiService.get(
+      "base",
+      "/dashboard/admin/transactions/status-distribution",
+      params,
+    );
+  }
+
+  getBillPaymentSummary(
+    params?: BillPaymentMetricsRequest,
+  ): Promise<AxiosResponse<BillPaymentSummaryResponse>> {
+    return apiService.get("base", "/admin/bill-payments/summary", params);
+  }
+
+  getBillPaymentServiceBreakdown(
+    params?: BillPaymentMetricsRequest,
+  ): Promise<AxiosResponse<OperationsSummaryResponse>> {
+    return apiService.get(
+      "base",
+      "/admin/bill-payments/service-breakdown",
+      params,
+    );
+  }
+
+  getBillPaymentOperationsSummary(
+    params?: OperationsSummaryRequest,
+  ): Promise<AxiosResponse<OperationsSummaryResponse>> {
+    return apiService.get(
+      "base",
+      "/admin/bill-payments/operations-summary",
+      params,
+    );
+  }
+
+  getTransferOperationsSummary(
+    params?: OperationsSummaryRequest,
+  ): Promise<AxiosResponse<OperationsSummaryResponse>> {
+    return apiService.get(
+      "base",
+      "/admin/operations/transfers/summary",
       params,
     );
   }
