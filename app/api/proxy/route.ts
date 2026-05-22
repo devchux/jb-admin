@@ -71,7 +71,7 @@ function isFormDataRequest(request: NextRequest) {
 async function proxy(request: NextRequest) {
   const url = request.nextUrl;
 
-  const service = url.searchParams.get("service");
+  const service = url.searchParams.get("proxy");
   const endpoint = url.searchParams.get("endpoint");
   const responseType = url.searchParams.get("responseType");
   const isBlobRequest = responseType === "blob";

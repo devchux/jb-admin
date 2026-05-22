@@ -10,7 +10,7 @@ class APIService {
     config?: Record<string, unknown>,
   ) {
     const queryParams = new URLSearchParams({
-      service,
+      proxy: service,
       endpoint,
       ...params,
     }).toString();
@@ -93,7 +93,7 @@ class APIService {
     config?: Record<string, unknown>,
   ) {
     const queryParams = new URLSearchParams({
-      service,
+      proxy: service,
       endpoint,
       responseType: "blob",
       ...params,
@@ -110,7 +110,7 @@ class APIService {
 
   getBlob(service: string, endpoint: string, params?: Record<string, unknown>) {
     const queryParams = new URLSearchParams({
-      service,
+      proxy: service,
       endpoint,
       responseType: "blob",
       ...params,
