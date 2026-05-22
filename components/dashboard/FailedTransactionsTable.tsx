@@ -35,11 +35,19 @@ const formatLabel = (value: string) =>
     .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
     .join(" ");
 
+type TransferType = "JAIZ_TO_JAIZ" | "INTERBANK";
+
+const transferTypes: Array<{ label: string; value: TransferType }> = [
+  { label: "Jaiz to Jaiz", value: "JAIZ_TO_JAIZ" },
+  { label: "Jaiz to Other Banks", value: "INTERBANK" },
+];
+
 const FailedTransactionsTable = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
+  const [transferType, setTransferType] = useState<TransferType>("JAIZ_TO_JAIZ");
   const [dateFilter, setDateFilter] = useState("TODAY");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -62,7 +70,10 @@ const FailedTransactionsTable = () => {
 
     try {
       setLoading(true);
-      const { data } = await transactionService.getTransactions(params);
+      const { data } =
+        transferType === "JAIZ_TO_JAIZ"
+          ? await transactionService.getIntraTransactions(params)
+          : await transactionService.getInterTransactions(params);
       setTransactions(data.content || []);
       setTotalPages(data.totalPages || 0);
       setTotalElements(data.totalElements || 0);
@@ -76,7 +87,7 @@ const FailedTransactionsTable = () => {
   useEffect(() => {
     getFailedTransactions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
+  }, [params, transferType]);
 
   return (
     <section className="relative my-8 rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
@@ -97,6 +108,25 @@ const FailedTransactionsTable = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          <div className="flex rounded-full border border-[#E5E7EB] bg-[#F7F8FA] p-1">
+            {transferTypes.map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => {
+                  setTransferType(item.value);
+                  setCurrentPage(1);
+                }}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  transferType === item.value
+                    ? "bg-[#193F7F] text-white shadow-sm"
+                    : "text-slate-600 hover:text-[#193F7F]"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
           <select
             value={dateFilter}
             onChange={(event) => {

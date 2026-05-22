@@ -79,14 +79,6 @@ class TransactionService {
       .get("base", "/v1/admin/transactions/airtime-data", params)
       .then(this.normalizeListResponse);
   }
-
-  getTransactions(
-    params: TransactionListRequest,
-  ): Promise<AxiosResponse<TransactionListResponse>> {
-    return apiService
-      .get("base", "/v1/admin/transactions", params)
-      .then(this.normalizeListResponse);
-  }
 }
 
 export const transactionService = new TransactionService();
