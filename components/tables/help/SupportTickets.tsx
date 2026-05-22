@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ChevronDown, FunnelIcon, UserIcon } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { SupportTicket } from "@/types/common";
-import dayjs from "dayjs";
+import { formatTimestamp } from "@/lib/utils";
 import { supportTicketService } from "@/services/support-ticket";
 import { toast } from "sonner";
 import Pagination from "@/components/Pagination";
@@ -200,8 +200,8 @@ const SupportTickets = () => {
                         {item.status}
                       </td>
                       <td className="px-6 py-4 text-xs whitespace-nowrap">
-                        {dayjs(item.lastModifiedAt).format("YYYY-MM-DD")} •{" "}
-                        {dayjs(item.lastModifiedAt).format("hh:mm A")}
+                        {formatTimestamp(item.lastModifiedAt, "YYYY-MM-DD")} •{" "}
+                        {formatTimestamp(item.lastModifiedAt, "hh:mm A")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">

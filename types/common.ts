@@ -98,7 +98,15 @@ export type Transaction = {
   sessionID: string;
   appId: string;
   channelCode: number;
-  data: {
+  accountNumber?: string;
+  activationDate?: string;
+  beneficiaryAccount?: string;
+  status?: string;
+  transactionAmount?: number;
+  transactionKey?: string;
+  transactionStatus?: string;
+  transactionTimeStamp?: string;
+  data?: {
     id: string;
     accountNumber: string;
     transactionKey: string;

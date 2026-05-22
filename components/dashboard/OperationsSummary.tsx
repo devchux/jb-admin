@@ -64,58 +64,113 @@ type SummaryCardProps = {
   item: OperationsSummaryItem;
 };
 
+const statusStats = [
+  {
+    key: "successful",
+    label: "Success",
+    color: "text-emerald-700",
+    bg: "bg-emerald-500",
+  },
+  {
+    key: "failed",
+    label: "Failed",
+    color: "text-red-700",
+    bg: "bg-red-500",
+  },
+  {
+    key: "pending",
+    label: "Pending",
+    color: "text-orange-600",
+    bg: "bg-orange-500",
+  },
+  {
+    key: "reversed",
+    label: "Reversed",
+    color: "text-violet-700",
+    bg: "bg-violet-500",
+  },
+] as const;
+
 const SummaryCard = ({ item }: SummaryCardProps) => {
   const Icon = serviceIcons[item.service] || Building2;
   const iconColor = serviceColors[item.service] || "text-[#193F7F] bg-blue-50";
+  const totalTransactions = item.totalTransactions || 0;
+  const successRate =
+    item.successRate ??
+    (totalTransactions ? (item.successful / totalTransactions) * 100 : 0);
 
   return (
-    <div className="bg-white border border-[#E1E5EA] rounded-xl px-7 py-6 shadow-sm">
-      <div className="flex items-start justify-between gap-4 mb-7">
-        <div className="flex items-center gap-3 min-w-0">
-          <div
-            className={`h-9 w-9 rounded-full flex items-center justify-center ${iconColor}`}
-          >
-            <Icon className="h-5 w-5" />
+    <div className="group overflow-hidden rounded-xl border border-[#DDE4EC] bg-white shadow-sm transition-shadow hover:shadow-md">
+      <div className="flex flex-col gap-5 p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-5">
+          <div className="flex min-w-0 items-start gap-4">
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconColor}`}
+            >
+              <Icon className="h-5 w-5" strokeWidth={2.2} />
+            </div>
+            <div className="min-w-0">
+              <h3 className="truncate text-lg font-semibold text-slate-950">
+                {item.label}
+              </h3>
+              <p className="mt-1 text-sm text-slate-500">
+                {formatNumber(totalTransactions)} transactions processed
+              </p>
+            </div>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 truncate">
-            {item.label}
-          </h3>
-        </div>
-        <div className="text-lg font-bold text-gray-900 whitespace-nowrap">
-          {formatNumber(item.totalTransactions)} txns
-        </div>
-      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-5">
-        <div>
-          <p className="text-2xl font-bold text-gray-900">
-            {formatCurrencyCompact(item.totalValue)}
-          </p>
-          <p className="text-sm text-slate-500 mt-1">Value</p>
+          <div className="shrink-0 text-right">
+            <p className="text-2xl font-bold text-slate-950">
+              {formatCurrencyCompact(item.totalValue)}
+            </p>
+            <p className="mt-1 text-xs font-medium uppercase text-slate-500">
+              Total value
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="text-2xl font-bold text-emerald-600">
-            {formatNumber(item.successful)}
-          </p>
-          <p className="text-sm text-slate-500 mt-1">Success</p>
+
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div className="rounded-lg border border-[#E7ECF2] bg-[#F8FAFC] px-4 py-3">
+            <p className="text-xs font-medium text-slate-500">Success rate</p>
+            <p className="mt-1 text-xl font-bold text-[#193F7F]">
+              {Math.round(successRate)}%
+            </p>
+          </div>
+
+          {statusStats.map((stat) => {
+            const value = Number(item[stat.key] || 0);
+
+            return (
+              <div
+                key={stat.key}
+                className="rounded-lg border border-[#E7ECF2] px-4 py-3"
+              >
+                <p className="text-xs font-medium text-slate-500">
+                  {stat.label}
+                </p>
+                <p className={`mt-1 text-xl font-bold ${stat.color}`}>
+                  {formatNumber(value)}
+                </p>
+              </div>
+            );
+          })}
         </div>
-        <div>
-          <p className="text-2xl font-bold text-red-600">
-            {formatNumber(item.failed)}
-          </p>
-          <p className="text-sm text-slate-500 mt-1">Failed</p>
-        </div>
-        <div>
-          <p className="text-2xl font-bold text-orange-500">
-            {formatNumber(item.pending)}
-          </p>
-          <p className="text-sm text-slate-500 mt-1">Pending</p>
-        </div>
-        <div>
-          <p className="text-2xl font-bold text-violet-600">
-            {formatNumber(item.reversed || 0)}
-          </p>
-          <p className="text-sm text-slate-500 mt-1">Reversed</p>
+
+        <div className="flex h-2 overflow-hidden rounded-full bg-slate-100">
+          {statusStats.map((stat) => {
+            const value = Number(item[stat.key] || 0);
+            const width = totalTransactions
+              ? Math.max((value / totalTransactions) * 100, value ? 6 : 0)
+              : 0;
+
+            return (
+              <div
+                key={stat.key}
+                className={`${stat.bg} transition-all`}
+                style={{ width: `${width}%` }}
+              />
+            );
+          })}
         </div>
       </div>
     </div>
@@ -169,23 +224,22 @@ const OperationsSummary = ({
   return (
     <section className="relative">
       {loading && <LoadingIndicator />}
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between mb-5">
+      <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-center min-w-0">
-          <div className="w-2.5 h-8 bg-[#193F7F] rounded-full mr-3"></div>
-          <h2 className="text-xl font-semibold text-gray-900 truncate">
+          <div className="mr-3 h-8 w-2 rounded-full bg-[#193F7F]" />
+          <h2 className="truncate text-xl font-semibold text-slate-950">
             {title ||
               (variant === "transfers"
                 ? "Transfer Operations Summary"
                 : "Bill Payment Operations Summary")}
           </h2>
-          <div className="hidden md:block h-px bg-[#D6DAE0] flex-1 ml-5" />
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <select
             value={dateFilter}
             onChange={(event) => setDateFilter(event.target.value)}
-            className="bg-white border border-[#E5E7EB] rounded-full px-5 py-3 text-sm outline-none min-w-[160px]"
+            className="min-w-[160px] rounded-full border border-[#DDE4EC] bg-white px-5 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none"
           >
             {dateFilters.map((item) => (
               <option key={item} value={item}>
@@ -199,20 +253,20 @@ const OperationsSummary = ({
                 type="date"
                 value={startDate}
                 onChange={(event) => setStartDate(event.target.value)}
-                className="bg-white border border-[#E5E7EB] rounded-full px-5 py-3 text-sm outline-none"
+                className="rounded-full border border-[#DDE4EC] bg-white px-5 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none"
               />
               <input
                 type="date"
                 value={endDate}
                 onChange={(event) => setEndDate(event.target.value)}
-                className="bg-white border border-[#E5E7EB] rounded-full px-5 py-3 text-sm outline-none"
+                className="rounded-full border border-[#DDE4EC] bg-white px-5 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none"
               />
             </>
           )}
           <select
             value={status}
             onChange={(event) => setStatus(event.target.value)}
-            className="bg-white border border-[#E5E7EB] rounded-full px-5 py-3 text-sm outline-none min-w-[150px]"
+            className="min-w-[150px] rounded-full border border-[#DDE4EC] bg-white px-5 py-3 text-sm font-medium text-slate-900 shadow-sm outline-none"
           >
             {statuses.map((item) => (
               <option key={item} value={item}>
@@ -227,7 +281,7 @@ const OperationsSummary = ({
         className={
           compact
             ? "grid grid-cols-1 gap-4"
-            : "grid grid-cols-1 xl:grid-cols-2 gap-6"
+            : "grid grid-cols-1 gap-5 xl:grid-cols-2"
         }
       >
         {items.map((item) => (

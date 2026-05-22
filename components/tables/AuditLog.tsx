@@ -8,8 +8,7 @@ import { auditLogService } from "@/services/audit-log";
 import { toast } from "sonner";
 import { useDebounce } from "react-use";
 import { PaginatedRequest } from "@/types/request";
-import dayjs from "dayjs";
-import { downloadCsvFromString } from "@/lib/utils";
+import { downloadCsvFromString, formatTimestamp } from "@/lib/utils";
 import LoadingIndicator from "../LoadingIndicator";
 import Pagination from "../Pagination";
 import AuditLogDetails from "../modals/AuditLogDetails";
@@ -196,8 +195,8 @@ const AuditLog = () => {
                         {user.action}
                       </td>
                       <td className="px-6 py-4 text-xs whitespace-nowrap">
-                        {dayjs(user.timestamp).format("DD-MM-YYYY")} •{" "}
-                        {dayjs(user.timestamp).format("hh:mm A")}
+                        {formatTimestamp(user.timestamp, "DD-MM-YYYY")} •{" "}
+                        {formatTimestamp(user.timestamp, "hh:mm A")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
                         {user.ipAddress}

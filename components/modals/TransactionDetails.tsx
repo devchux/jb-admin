@@ -11,7 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Transaction } from "@/types/common";
-import dayjs from "dayjs";
+import { formatTimestamp } from "@/lib/utils";
+import {
+  getBeneficiaryAccount,
+  getTransactionTimestamp,
+} from "@/lib/transactions";
 
 interface TransactionDetailsProps {
   open: boolean;
@@ -79,9 +83,10 @@ const TransactionDetails = ({
             <div className="flex justify-between items-start py-3">
               <span className="text-[#4E7397] text-[13px]">Timestamp</span>
               <span className="text-[#111827] text-[14px] text-right font-medium">
-                {tData?.activationDate
-                  ? dayjs(tData.activationDate).format("DD/MM/YYYY • hh:mma")
-                  : "10/11/2025 • 10:30am"}
+                {formatTimestamp(
+                  getTransactionTimestamp(transaction),
+                  "DD/MM/YYYY • hh:mma",
+                )}
               </span>
             </div>
 
@@ -120,7 +125,7 @@ const TransactionDetails = ({
                 Beneficiary Account
               </span>
               <span className="text-[#111827] text-[14px] text-right font-medium">
-                {tData?.beneficiaryAccount || transaction.creditAccount}
+                {getBeneficiaryAccount(transaction)}
               </span>
             </div>
 

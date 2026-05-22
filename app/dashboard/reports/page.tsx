@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import dayjs from "dayjs";
 import {
   Download,
   Eye,
@@ -26,7 +25,11 @@ import { reportService } from "@/services/report";
 import { GeneratedReport, ReportPreviewRow } from "@/types/common";
 import { ReportRequest } from "@/types/request";
 import { ReportPreviewResponse } from "@/types/response";
-import { downloadBlob, formatNumber } from "@/lib/utils";
+import {
+  downloadBlob,
+  formatNumber,
+  formatTimestamp,
+} from "@/lib/utils";
 import { useStore } from "@/store";
 
 const reportTypes = [
@@ -102,7 +105,7 @@ const ReportsPage = () => {
 
   const trendData = useMemo(() => {
     const grouped = reports.reduce<Record<string, number>>((acc, report) => {
-      const key = dayjs(report.generatedAt).format("DD MMM");
+      const key = formatTimestamp(report.generatedAt, "DD MMM");
       acc[key] = (acc[key] || 0) + report.rows;
       return acc;
     }, {});
@@ -386,7 +389,7 @@ const ReportsPage = () => {
                 <td className="px-6 py-4 text-sm text-gray-900">
                   <div className="font-medium">{report.reportName}</div>
                   <div className="text-xs text-gray-500">
-                    {dayjs(report.generatedAt).format("DD/MM/YYYY hh:mm A")}
+                    {formatTimestamp(report.generatedAt)}
                   </div>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-900">
@@ -466,7 +469,7 @@ const ReportRowsTable = ({ rows }: { rows: ReportPreviewRow[] }) => (
         >
           <td className="px-6 py-4 text-sm text-gray-900">{row.reference}</td>
           <td className="px-6 py-4 text-sm text-gray-900">
-            {dayjs(row.date).format("DD/MM/YYYY hh:mm A")}
+            {formatTimestamp(row.date)}
           </td>
           <td className="px-6 py-4 text-sm text-gray-900">{row.channel}</td>
           <td className="px-6 py-4 text-sm text-gray-900">{row.type}</td>

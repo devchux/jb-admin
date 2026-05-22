@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { UserPlus, ChevronDown, FunnelIcon } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { User } from "@/types/common";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { userService } from "@/services/user";
 import { PaginatedRequest } from "@/types/request";
 import { useDebounce } from "react-use";
@@ -14,8 +12,7 @@ import LoadingIndicator from "../LoadingIndicator";
 import { toast } from "sonner";
 import ConfirmModal from "../modals/ConfirmModal";
 import { useStore } from "@/store";
-
-dayjs.extend(relativeTime);
+import { formatRelativeTimestamp } from "@/lib/utils";
 
 type ConfirmAction = "activate" | "deactivate" | "unlock";
 
@@ -238,7 +235,7 @@ const AllUsersTable = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {dayjs(user.lastModifiedAt).fromNow()}
+                        {formatRelativeTimestamp(user.lastModifiedAt)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">

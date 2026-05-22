@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Notification } from "@/types/common";
-import dayjs from "dayjs";
+import { formatTimestamp } from "@/lib/utils";
 
 interface BroadcastDetailsProps {
   open: boolean;
@@ -70,8 +70,9 @@ const BroadcastDetails = ({
               <span className="text-[#4E7397] text-[13px]">Sent At</span>
               <span className="text-[#111827] text-[14px] text-right font-medium">
                 {broadcast.sentAt || broadcast.createdAt
-                  ? dayjs(broadcast.sentAt || broadcast.createdAt).format(
-                      "DD/MM/YYYY • hh:mma"
+                  ? formatTimestamp(
+                      broadcast.sentAt || broadcast.createdAt,
+                      "DD/MM/YYYY • hh:mma",
                     )
                   : "10/11/2025 • 10:30am"}
               </span>

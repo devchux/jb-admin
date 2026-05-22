@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useDebounce } from "react-use";
 import { notificationService } from "@/services/notification";
 import { Notification } from "@/types/common";
-import dayjs from "dayjs";
+import { formatTimestamp } from "@/lib/utils";
 import CreateNewBroadcast from "@/components/modals/CreateNewBroadcast";
 import { PaginatedRequest } from "@/types/request";
 import Pagination from "@/components/Pagination";
@@ -202,8 +202,8 @@ const BroadcastHistory = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
                       {item.sentAt ? (
                         <>
-                          {dayjs(item.sentAt).format("DD/MM/YYYY")} •{" "}
-                          {dayjs(item.sentAt).format("hh:mm A")}
+                          {formatTimestamp(item.sentAt, "DD/MM/YYYY")} •{" "}
+                          {formatTimestamp(item.sentAt, "hh:mm A")}
                         </>
                       ) : (
                         "Not sent"

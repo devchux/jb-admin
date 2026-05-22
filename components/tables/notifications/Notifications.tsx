@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { ChevronDown, FunnelIcon } from "lucide-react";
-import dayjs from "dayjs";
+import { formatTimestamp } from "@/lib/utils";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { Notification } from "@/types/common";
 import { notificationService } from "@/services/notification";
@@ -171,8 +171,8 @@ function Notifications() {
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
-                      {dayjs(item.createdAt).format("DD/MM/YYYY")} •{" "}
-                      {dayjs(item.createdAt).format("hh:mm A")}
+                      {formatTimestamp(item.createdAt, "DD/MM/YYYY")} •{" "}
+                      {formatTimestamp(item.createdAt, "hh:mm A")}
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">

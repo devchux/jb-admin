@@ -24,6 +24,13 @@ export type PaginatedRequest = {
   search?: string;
 };
 
+export type TransactionListRequest = PaginatedRequest & {
+  dateFilter?: string;
+  startDate?: string;
+  endDate?: string;
+  status?: string;
+};
+
 export type TransactionMetricsRequest = {
   dateFilter?: string;
   startDate?: string;

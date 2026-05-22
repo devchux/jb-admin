@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Users, ArrowUpRight, FileText, TrendingDown } from "lucide-react";
 
 import { FunnelIcon } from "@heroicons/react/24/outline";
-import DashboardCharts from "@/components/DasboardCharts";
+// import DashboardCharts from "@/components/DasboardCharts";
 import AppUserMetrics from "@/components/dashboard/AppUserMetrics";
+import FailedTransactionsTable from "@/components/dashboard/FailedTransactionsTable";
 import TransactionStatusDistribution from "@/components/dashboard/TransactionStatusDistribution";
 import { DashboardSummaryResponse } from "@/types/response";
 import { downloadCsvFromString, formatNumber } from "@/lib/utils";
@@ -201,7 +202,9 @@ const Dashboard = () => {
 
       <AppUserMetrics />
 
-      <DashboardCharts dateFilter={dateFilter} setDateFilter={setDateFilter} />
+      <FailedTransactionsTable />
+
+      {/* <DashboardCharts dateFilter={dateFilter} setDateFilter={setDateFilter} /> */}
     </div>
   );
 };

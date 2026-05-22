@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { AuditLog } from "@/types/common";
-import dayjs from "dayjs";
+import { formatTimestamp } from "@/lib/utils";
 
 interface AuditLogDetailsProps {
   open: boolean;
@@ -66,7 +66,7 @@ const AuditLogDetails = ({
             <div className="flex justify-between items-start py-3">
               <span className="text-[#4E7397] text-[13px]">Log Timestamp</span>
               <span className="text-[#111827] text-[14px] text-right font-medium">
-                {dayjs(auditLog.timestamp).format("DD/MM/YYYY • hh:mma")}
+                {formatTimestamp(auditLog.timestamp, "DD/MM/YYYY • hh:mma")}
               </span>
             </div>
 

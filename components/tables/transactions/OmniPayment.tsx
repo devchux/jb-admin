@@ -2,7 +2,14 @@
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import dayjs from "dayjs";
+import { formatTimestamp } from "@/lib/utils";
+import {
+  getBeneficiaryAccount,
+  getSourceAccount,
+  getTransactionAmount,
+  getTransactionReference,
+  getTransactionTimestamp,
+} from "@/lib/transactions";
 import Pagination from "@/components/Pagination";
 import { transactionService } from "@/services/transaction";
 import { Transaction } from "@/types/common";
@@ -167,20 +174,20 @@ const OmniPayments = () => {
                         {index + 1}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.data.transactionKey}
+                        {getTransactionReference(item)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.amount}
+                        {getTransactionAmount(item)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.data.accountNumber}
+                        {getSourceAccount(item)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.creditAccount}
+                        {getBeneficiaryAccount(item)}
                       </td>
                       <td className="px-6 py-4 text-xs whitespace-nowrap">
-                        {dayjs(item.data.activationDate).format("YYYY-MM-DD")} •{" "}
-                        {dayjs(item.data.activationDate).format("hh:mm A")}
+                        {formatTimestamp(getTransactionTimestamp(item), "YYYY-MM-DD")} •{" "}
+                        {formatTimestamp(getTransactionTimestamp(item), "hh:mm A")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">
