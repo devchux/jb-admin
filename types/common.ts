@@ -46,6 +46,80 @@ export type AppUser = {
   lockoutTimestamp: string;
 };
 
+export type RegisteredAppUser = {
+  id: string;
+  userId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  hasLoginPin: boolean;
+  accountLocked: boolean;
+  failedLoginAttempts: number;
+  lockoutTimestamp: string | null;
+  registeredAt: string;
+  modifiedAt: string;
+  modifiedBy: string;
+  registrationAccountNumber: string;
+  registrationAccountType: string;
+  registrationDeviceId: string;
+  registrationDeviceName: string;
+  registrationDeviceType: string;
+  registrationSourceAction: string;
+  registrationSourceService: string;
+  registrationSourceTimestamp: string;
+  registrationRequestPayload: unknown;
+  registrationResponsePayload: unknown;
+};
+
+export type DeviceRegistration = {
+  auditLogId: string | number;
+  userId: string;
+  email: string;
+  action: string;
+  status: string;
+  serviceName: string;
+  method: string;
+  endpoint: string;
+  ipAddress: string;
+  registeredAt: string;
+  deviceId: string;
+  deviceName: string;
+  deviceType: string;
+  osVersion: string;
+  appVersion: string;
+  phoneNumber: string;
+  accountNumber: string;
+  description: string;
+  requestPayload: unknown;
+  responsePayload: unknown;
+};
+
+export type AccountCreation = {
+  auditLogId: string | number;
+  userId: string;
+  email: string;
+  action: string;
+  status: string;
+  serviceName: string;
+  method: string;
+  endpoint: string;
+  ipAddress: string;
+  createdAt: string;
+  accountNumber: string;
+  accountType: string;
+  accountCategory: string;
+  accountTier: string;
+  cif: string;
+  branchCode: string;
+  phoneNumber: string;
+  registrationAccountNumber: string;
+  deviceId: string;
+  description: string;
+  requestPayload: unknown;
+  responsePayload: unknown;
+};
+
 export type Notification = {
   id: string;
   title: string;

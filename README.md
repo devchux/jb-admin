@@ -20,6 +20,23 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Production Deployment
+
+This app uses `output: "standalone"` in `next.config.ts`. After `npm run build`, the `postbuild` script copies the required static assets into `.next/standalone`:
+
+```bash
+npm run build
+PORT=3005 npm run start:standalone
+```
+
+When deploying to nginx, make sure the running directory includes:
+
+- `.next/standalone/server.js`
+- `.next/standalone/.next/static`
+- `.next/standalone/public`
+
+If nginx serves the page but browser console requests for `/_next/static/chunks/*.js` return `400` or `404`, the static chunk files are missing from the deployed standalone folder or nginx is not proxying `/_next/` to the Next server.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

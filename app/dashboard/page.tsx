@@ -22,6 +22,7 @@ import {
 import { dashboardService } from "@/services/dashboard";
 import { exportService } from "@/services/export";
 import { toast } from "sonner";
+import AccountActivityCounts from "@/components/dashboard/AccountActivityCounts";
 
 const Dashboard = () => {
   const [dateFilter, setDateFilter] = useState("ALL_TIME");
@@ -152,6 +153,8 @@ const Dashboard = () => {
       </div>
 
       <TransactionStatusDistribution />
+
+      <AccountActivityCounts />
 
       <AppUserMetrics />
 

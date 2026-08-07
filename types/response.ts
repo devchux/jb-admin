@@ -7,6 +7,9 @@ import {
   SupportTicket,
   Transaction,
   User,
+  RegisteredAppUser,
+  DeviceRegistration,
+  AccountCreation,
 } from "./common";
 
 export type PaginatedResponse<T> = {
@@ -61,6 +64,12 @@ export type GeneratedReportListResponse = PaginatedResponse<GeneratedReport>;
 export type UserListResponse = PaginatedResponse<User>;
 
 export type AppUserListResponse = PaginatedResponse<AppUser>;
+
+export type RegisteredAppUserListResponse = PaginatedResponse<RegisteredAppUser>;
+
+export type DeviceRegistrationListResponse = PaginatedResponse<DeviceRegistration>;
+
+export type AccountCreationListResponse = PaginatedResponse<AccountCreation>;
 
 export type AuditLogListResponse = PaginatedResponse<AuditLog>;
 

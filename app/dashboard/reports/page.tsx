@@ -104,7 +104,7 @@ const ReportsPage = () => {
   );
 
   const trendData = useMemo(() => {
-    const grouped = reports.reduce<Record<string, number>>((acc, report) => {
+    const grouped = reports?.reduce<Record<string, number>>((acc, report) => {
       const key = formatTimestamp(report.generatedAt, "DD MMM");
       acc[key] = (acc[key] || 0) + report.rows;
       return acc;

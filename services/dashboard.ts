@@ -8,15 +8,52 @@ import {
   OperationsSummaryResponse,
   TransactionMetricsResponse,
   TransactionStatusDistributionResponse,
+  RegisteredAppUserListResponse,
+  DeviceRegistrationListResponse,
+  AccountCreationListResponse,
 } from "@/types/response";
 import {
   BillPaymentMetricsRequest,
   OperationsSummaryRequest,
   TransactionMetricsRequest,
   TransactionStatusDistributionRequest,
+  AccountActivityDateRequest,
+  AccountActivityListRequest,
 } from "@/types/request";
 
 class DashboardService {
+  getNewRegistrationCount(params?: AccountActivityDateRequest): Promise<AxiosResponse<number>> {
+    return apiService.get("base", "/dashboard/admin/app-users/new-registrations/count", params);
+  }
+
+  getNewRegistrations(params?: AccountActivityListRequest): Promise<AxiosResponse<RegisteredAppUserListResponse>> {
+    return apiService.get("base", "/dashboard/admin/app-users/new-registrations", params);
+  }
+
+  getPendingFirstLoginCount(params?: AccountActivityDateRequest): Promise<AxiosResponse<number>> {
+    return apiService.get("base", "/dashboard/admin/app-users/pending-first-login/count", params);
+  }
+
+  getPendingFirstLogins(params?: AccountActivityListRequest): Promise<AxiosResponse<RegisteredAppUserListResponse>> {
+    return apiService.get("base", "/dashboard/admin/app-users/pending-first-login", params);
+  }
+
+  getNewDeviceRegistrationCount(params?: AccountActivityDateRequest): Promise<AxiosResponse<number>> {
+    return apiService.get("base", "/dashboard/admin/devices/new-registrations/count", params);
+  }
+
+  getNewDeviceRegistrations(params?: AccountActivityListRequest): Promise<AxiosResponse<DeviceRegistrationListResponse>> {
+    return apiService.get("base", "/dashboard/admin/devices/new-registrations", params);
+  }
+
+  getNewAccountCreationCount(params?: AccountActivityDateRequest): Promise<AxiosResponse<number>> {
+    return apiService.get("base", "/dashboard/admin/accounts/new-creations/count", params);
+  }
+
+  getNewAccountCreations(params?: AccountActivityListRequest): Promise<AxiosResponse<AccountCreationListResponse>> {
+    return apiService.get("base", "/dashboard/admin/accounts/new-creations", params);
+  }
+
   getSummary(
     filter?: string,
   ): Promise<AxiosResponse<DashboardSummaryResponse>> {

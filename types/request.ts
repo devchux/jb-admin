@@ -24,6 +24,25 @@ export type PaginatedRequest = {
   search?: string;
 };
 
+export type AccountActivityDateRequest = {
+  dateFilter?:
+    | "TODAY"
+    | "YESTERDAY"
+    | "LAST_7_DAYS"
+    | "LAST_30_DAYS"
+    | "THIS_MONTH"
+    | "CUSTOM_RANGE";
+  startDate?: string;
+  endDate?: string;
+};
+
+export type AccountActivityListRequest = AccountActivityDateRequest & {
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortDirection?: "ASC" | "DESC";
+};
+
 export type TransactionListRequest = PaginatedRequest & {
   dateFilter?: string;
   startDate?: string;
