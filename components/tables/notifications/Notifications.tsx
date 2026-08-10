@@ -1,4 +1,5 @@
 "use client";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React, { useEffect, useState } from "react";
 import { ChevronDown, FunnelIcon } from "lucide-react";
 import { formatTimestamp } from "@/lib/utils";
@@ -138,44 +139,44 @@ function Notifications() {
         {/* Table */}
         <div className="rounded-lg">
           <div>
-            <table className="w-full">
-              <thead className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+            <Table className="w-full">
+              <TableHeader className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
+                <TableRow>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     S/N
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Message
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Received At
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Action
-                  </th>
-                </tr>
-              </thead>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
 
-              <tbody className="bg-white divide-y divide-gray-200">
+              <TableBody className="bg-white divide-y divide-gray-200">
                 {notifications.map((item, idx) => (
-                  <tr
+                  <TableRow
                     key={item.id}
                     className="hover:bg-gray-50 transition-colors duration-150"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {idx + 1}
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 text-sm text-gray-900 max-w-105">
+                    <TableCell className="px-6 py-4 text-sm text-gray-900 max-w-105">
                       <div className="leading-5">{item.message}</div>
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
                       {formatTimestamp(item.createdAt, "DD/MM/YYYY")} •{" "}
                       {formatTimestamp(item.createdAt, "hh:mm A")}
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => toggleDropdown(item.id)}
@@ -212,11 +213,11 @@ function Notifications() {
                           </div>
                         )}
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
 
           {/* Pagination */}

@@ -1,4 +1,5 @@
 "use client";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle } from "lucide-react";
@@ -166,10 +167,9 @@ const FailedTransactionsTable = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-[#EEF1F4]">
-        <table className="w-full min-w-[920px]">
-          <thead className="border-b border-[#EEEEEE] bg-[#F7F8FA]">
-            <tr>
+        <Table className="w-full min-w-[920px]">
+          <TableHeader>
+            <TableRow>
               {[
                 "S/N",
                 "Transaction ID",
@@ -179,37 +179,37 @@ const FailedTransactionsTable = () => {
                 "Timestamp",
                 "Status",
               ].map((heading) => (
-                <th
+                <TableHead
                   key={heading}
                   className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-[#9C9C9C]"
                 >
                   {heading}
-                </th>
+                </TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+            </TableRow>
+          </TableHeader>
+          <TableBody className="divide-y divide-gray-200 bg-white">
             {transactions.map((transaction, index) => (
-              <tr
+              <TableRow
                 key={transaction.id}
                 className="transition-colors duration-150 hover:bg-gray-50"
               >
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                <TableCell className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                   {(currentPage - 1) * 10 + index + 1}
-                </td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                </TableCell>
+                <TableCell className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                   {getTransactionReference(transaction)}
-                </td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                </TableCell>
+                <TableCell className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                   {formatNumber(getTransactionAmount(transaction))}
-                </td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                </TableCell>
+                <TableCell className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                   {getSourceAccount(transaction)}
-                </td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                </TableCell>
+                <TableCell className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                   {getBeneficiaryAccount(transaction)}
-                </td>
-                <td className="whitespace-nowrap px-6 py-4 text-xs text-gray-700">
+                </TableCell>
+                <TableCell className="whitespace-nowrap px-6 py-4 text-xs text-gray-700">
                   {formatTimestamp(
                     getTransactionTimestamp(transaction),
                     "YYYY-MM-DD",
@@ -219,23 +219,22 @@ const FailedTransactionsTable = () => {
                     getTransactionTimestamp(transaction),
                     "hh:mm A",
                   )}
-                </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                </TableCell>
+                <TableCell className="whitespace-nowrap px-6 py-4">
                   <span className="inline-flex rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-700">
                     {formatLabel(getTransactionStatus(transaction))}
                   </span>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
 
         {!loading && transactions.length === 0 && (
           <div className="py-10 text-center text-sm text-slate-500">
             No failed transactions found for this date filter.
           </div>
         )}
-      </div>
 
       <Pagination
         totalPages={totalPages}

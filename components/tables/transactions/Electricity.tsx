@@ -1,4 +1,5 @@
 "use client";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Transaction } from "@/types/common";
@@ -138,58 +139,58 @@ const ElectricityTransactions = () => {
           {/* Users Table */}
           <div className=" rounded-lg">
             <div>
-              <table className="w-full">
-                <thead className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+              <Table className="w-full">
+                <TableHeader className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
+                  <TableRow>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       S/N
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Transaction ID
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Transaction Amount
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Source User Account
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Beneficiary Account
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Timestamp
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="bg-white divide-y divide-gray-200">
                   {transactions.map((item, index) => (
-                    <tr
+                    <TableRow
                       key={item.id}
                       className="hover:bg-gray-50 transition-colors duration-150"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {index + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {getTransactionReference(item)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {getTransactionAmount(item)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {getSourceAccount(item)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {getBeneficiaryAccount(item)}
-                      </td>
-                      <td className="px-6 py-4 text-xs whitespace-nowrap">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 text-xs whitespace-nowrap">
                         {formatTimestamp(getTransactionTimestamp(item), "YYYY-MM-DD")} •{" "}
                         {formatTimestamp(getTransactionTimestamp(item), "hh:mm A")}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => toggleDropdown(item.id)}
@@ -213,11 +214,11 @@ const ElectricityTransactions = () => {
                             </div>
                           )}
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
 
             {/* Pagination */}

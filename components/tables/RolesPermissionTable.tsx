@@ -1,4 +1,5 @@
 "use client";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { UserPlus, ChevronDown, FunnelIcon } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
@@ -123,52 +124,52 @@ const RolesPermissionsTable = () => {
           {/* Users Table */}
           <div className=" rounded-lg">
             <div>
-              <table className="w-full">
-                <thead className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+              <Table className="w-full">
+                <TableHeader className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
+                  <TableRow>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       S/N
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Role Name
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Role Description
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Permissions
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Status
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="bg-white divide-y divide-gray-200">
                   {roles.map((role, index) => (
-                    <tr
+                    <TableRow
                       key={role.id}
                       className="hover:bg-gray-50 transition-colors duration-150"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {index + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {role.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {role.description}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-xs text-[#193F7F]">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-xs text-[#193F7F]">
                         {role.permissions[0]}
                         {"   "}
                         <span className="text-xs text-[#67787F] ml-1">
                           {"  "}+ {role.permissions.length - 1} More
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                             role.active
@@ -178,8 +179,8 @@ const RolesPermissionsTable = () => {
                         >
                           {role.active ? "Active" : "Inactive"}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => toggleDropdown(role.id)}
@@ -217,11 +218,11 @@ const RolesPermissionsTable = () => {
                             </div>
                           )}
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>

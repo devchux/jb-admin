@@ -1,4 +1,5 @@
 "use client";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { ChevronDown, FunnelIcon, Megaphone } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
@@ -131,59 +132,59 @@ const BroadcastHistory = () => {
         {/* Table */}
         <div className="rounded-lg">
           <div>
-            <table className="w-full">
-              <thead className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+            <Table className="w-full">
+              <TableHeader className="bg-[#F7F8FA] border-b border-[#EEEEEE]">
+                <TableRow>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     S/N
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Title / Message
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Audience
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Channel
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Status
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Sent At
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                     Action
-                  </th>
-                </tr>
-              </thead>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
 
-              <tbody className="bg-white divide-y divide-gray-200">
+              <TableBody className="bg-white divide-y divide-gray-200">
                 {notifications.map((item, idx) => (
-                  <tr
+                  <TableRow
                     key={item.id}
                     className="hover:bg-gray-50 transition-colors duration-150"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {idx + 1}
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 text-sm text-gray-900 max-w-105">
+                    <TableCell className="px-6 py-4 text-sm text-gray-900 max-w-105">
                       <div className="font-medium leading-5">{item.title}</div>
                       <div className="text-xs text-gray-500 leading-5">
                         {item.messagePreview || item.message}
                       </div>
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {item.audience || item.type}
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {item.channel || "IN_APP"}
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <TableCell className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                           item.status === "SENT"
@@ -197,9 +198,9 @@ const BroadcastHistory = () => {
                       >
                         {item.status || (item.sent ? "SENT" : "PENDING")}
                       </span>
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
                       {item.sentAt ? (
                         <>
                           {formatTimestamp(item.sentAt, "DD/MM/YYYY")} •{" "}
@@ -208,9 +209,9 @@ const BroadcastHistory = () => {
                       ) : (
                         "Not sent"
                       )}
-                    </td>
+                    </TableCell>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
+                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => toggleDropdown(item.id)}
@@ -247,11 +248,11 @@ const BroadcastHistory = () => {
                           </div>
                         )}
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
 
           <Pagination

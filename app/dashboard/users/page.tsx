@@ -33,19 +33,20 @@ const Page = () => {
     activeTab,
     setActiveTab,
   }) => (
-    <nav className="mb-6 flex gap-2 overflow-x-auto rounded-xl bg-[#E7ECF2] p-2">
+    <nav className="flex space-2 flex-wrap mb-6 bg-[#E7ECF2] p-2 rounded-full ">
       {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          className={`shrink-0 whitespace-nowrap rounded-lg px-5 py-2.5 text-sm ${
-            activeTab === tab.id
-              ? "bg-[#193F7F] text-white font-semibold"
-              : " text-[#193F7F]"
-          }`}
-          onClick={() => setActiveTab(tab.id)}
-        >
-          {tab.label}
-        </button>
+        <div className="flex items-center" key={tab.id}>
+          <button
+            className={`px-6 py-[11px] rounded-full text-sm  ${
+              activeTab === tab.id
+                ? "bg-[#193F7F] text-white font-semibold"
+                : " text-[#193F7F]"
+            }`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        </div>
       ))}
     </nav>
   );
@@ -65,10 +66,18 @@ const Page = () => {
         {activeTab === "all-users" && <AllAppUsersTable />}
         {activeTab === "roles-permissions" && <RolesPermissionsTable />}
         {activeTab === "audit-logs" && <AuditLog />}
-        {activeTab === "new-registrations" && <AccountActivityTable kind="registrations" />}
-        {activeTab === "pending-first-login" && <AccountActivityTable kind="pending-login" />}
-        {activeTab === "device-registrations" && <AccountActivityTable kind="devices" />}
-        {activeTab === "account-creations" && <AccountActivityTable kind="accounts" />}
+        {activeTab === "new-registrations" && (
+          <AccountActivityTable kind="registrations" />
+        )}
+        {activeTab === "pending-first-login" && (
+          <AccountActivityTable kind="pending-login" />
+        )}
+        {activeTab === "device-registrations" && (
+          <AccountActivityTable kind="devices" />
+        )}
+        {activeTab === "account-creations" && (
+          <AccountActivityTable kind="accounts" />
+        )}
       </div>
     </>
   );
