@@ -1,7 +1,8 @@
 "use client";
+import { TableActionPopover } from "@/components/ui/table-action-popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { ChevronDown } from "lucide-react";
+
 import { Transaction } from "@/types/common";
 import { transactionService } from "@/services/transaction";
 import Pagination from "@/components/Pagination";
@@ -43,9 +44,7 @@ const JaizToJaiz = () => {
     }
   };
 
-  const toggleDropdown = (userId: string | null) => {
-    setShowDropdown(showDropdown === userId ? null : userId);
-  };
+
 
   const handleAction = (action: string, transactionId: string) => {
     if (action === "edit" || action === "view") {
@@ -191,29 +190,19 @@ const JaizToJaiz = () => {
                         {formatTimestamp(getTransactionTimestamp(item), "hh:mm A")}
                       </TableCell>
                       <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
-                        <div className="flex items-center space-x-2">
+                        <TableActionPopover
+                          open={showDropdown === item.id}
+                          onOpenChange={(open) =>
+                            setShowDropdown(open ? item.id : null)
+                          }
+                        >
                           <button
-                            onClick={() => toggleDropdown(item.id)}
-                            className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150"
-                          >
-                            Actions
-                            <ChevronDown className="ml-1 h-4 w-4" />
-                          </button>
-
-                          {/* Dropdown Menu */}
-                          {showDropdown === item.id && (
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
-                              <div className="py-1">
-                                <button
                                   onClick={() => handleAction("edit", item.id)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
                                   View Details
                                 </button>
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                        </TableActionPopover>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -230,14 +219,6 @@ const JaizToJaiz = () => {
           </div>
         </div>
       </div>
-
-      {/* Click outside to close dropdown */}
-      {showDropdown && (
-        <div
-          className="fixed inset-0 z-5"
-          onClick={() => setShowDropdown(null)}
-        ></div>
-      )}
 
       {/* Transaction Details Modal */}
       <TransactionDetails

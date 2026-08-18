@@ -7,21 +7,23 @@ import {
   Home,
   Users,
   CreditCard,
-  Settings,
+  // Settings,
   HelpCircle,
   Megaphone,
   FileBarChart,
+  UserRound,
 } from 'lucide-react';
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: Home },
-  { label: 'User Management', href: '/dashboard/users', icon: Users },
+  { label: 'Customer and Channels Operations', href: '/dashboard/users', icon: Users },
+  { label: 'Bank Staff and Access', href: '/dashboard/users/admins', icon: UserRound },
   { label: 'Transactions', href: '/dashboard/transactions', icon: CreditCard },
-  {
-    label: 'System Configurations',
-    href: '/dashboard/configuarations',
-    icon: Settings,
-  },
+  // {
+  //   label: 'System Configurations',
+  //   href: '/dashboard/configuarations',
+  //   icon: Settings,
+  // },
   { label: 'Help and Support', href: '/dashboard/help', icon: HelpCircle },
   {
     label: 'Broadcast Notifications',

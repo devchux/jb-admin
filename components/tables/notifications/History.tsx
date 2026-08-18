@@ -1,7 +1,8 @@
 "use client";
+import { TableActionPopover } from "@/components/ui/table-action-popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { ChevronDown, FunnelIcon, Megaphone } from "lucide-react";
+import { FunnelIcon, Megaphone } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -55,9 +56,7 @@ const BroadcastHistory = () => {
     }
   };
 
-  const toggleDropdown = (id: string) => {
-    setShowDropdown(showDropdown === id ? null : id);
-  };
+
 
   const handleAction = (action: string, id: string) => {
     console.log(`${action} for broadcast ${id}`);
@@ -212,19 +211,13 @@ const BroadcastHistory = () => {
                     </TableCell>
 
                     <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => toggleDropdown(item.id)}
-                          className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150"
+                      <TableActionPopover
+                          open={showDropdown === item.id}
+                          onOpenChange={(open) =>
+                            setShowDropdown(open ? item.id : null)
+                          }
                         >
-                          Actions
-                          <ChevronDown className="ml-1 h-4 w-4" />
-                        </button>
-
-                        {showDropdown === item.id && (
-                          <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
-                            <div className="py-1">
-                              <button
+                          <button
                                 onClick={() => handleAction("view", item.id)}
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                               >
@@ -244,10 +237,7 @@ const BroadcastHistory = () => {
                               >
                                 Delete
                               </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                        </TableActionPopover>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -268,14 +258,6 @@ const BroadcastHistory = () => {
         onOpenChange={setOpenNew}
         onSuccess={getNotifications}
       />
-
-      {/* Click outside to close dropdown */}
-      {showDropdown && (
-        <div
-          className="fixed inset-0 z-5"
-          onClick={() => setShowDropdown(null)}
-        ></div>
-      )}
     </div>
   );
 };

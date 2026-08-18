@@ -1,7 +1,8 @@
 "use client";
+import { TableActionPopover } from "@/components/ui/table-action-popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { ChevronDown, FunnelIcon } from "lucide-react";
+import { FunnelIcon } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { AppUser } from "@/types/common";
 import { userService } from "@/services/user";
@@ -56,9 +57,7 @@ const AllAppUsersTable = () => {
     }
   };
 
-  const toggleDropdown = (userId: string) => {
-    setShowDropdown(showDropdown === userId ? null : userId);
-  };
+
 
   const handleAction = (action: string, user: AppUser) => {
     setSelectedUser(user);
@@ -197,30 +196,20 @@ const AllAppUsersTable = () => {
                         {formatRelativeTimestamp(user.dateTimeModified)}
                       </TableCell>
                       <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
-                        <div className="flex items-center space-x-2">
+                        <TableActionPopover
+                          open={showDropdown === user.id}
+                          onOpenChange={(open) =>
+                            setShowDropdown(open ? user.id : null)
+                          }
+                        >
                           <button
-                            onClick={() => toggleDropdown(user.id)}
-                            className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-150"
-                          >
-                            Actions
-                            <ChevronDown className="ml-1 h-4 w-4" />
-                          </button>
-
-                          {/* Dropdown Menu */}
-                          {showDropdown === user.id && (
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] z-10">
-                              <div className="py-1">
-                                <button
                                   disabled={!user.accountLocked}
                                   onClick={() => handleAction("unlock", user)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 disabled:cursor-not-allowed disabled:text-gray-400"
                                 >
                                   Unlock Account
                                 </button>
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                        </TableActionPopover>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -248,14 +237,6 @@ const AllAppUsersTable = () => {
         successDescription={`${selectedUser?.firstName} ${selectedUser?.lastName}'s account has been successfully unlocked.`}
         onProceed={() => userService.unlockUser(selectedUser?.userId || "", authUser?.userId || "")}
       />
-
-      {/* Click outside to close dropdown */}
-      {showDropdown && (
-        <div
-          className="fixed inset-0 z-5"
-          onClick={() => setShowDropdown(null)}
-        ></div>
-      )}
     </div>
   );
 };

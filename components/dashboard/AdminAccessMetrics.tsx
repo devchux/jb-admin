@@ -25,14 +25,14 @@ import { exportService } from "@/services/export";
 import { AdminAccessMetricsResponse } from "@/types/response";
 import { downloadBlob, formatNumber } from "@/lib/utils";
 
-const AdminAccessMetrics = () => {
+const AdminAccessMetrics = ({ type }: { type: "users" | "admins" }) => {
   const [metrics, setMetrics] = useState<AdminAccessMetricsResponse | null>(
     null,
   );
   const [noRecentLoginCutoff, setNoRecentLoginCutoff] = useState("2024-01-01");
   const [loading, setLoading] = useState(false);
 
-  const cards = [
+  const adminCards = [
     {
       title: "Total Admin Users",
       value: formatNumber(metrics?.totalAdminUsers || 0),
@@ -61,6 +61,9 @@ const AdminAccessMetrics = () => {
       bgColor: "bg-gray-100",
       iconColor: "text-gray-600",
     },
+  ];
+
+  const userCards = [
     {
       title: "Locked Accounts",
       value: formatNumber(metrics?.lockedAccounts || 0),
@@ -90,6 +93,8 @@ const AdminAccessMetrics = () => {
       iconColor: "text-purple-600",
     },
   ];
+
+  const cards = type === "admins" ? adminCards : userCards;
 
   const chartData = useMemo(
     () => [
@@ -153,7 +158,7 @@ const AdminAccessMetrics = () => {
         <div className="flex items-center">
           <div className="w-3 h-8 bg-[#193F7F] rounded-full mr-3"></div>
           <h2 className="text-xl font-semibold text-gray-900">
-            Admin Access Control
+            {type === "admins" ? "Admin" : "User"} Access Control
           </h2>
         </div>
         <div className="flex items-center gap-3">
@@ -174,7 +179,7 @@ const AdminAccessMetrics = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4">
           {cards.map((card) => (
             <MetricCard key={card.title} {...card} />
           ))}
