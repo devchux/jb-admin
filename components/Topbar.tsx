@@ -3,13 +3,13 @@
 
 import React, { useState } from "react";
 import { Search, Bell, KeyRound, LogOutIcon } from "lucide-react";
-import Image from "next/image";
 import { Switch } from "./ui/switch";
 import { MoreHorizontal } from "lucide-react";
 import { useStore } from "@/store";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useRouter } from "next/navigation";
 import ChangePassword from "./modals/ChangePassword";
+import { SidebarTrigger } from "./ui/sidebar";
 
 const DashboardTopBar = () => {
   const [isEnabled, setIsEnabled] = useState(true);
@@ -24,21 +24,13 @@ const DashboardTopBar = () => {
   };
 
   return (
-    <header className="bg-white border-b border-none px-6 py-3">
+    <header className="border-b border-[#EDF0F4] bg-white px-4 py-3 sm:px-6">
       <div className="flex items-center justify-between">
         {/* Left side - Logo and Admin Portal */}
-        <div className="flex items-center space-x-4">
-          {/* Logo image */}
-          <Image
-            width={56}
-            height={61}
-            src={"/images/logo.png"}
-            alt="Jaiz Bank Logo"
-            // className="w-14 h-14 rounded-full"
-          />
-
+        <div className="flex items-center gap-3">
+          <SidebarTrigger className="size-9 rounded-lg border border-[#EDF0F4] text-slate-600 hover:bg-slate-50" />
           {/* Admin Portal indicator */}
-          <div className="flex items-center p-2 w-[145.42] h-[40] bg-white rounded-full border border-[#D9F0E2]">
+          <div className="hidden items-center rounded-full border border-[#D9F0E2] bg-white p-2 sm:flex">
             {/* ShadCN Toggle Switch */}
             <Switch
               checked={isEnabled}
@@ -55,26 +47,26 @@ const DashboardTopBar = () => {
         </div>
 
         {/* Right side - Search, Notifications, Profile */}
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center justify-between w-full max-w-6xl mx-auto">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between">
             {/* Search Icon */}
-            <div className="flex items-center justify-center w-[56] h-[56] border border-[#F3F3F3] bg-white rounded-xl cursor-pointer">
+            <div className="hidden size-11 items-center justify-center rounded-xl border border-[#F3F3F3] bg-white sm:flex">
               <Search className="w-6 h-6 text-[#4C4C4C]" strokeWidth={1.5} />
             </div>
 
             {/* Notification Bell with Badge */}
-            <div className="relative flex items-center justify-center w-[56] h-[56] border ml-6 border-[#F3F3F3] bg-white rounded-sm cursor-pointer">
+            <div className="relative flex size-11 items-center justify-center rounded-xl border border-[#F3F3F3] bg-white">
               <Bell className="w-6 h-6 text-black" strokeWidth={1.5} />
-              <div className="absolute top-3 right-4 bg-gray-800 text-white text-[6px] font-semibold rounded-full w-3 h-3 flex items-center justify-center">
+              <div className="absolute right-2.5 top-2 flex size-3 items-center justify-center rounded-full bg-gray-800 text-[6px] font-semibold text-white">
                 10
               </div>
             </div>
 
             {/* User Profile Section */}
-            <div className="flex items-center justify-between space-x-4 bg-[#E7ECF2] rounded-full p-2 pr-4 ml-6 w-[300] ">
-              <div className="flex flex-row items-center space-x-2">
+            <div className="ml-3 flex items-center justify-between gap-3 rounded-full bg-[#E7ECF2] p-1.5 sm:min-w-[250px] sm:pr-3">
+              <div className="flex flex-row items-center gap-2">
                 {/* Profile Image */}
-                <div className="w-[50] h-[47] rounded-full overflow-hidden">
+                <div className="size-10 overflow-hidden rounded-full">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
                     alt="user-photo"
@@ -83,7 +75,7 @@ const DashboardTopBar = () => {
                 </div>
 
                 {/* User Info */}
-                <div className="text-left">
+                <div className="hidden text-left sm:block">
                   <h3 className="text-sm font-medium text-gray-900 font-sans">
                     {user?.firstName} {user?.lastName}
                   </h3>
