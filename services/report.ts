@@ -11,14 +11,14 @@ class ReportService {
   preview(
     request: ReportRequest,
   ): Promise<AxiosResponse<ReportPreviewResponse>> {
-    return apiService.post("base", "/admin/reports/preview", request);
+    return apiService.post("base", "/api/admin/reports/preview", request);
   }
 
   generate(
     request: ReportRequest,
     generatedBy?: string,
   ): Promise<AxiosResponse<GeneratedReport>> {
-    return apiService.post("base", "/admin/reports/generate", request, {}, {
+    return apiService.post("base", "/api/admin/reports/generate", request, {}, {
       headers: generatedBy ? { "Generated-By": generatedBy } : {},
     });
   }
@@ -26,11 +26,11 @@ class ReportService {
   getGeneratedReports(
     request: PaginatedRequest,
   ): Promise<AxiosResponse<GeneratedReportListResponse>> {
-    return apiService.get("base", "/admin/reports/generated", request);
+    return apiService.get("base", "/api/admin/reports/generated", request);
   }
 
   download(id: string) {
-    return apiService.getBlob("base", `/admin/reports/${id}/download`);
+    return apiService.getBlob("base", `/api/admin/reports/${id}/download`);
   }
 }
 

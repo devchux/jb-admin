@@ -85,3 +85,13 @@ export const formatRelativeTimestamp = (
   value?: string | null,
   fallback = "N/A",
 ) => parseBackendTimestamp(value)?.fromNow() || fallback;
+
+export const cleanObject = <T extends Record<string, unknown>>(obj: T): Partial<T> => {
+  const cleanedObj: Partial<T> = {};
+  for (const key in obj) {
+    if (obj[key] !== null && obj[key] !== undefined) {
+      cleanedObj[key] = obj[key];
+    }
+  }
+  return cleanedObj;
+};

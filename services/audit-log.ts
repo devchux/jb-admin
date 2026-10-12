@@ -7,11 +7,11 @@ class AuditLogService {
   getLogs(
     params: PaginatedRequest,
   ): Promise<AxiosResponse<AuditLogListResponse>> {
-    return apiService.get("base", "/v1/admin/audit-logs", params);
+    return apiService.get("base", "/api/v1/admin/audit-logs", params);
   }
 
   exportLog(ids: number[]): Promise<AxiosResponse<string>> {
-    return apiService.get("base", "/v1/admin/audit-logs/export", { ids });
+    return apiService.get("base", "/api/v1/admin/audit-logs/export", { ids });
   }
 }
 

@@ -17,17 +17,17 @@ class UserService {
   getAllUsers(
     params: PaginatedRequest,
   ): Promise<AxiosResponse<UserListResponse>> {
-    return apiService.get("base", "/v1/admin/users", params);
+    return apiService.get("base", "/api/v1/admin/users", params);
   }
 
   getAppUsers(
     params: PaginatedRequest,
   ): Promise<AxiosResponse<AppUserListResponse>> {
-    return apiService.get("base", "/v1/admin/userManagements", params);
+    return apiService.get("base", "/api/v1/admin/userManagements", params);
   }
 
   createUser(data: CreateUserRequest): Promise<AxiosResponse<User>> {
-    return apiService.post("base", "/v1/admin/users", data);
+    return apiService.post("base", "/api/v1/admin/users", data);
   }
 
   updateUser(
@@ -35,22 +35,22 @@ class UserService {
     data: CreateUserRequest,
   ): Promise<AxiosResponse<User>> {
     const adminId = useStore.getState().user.id;
-    return apiService.put("base", `/v1/admin/users/${id}`, {
+    return apiService.put("base", `/api/v1/admin/users/${id}`, {
       ...data,
       createdBy: adminId,
     });
   }
 
   activateUser(id: string): Promise<AxiosResponse<void>> {
-    return apiService.put("base", `/v1/admin/users/${id}/activate`);
+    return apiService.put("base", `/api/v1/admin/users/${id}/activate`);
   }
 
   deactivateUser(id: string): Promise<AxiosResponse<void>> {
-    return apiService.put("base", `/v1/admin/users/${id}/deactivate`);
+    return apiService.put("base", `/api/v1/admin/users/${id}/deactivate`);
   }
 
   changePassword(data: ChangePasswordRequest): Promise<AxiosResponse<void>> {
-    return apiService.put("base", "/v1/admin/users/change-password", data);
+    return apiService.put("base", "/api/v1/admin/users/change-password", data);
   }
 
   unlockAdminUserAccount(
@@ -59,7 +59,7 @@ class UserService {
   ): Promise<AxiosResponse<void>> {
     return apiService.post(
       "base",
-      `/v1/admin/users/admin/unlock-account/${userId}`,
+      `/api/v1/admin/users/admin/unlock-account/${userId}`,
       undefined,
       undefined,
       {
@@ -71,7 +71,7 @@ class UserService {
   }
 
   unlockUser(id: string, adminId: string): Promise<AxiosResponse<void>> {
-    return apiService.post("base", `/v1/admin/userManagements`, {
+    return apiService.post("base", `/api/v1/admin/userManagements`, {
       userId: id,
       adminUserId: adminId,
     });
@@ -82,7 +82,7 @@ class UserService {
   ): Promise<AxiosResponse<AdminAccessMetricsResponse>> {
     return apiService.get(
       "base",
-      "/v1/admin/users/access-control/metrics",
+      "/api/v1/admin/users/access-control/metrics",
       noRecentLoginCutoff ? { noRecentLoginCutoff } : {},
     );
   }

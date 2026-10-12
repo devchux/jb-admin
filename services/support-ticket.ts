@@ -7,7 +7,7 @@ class SupportTicketService {
   getTickets(
     params: SupportTicketRequest,
   ): Promise<AxiosResponse<SupportTicketListResponse>> {
-    return apiService.get("base", "/admin/support-tickets", params);
+    return apiService.get("base", "/api/admin/support-tickets", params);
   }
 }
 

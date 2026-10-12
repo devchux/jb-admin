@@ -1,3 +1,11 @@
+import {
+  ApprovalStatus,
+  ApprovalType,
+  ApprovalWorkflowState,
+  CheckerApprovalRecommendationAction,
+  MakerApprovalRecommendationAction,
+} from "./common";
+
 export type LoginRequest = {
   username: string;
   password: string;
@@ -129,4 +137,25 @@ export type CreateRoleRequest = {
 
 export type SupportTicketRequest = PaginatedRequest & {
   status?: string;
+};
+
+export type RecordMakerApprovalRecommendationRequest = {
+  action: (typeof MakerApprovalRecommendationAction)[keyof typeof MakerApprovalRecommendationAction];
+  comment: string;
+};
+
+export type RecordCheckerApprovalRecommendationRequest = {
+  action: (typeof CheckerApprovalRecommendationAction)[keyof typeof CheckerApprovalRecommendationAction];
+  comment: string;
+};
+
+export type ApprovalListParams = {
+  approvalStatus?: ApprovalStatus;
+  approvalType?: ApprovalType;
+  workflowState?: ApprovalWorkflowState;
+  corporateName?: string;
+  requestedFrom?: Date;
+  requestedTo?: Date;
+  limit?: number;
+  cursor?: string;
 }

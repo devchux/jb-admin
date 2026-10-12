@@ -256,3 +256,34 @@ export type ReportPreviewRow = {
   status: string;
   details: string;
 };
+
+export const MakerApprovalRecommendationAction = {
+  RECOMMEND_APPROVAL: "RECOMMEND_APPROVAL",
+  PENDING_MAKER_REVIEW: "PENDING_MAKER_REVIEW",
+  RECOMMEND_REJECTION: "RECOMMEND_REJECTION",
+} as const;
+
+export const CheckerApprovalRecommendationAction = {
+  PENDING_CHECKER_REVIEW: "PENDING_CHECKER_REVIEW",
+  APPROVE: "APPROVE",
+  REJECT: "REJECT",
+} as const;
+
+export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+export type ApprovalType = "CIB_ADMIN_APPLICATION";
+
+export type ApprovalWorkflowState =
+  | "PENDING_MAKER_REVIEW"
+  | (typeof CheckerApprovalRecommendationAction)[keyof typeof CheckerApprovalRecommendationAction];
+
+export type Approval = {
+  approvalRequestId: string;
+  approvalType: ApprovalType;
+  corporateName: string;
+  approvalStatus: ApprovalStatus;
+  workflowState: ApprovalWorkflowState;
+  requestedAt: string;
+  createdAt: string;
+  updatedAt: string;
+};

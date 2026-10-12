@@ -13,7 +13,7 @@ class NotificationService {
   getAllNotifications(
     request: PaginatedRequest,
   ): Promise<AxiosResponse<NotificationListResponse>> {
-    return apiService.get("base", "/admin/notifications", request);
+    return apiService.get("base", "/api/admin/notifications", request);
   }
 
   getUserNotifications(
@@ -22,7 +22,7 @@ class NotificationService {
   ): Promise<AxiosResponse<NotificationListResponse>> {
     return apiService.get(
       "base",
-      `/admin/notifications/user/${userId}`,
+      `/api/admin/notifications/user/${userId}`,
       request,
     );
   }
@@ -30,11 +30,11 @@ class NotificationService {
   createBroadcast(
     request: CreateBroadcastNotificationRequest,
   ): Promise<AxiosResponse<Notification>> {
-    return apiService.post("base", "/admin/notifications/broadcast", request);
+    return apiService.post("base", "/api/admin/notifications/broadcast", request);
   }
 
   getBroadcastMetrics(): Promise<AxiosResponse<BroadcastMetricsResponse>> {
-    return apiService.get("base", "/admin/notifications/broadcast/metrics");
+    return apiService.get("base", "/api/admin/notifications/broadcast/metrics");
   }
 
   getBroadcastList(
@@ -42,7 +42,7 @@ class NotificationService {
   ): Promise<AxiosResponse<NotificationListResponse>> {
     return apiService.get(
       "base",
-      "/admin/notifications/broadcast/list",
+      "/api/admin/notifications/broadcast/list",
       request,
     );
   }

@@ -23,35 +23,35 @@ import {
 
 class DashboardService {
   getNewRegistrationCount(params?: AccountActivityDateRequest): Promise<AxiosResponse<number>> {
-    return apiService.get("base", "/dashboard/admin/app-users/new-registrations/count", params);
+    return apiService.get("base", "/api/dashboard/admin/app-users/new-registrations/count", params);
   }
 
   getNewRegistrations(params?: AccountActivityListRequest): Promise<AxiosResponse<RegisteredAppUserListResponse>> {
-    return apiService.get("base", "/dashboard/admin/app-users/new-registrations", params);
+    return apiService.get("base", "/api/dashboard/admin/app-users/new-registrations", params);
   }
 
   getPendingFirstLoginCount(params?: AccountActivityDateRequest): Promise<AxiosResponse<number>> {
-    return apiService.get("base", "/dashboard/admin/app-users/pending-first-login/count", params);
+    return apiService.get("base", "/api/dashboard/admin/app-users/pending-first-login/count", params);
   }
 
   getPendingFirstLogins(params?: AccountActivityListRequest): Promise<AxiosResponse<RegisteredAppUserListResponse>> {
-    return apiService.get("base", "/dashboard/admin/app-users/pending-first-login", params);
+    return apiService.get("base", "/api/dashboard/admin/app-users/pending-first-login", params);
   }
 
   getNewDeviceRegistrationCount(params?: AccountActivityDateRequest): Promise<AxiosResponse<number>> {
-    return apiService.get("base", "/dashboard/admin/devices/new-registrations/count", params);
+    return apiService.get("base", "/api/dashboard/admin/devices/new-registrations/count", params);
   }
 
   getNewDeviceRegistrations(params?: AccountActivityListRequest): Promise<AxiosResponse<DeviceRegistrationListResponse>> {
-    return apiService.get("base", "/dashboard/admin/devices/new-registrations", params);
+    return apiService.get("base", "/api/dashboard/admin/devices/new-registrations", params);
   }
 
   getNewAccountCreationCount(params?: AccountActivityDateRequest): Promise<AxiosResponse<number>> {
-    return apiService.get("base", "/dashboard/admin/accounts/new-creations/count", params);
+    return apiService.get("base", "/api/dashboard/admin/accounts/new-creations/count", params);
   }
 
   getNewAccountCreations(params?: AccountActivityListRequest): Promise<AxiosResponse<AccountCreationListResponse>> {
-    return apiService.get("base", "/dashboard/admin/accounts/new-creations", params);
+    return apiService.get("base", "/api/dashboard/admin/accounts/new-creations", params);
   }
 
   getSummary(
@@ -59,7 +59,7 @@ class DashboardService {
   ): Promise<AxiosResponse<DashboardSummaryResponse>> {
     return apiService.get(
       "base",
-      "/dashboard/admin/summary",
+      "/api/dashboard/admin/summary",
       filter ? { filter } : {},
     );
   }
@@ -67,7 +67,7 @@ class DashboardService {
   getUsersChart(filter?: string): Promise<AxiosResponse<ChartResponse>> {
     return apiService.get(
       "base",
-      "/dashboard/admin/users/chart",
+      "/api/dashboard/admin/users/chart",
       filter ? { filter } : {},
     );
   }
@@ -75,13 +75,13 @@ class DashboardService {
   getTransactionsChart(filter?: string): Promise<AxiosResponse<ChartResponse>> {
     return apiService.get(
       "base",
-      "/dashboard/admin/transactions/chart",
+      "/api/dashboard/admin/transactions/chart",
       filter ? { filter } : {},
     );
   }
 
   getAppUserMetrics(): Promise<AxiosResponse<AppUserMetricsResponse>> {
-    return apiService.get("base", "/dashboard/admin/app-users/metrics");
+    return apiService.get("base", "/api/dashboard/admin/app-users/metrics");
   }
 
   getTransactionMetrics(
@@ -89,7 +89,7 @@ class DashboardService {
   ): Promise<AxiosResponse<TransactionMetricsResponse>> {
     return apiService.get(
       "base",
-      "/dashboard/admin/transactions/metrics",
+      "/api/dashboard/admin/transactions/metrics",
       params,
     );
   }
@@ -99,7 +99,7 @@ class DashboardService {
   ): Promise<AxiosResponse<TransactionStatusDistributionResponse>> {
     return apiService.get(
       "base",
-      "/dashboard/admin/transactions/status-distribution",
+      "/api/dashboard/admin/transactions/status-distribution",
       params,
     );
   }
@@ -107,7 +107,7 @@ class DashboardService {
   getBillPaymentSummary(
     params?: BillPaymentMetricsRequest,
   ): Promise<AxiosResponse<BillPaymentSummaryResponse>> {
-    return apiService.get("base", "/admin/bill-payments/summary", params);
+    return apiService.get("base", "/api/admin/bill-payments/summary", params);
   }
 
   getBillPaymentServiceBreakdown(
@@ -115,7 +115,7 @@ class DashboardService {
   ): Promise<AxiosResponse<OperationsSummaryResponse>> {
     return apiService.get(
       "base",
-      "/admin/bill-payments/service-breakdown",
+      "/api/admin/bill-payments/service-breakdown",
       params,
     );
   }
@@ -125,7 +125,7 @@ class DashboardService {
   ): Promise<AxiosResponse<OperationsSummaryResponse>> {
     return apiService.get(
       "base",
-      "/admin/bill-payments/operations-summary",
+      "/api/admin/bill-payments/operations-summary",
       params,
     );
   }
@@ -135,7 +135,7 @@ class DashboardService {
   ): Promise<AxiosResponse<OperationsSummaryResponse>> {
     return apiService.get(
       "base",
-      "/admin/operations/transfers/summary",
+      "/api/admin/operations/transfers/summary",
       params,
     );
   }

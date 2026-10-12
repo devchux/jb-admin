@@ -28,7 +28,7 @@ class TransactionService {
     params: TransactionTableRequest,
   ): Promise<AxiosResponse<TransactionListResponse>> {
     return apiService
-      .get("base", "/v1/admin/transactions/intrabank", params)
+      .get("base", "/api/v1/admin/transactions/intrabank", params)
       .then(this.normalizeListResponse);
   }
 
@@ -36,7 +36,7 @@ class TransactionService {
     params: TransactionTableRequest,
   ): Promise<AxiosResponse<TransactionListResponse>> {
     return apiService
-      .get("base", "/v1/admin/transactions/interbank", params)
+      .get("base", "/api/v1/admin/transactions/interbank", params)
       .then(this.normalizeListResponse);
   }
 
@@ -44,7 +44,7 @@ class TransactionService {
     params: TransactionTableRequest,
   ): Promise<AxiosResponse<TransactionListResponse>> {
     return apiService
-      .get("base", "/v1/admin/transactions/nqr", params)
+      .get("base", "/api/v1/admin/transactions/nqr", params)
       .then(this.normalizeListResponse);
   }
 
@@ -52,7 +52,7 @@ class TransactionService {
     params: TransactionTableRequest,
   ): Promise<AxiosResponse<TransactionListResponse>> {
     return apiService
-      .get("base", "/v1/admin/transactions/electricity", params)
+      .get("base", "/api/v1/admin/transactions/electricity", params)
       .then(this.normalizeListResponse);
   }
 
@@ -60,7 +60,7 @@ class TransactionService {
     params: TransactionTableRequest,
   ): Promise<AxiosResponse<TransactionListResponse>> {
     return apiService
-      .get("base", "/v1/admin/transactions/bill-payment/omni", params)
+      .get("base", "/api/v1/admin/transactions/bill-payment/omni", params)
       .then(this.normalizeListResponse);
   }
 
@@ -68,7 +68,7 @@ class TransactionService {
     params: TransactionTableRequest,
   ): Promise<AxiosResponse<TransactionListResponse>> {
     return apiService
-      .get("base", "/v1/admin/transactions/bill-payment/mobile", params)
+      .get("base", "/api/v1/admin/transactions/bill-payment/mobile", params)
       .then(this.normalizeListResponse);
   }
 
@@ -76,7 +76,7 @@ class TransactionService {
     params: TransactionTableRequest,
   ): Promise<AxiosResponse<TransactionListResponse>> {
     return apiService
-      .get("base", "/v1/admin/transactions/airtime-data", params)
+      .get("base", "/api/v1/admin/transactions/airtime-data", params)
       .then(this.normalizeListResponse);
   }
 }

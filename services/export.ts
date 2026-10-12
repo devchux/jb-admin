@@ -9,7 +9,7 @@ class ExportService {
   transactions(filter?: string) {
     return apiService.get(
       "base",
-      "/admin/export/transactions",
+      "/api/admin/export/transactions",
       filter ? { filter } : {},
     );
   }
@@ -17,7 +17,7 @@ class ExportService {
   dashboard(filter?: string) {
     return apiService.get(
       "base",
-      "/admin/export/dashboard-metrics",
+      "/api/admin/export/dashboard-metrics",
       filter ? { filter } : {},
     );
   }
@@ -25,7 +25,7 @@ class ExportService {
   audit(filter?: string) {
     return apiService.get(
       "base",
-      "/admin/export/audit-logs",
+      "/api/admin/export/audit-logs",
       filter ? { filter } : {},
     );
   }
@@ -33,7 +33,7 @@ class ExportService {
   transactionDashboardMetrics(params?: TransactionMetricsRequest) {
     return apiService.getBlob(
       "base",
-      "/admin/export/transaction-dashboard-metrics",
+      "/api/admin/export/transaction-dashboard-metrics",
       params,
     );
   }
@@ -41,13 +41,13 @@ class ExportService {
   adminAccessMetrics(params?: AdminAccessMetricsRequest) {
     return apiService.getBlob(
       "base",
-      "/admin/export/admin-access-metrics",
+      "/api/admin/export/admin-access-metrics",
       params,
     );
   }
 
   billPayments(params?: BillPaymentMetricsRequest) {
-    return apiService.getBlob("base", "/admin/export/bill-payments", params);
+    return apiService.getBlob("base", "/api/admin/export/bill-payments", params);
   }
 }
 

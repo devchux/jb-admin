@@ -10,21 +10,21 @@ import { AxiosResponse } from "axios";
 
 class AdminService {
   loginAdminUser(data: LoginRequest): Promise<AxiosResponse<LoginResponse>> {
-    return apiService.post("base", "/v1/admin/users/login", data);
+    return apiService.post("base", "/api/v1/admin/users/login", data);
   }
 
   refreshToken(
     data: RefreshTokenRequest,
   ): Promise<AxiosResponse<LoginResponse>> {
-    return apiService.post("base", "/v1/admin/users/refresh-token", data);
+    return apiService.post("base", "/api/v1/admin/users/refresh-token", data);
   }
 
   forgotPassword(data: ForgotPasswordRequest): Promise<AxiosResponse<void>> {
-    return apiService.post("base", "/v1/admin/users/forgot-password", data);
+    return apiService.post("base", "/api/v1/admin/users/forgot-password", data);
   }
 
   resetPassword(data: ResetPasswordRequest): Promise<AxiosResponse<void>> {
-    return apiService.post("base", "/v1/admin/users/reset-password", data);
+    return apiService.post("base", "/api/v1/admin/users/reset-password", data);
   }
 }
 

@@ -10,6 +10,10 @@ import {
   RegisteredAppUser,
   DeviceRegistration,
   AccountCreation,
+  ApprovalStatus,
+  Approval,
+  ApprovalType,
+  ApprovalWorkflowState,
 } from "./common";
 
 export type PaginatedResponse<T> = {
@@ -65,9 +69,11 @@ export type UserListResponse = PaginatedResponse<User>;
 
 export type AppUserListResponse = PaginatedResponse<AppUser>;
 
-export type RegisteredAppUserListResponse = PaginatedResponse<RegisteredAppUser>;
+export type RegisteredAppUserListResponse =
+  PaginatedResponse<RegisteredAppUser>;
 
-export type DeviceRegistrationListResponse = PaginatedResponse<DeviceRegistration>;
+export type DeviceRegistrationListResponse =
+  PaginatedResponse<DeviceRegistration>;
 
 export type AccountCreationListResponse = PaginatedResponse<AccountCreation>;
 
@@ -176,4 +182,50 @@ export type ReportPreviewResponse = {
   totalRows: number;
   sampleSize: number;
   rows: ReportPreviewRow[];
+};
+
+export type ApprovalRcommendationData = {
+  firstName: string;
+  lastName: string;
+  bvn: string;
+  email: string;
+  phoneNumber: string;
+  files: string[];
+};
+
+export type ApprovalRecommendationResponse = {
+  approvalRequestId: string;
+  approvalType: ApprovalType;
+  corporateName: string;
+  newData: ApprovalRcommendationData;
+  oldData: ApprovalRcommendationData | object;
+  initiator: {
+    name: string;
+    email: string;
+    phoneNumber: string;
+  };
+  approvalStatus: ApprovalStatus;
+  workflowState: ApprovalWorkflowState;
+  requestedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  actionHistory: {
+    actorName: string;
+    actorRole: string;
+    action: string;
+    comment: string;
+    createdAt: string;
+  }[];
+};
+
+export type ApprovalsListResponse = {
+  items: Approval[];
+  nextCursor: string | null;
+};
+
+export type ApprovalStatusResponse = {
+  approvalRequestId: string;
+  approvalStatus: ApprovalStatus;
+  rejectionReason: string;
+  timestamp: string;
 };
