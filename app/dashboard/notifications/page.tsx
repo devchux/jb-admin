@@ -2,6 +2,7 @@
 import BroadcastMetrics from "@/components/dashboard/BroadcastMetrics";
 import BroadcastHistory from "@/components/tables/notifications/History";
 import Notifications from "@/components/tables/notifications/Notifications";
+import AppImages from "@/components/tables/notifications/AppImages";
 import React, { useState } from "react";
 
 const Page = () => {
@@ -14,6 +15,7 @@ const Page = () => {
       label: "My Notifications",
       count: 0,
     },
+    { id: "app-images", label: "App Images", count: 0 },
   ];
 
   type Tab = { id: string; label: string; count: number };
@@ -28,10 +30,12 @@ const Page = () => {
     activeTab,
     setActiveTab,
   }) => (
-    <nav className="flex space-x-4 mb-6 bg-[#E7ECF2] p-2 rounded-full ">
+    <nav aria-label="Notification sections" className="flex w-full gap-2 mb-6 bg-[#E7ECF2] p-2 overflow-x-auto">
       {tabs.map((tab) => (
         <div className="flex items-center" key={tab.id}>
           <button
+            type="button"
+            aria-current={activeTab === tab.id ? "page" : undefined}
             className={`px-6 py-[11px] rounded-full text-sm  ${
               activeTab === tab.id
                 ? "bg-[#193F7F] text-white font-semibold"
@@ -71,6 +75,7 @@ const Page = () => {
       <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
         {activeTab === "notifications" && <Notifications />}
         {activeTab === "history" && <BroadcastHistory />}
+        {activeTab === "app-images" && <AppImages />}
       </div>
     </>
   );

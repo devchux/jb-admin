@@ -1,8 +1,13 @@
 import { AxiosResponse } from "axios";
 import { apiService } from "./api";
 import { AppImage } from "@/types/common";
+import { AppImageListParams } from "@/types/request";
 
 export class AppImageService {
+  getAll(params?: AppImageListParams): Promise<AxiosResponse<AppImage[]>> {
+    return apiService.get("base", "/api/admin/app-images", params);
+  }
+
   getById(id: string): Promise<AxiosResponse<AppImage>> {
     return apiService.get("base", `/api/admin/app-images/${id}`);
   }
@@ -23,3 +28,5 @@ export class AppImageService {
     return apiService.getBlob("base", `/api/admin/app-images/${id}/content`);
   }
 }
+
+export const appImageService = new AppImageService();

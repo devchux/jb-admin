@@ -305,7 +305,7 @@ export type AppImage = {
   contentType: string;
   fileSize: number;
   displayOrder: number;
-  active: true;
+  active: boolean;
   checksum: string;
   contentUrl: string;
   createdAt: string;
