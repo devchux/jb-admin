@@ -15,6 +15,8 @@ import {
   XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { format, startOfMonth, subDays } from "date-fns";
+import type { DateRange } from "react-day-picker";
 
 import { approvalService } from "@/services/approval";
 import type {
@@ -25,6 +27,7 @@ import type {
 import type { ApprovalRecommendationResponse } from "@/types/response";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogClose,
@@ -35,6 +38,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -54,6 +62,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type StatusFilter = ApprovalStatus | "ALL";
 type WorkflowFilter = ApprovalWorkflowState | "ALL";
@@ -203,6 +212,7 @@ function DataComparison({
 }
 
 export default function ApprovalWorkspace() {
+  const isMobile = useIsMobile();
   const [approvals, setApprovals] = useState<Approval[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -210,8 +220,9 @@ export default function ApprovalWorkspace() {
   const [workflow, setWorkflow] = useState<WorkflowFilter>("ALL");
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState("");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [requestedRange, setRequestedRange] = useState<DateRange>();
+  const [draftRange, setDraftRange] = useState<DateRange>();
+  const [datePopoverOpen, setDatePopoverOpen] = useState(false);
   const [cursor, setCursor] = useState<string | undefined>();
   const [cursorHistory, setCursorHistory] = useState<(string | undefined)[]>(
     [],
@@ -237,7 +248,7 @@ export default function ApprovalWorkspace() {
   useEffect(() => {
     setCursor(undefined);
     setCursorHistory([]);
-  }, [status, workflow, search, fromDate, toDate]);
+  }, [status, workflow, search, requestedRange]);
 
   const loadApprovals = useCallback(async () => {
     try {
@@ -248,8 +259,19 @@ export default function ApprovalWorkspace() {
         workflowState: workflow === "ALL" ? undefined : workflow,
         approvalType: "CIB_ADMIN_APPLICATION",
         corporateName: search || undefined,
-        requestedFrom: fromDate ? new Date(`${fromDate}T00:00:00`) : undefined,
-        requestedTo: toDate ? new Date(`${toDate}T23:59:59`) : undefined,
+        requestedFrom: requestedRange?.from
+          ? new Date(new Date(requestedRange.from).setHours(0, 0, 0, 0))
+          : undefined,
+        requestedTo: requestedRange?.from
+          ? new Date(
+              new Date(requestedRange.to ?? requestedRange.from).setHours(
+                23,
+                59,
+                59,
+                999,
+              ),
+            )
+          : undefined,
         limit: PAGE_SIZE,
         cursor,
       });
@@ -264,7 +286,7 @@ export default function ApprovalWorkspace() {
     } finally {
       setLoading(false);
     }
-  }, [cursor, fromDate, search, status, toDate, workflow]);
+  }, [cursor, requestedRange, search, status, workflow]);
 
   useEffect(() => {
     void loadApprovals();
@@ -356,16 +378,10 @@ export default function ApprovalWorkspace() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-medium text-slate-500">Operations</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">
-            Approvals
-          </h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Review corporate admin applications and record maker-checker
-            decisions.
-          </p>
+      <header className="flex items-center justify-between">
+        <div className="flex items-center mb-6">
+          <div className="w-3 h-8 bg-[#193F7F] rounded-full mr-3"></div>
+          <h1 className="text-xl font-semibold text-gray-900">Approvals</h1>
         </div>
         <Button
           type="button"
@@ -384,7 +400,7 @@ export default function ApprovalWorkspace() {
 
       <section className="overflow-hidden rounded-xl border border-[#E7ECF2] bg-white shadow-sm">
         <div className="border-b border-[#E7ECF2] p-4 sm:p-5">
-          <div className="grid gap-3 lg:grid-cols-[minmax(240px,1fr)_190px_210px_165px_165px]">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(240px,1fr)_190px_210px_minmax(270px,0.8fr)]">
             <label className="relative block">
               <span className="sr-only">Search by corporate name</span>
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
@@ -427,37 +443,125 @@ export default function ApprovalWorkspace() {
                   <SelectItem value="PENDING_CHECKER_REVIEW">
                     Checker Review
                   </SelectItem>
-                  <SelectItem value="APPROVED">
-                    Approved
-                  </SelectItem>
-                  <SelectItem value="REJECTED">
-                    Rejected
-                  </SelectItem>
+                  <SelectItem value="APPROVED">Approved</SelectItem>
+                  <SelectItem value="REJECTED">Rejected</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <label className="relative block">
-              <span className="sr-only">Requested from</span>
-              <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-              <Input
-                type="date"
-                value={fromDate}
-                onChange={(event) => setFromDate(event.target.value)}
-                max={toDate || undefined}
-                className="h-10 rounded-full border-slate-200 pl-9 text-xs"
-              />
-            </label>
-            <label className="relative block">
-              <span className="sr-only">Requested to</span>
-              <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-              <Input
-                type="date"
-                value={toDate}
-                onChange={(event) => setToDate(event.target.value)}
-                min={fromDate || undefined}
-                className="h-10 rounded-full border-slate-200 pl-9 text-xs"
-              />
-            </label>
+            <Popover
+              open={datePopoverOpen}
+              onOpenChange={(open) => {
+                setDatePopoverOpen(open);
+                if (open) setDraftRange(requestedRange);
+              }}
+            >
+              <PopoverTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className={cn(
+                    "h-10 w-full justify-start rounded-full border-slate-200 px-4 text-left font-normal shadow-none",
+                    !requestedRange?.from && "text-muted-foreground",
+                  )}
+                >
+                  <CalendarDays data-icon="inline-start" />
+                  <span className="truncate">
+                    {requestedRange?.from ? (
+                      requestedRange.to ? (
+                        <>
+                          {format(requestedRange.from, "dd MMM yyyy")} –{" "}
+                          {format(requestedRange.to, "dd MMM yyyy")}
+                        </>
+                      ) : (
+                        format(requestedRange.from, "dd MMM yyyy")
+                      )
+                    ) : (
+                      "Requested date"
+                    )}
+                  </span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-auto overflow-hidden p-0">
+                <div className="flex flex-wrap gap-2 border-b p-3">
+                  {[
+                    {
+                      label: "Today",
+                      range: { from: new Date(), to: new Date() },
+                    },
+                    {
+                      label: "Last 7 days",
+                      range: { from: subDays(new Date(), 6), to: new Date() },
+                    },
+                    {
+                      label: "Last 30 days",
+                      range: { from: subDays(new Date(), 29), to: new Date() },
+                    },
+                    {
+                      label: "This month",
+                      range: { from: startOfMonth(new Date()), to: new Date() },
+                    },
+                  ].map((preset) => (
+                    <Button
+                      key={preset.label}
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="h-7 rounded-full px-3 text-xs shadow-none"
+                      onClick={() => setDraftRange(preset.range)}
+                    >
+                      {preset.label}
+                    </Button>
+                  ))}
+                </div>
+                <Calendar
+                  autoFocus
+                  mode="range"
+                  defaultMonth={draftRange?.from}
+                  selected={draftRange}
+                  onSelect={setDraftRange}
+                  numberOfMonths={isMobile ? 1 : 2}
+                  disabled={{ after: new Date() }}
+                />
+                <div className="flex items-center justify-between border-t px-3 py-2.5">
+                  <p className="text-xs text-muted-foreground">
+                    {draftRange?.from
+                      ? draftRange.to
+                        ? `${Math.round((draftRange.to.getTime() - draftRange.from.getTime()) / 86400000) + 1} days selected`
+                        : "Select an end date"
+                      : "Select a start and end date"}
+                  </p>
+                  <div className="flex items-center gap-1">
+                    {draftRange?.from && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs"
+                        onClick={() => {
+                          setDraftRange(undefined);
+                          setRequestedRange(undefined);
+                          setDatePopoverOpen(false);
+                        }}
+                      >
+                        Clear
+                      </Button>
+                    )}
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={!draftRange?.from || !draftRange.to}
+                      className="h-7 bg-[#193F7F] px-3 text-xs hover:bg-[#132A55]"
+                      onClick={() => {
+                        setRequestedRange(draftRange);
+                        setDatePopoverOpen(false);
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 

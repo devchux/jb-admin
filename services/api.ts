@@ -122,6 +122,29 @@ class APIService {
       responseType: "blob",
     });
   }
+
+  putBlob(
+    service: string,
+    endpoint: string,
+    data?: unknown,
+    params?: Record<string, unknown>,
+    config?: Record<string, unknown>,
+  ) {
+    const queryParams = new URLSearchParams({
+      proxy: service,
+      endpoint,
+      responseType: "blob",
+      ...params,
+    }).toString();
+
+    return Axios({
+      method: "PUT",
+      url: `/api/proxy?${queryParams}`,
+      data,
+      responseType: "blob",
+      ...config,
+    });
+  }
 }
 
 export const apiService = new APIService();

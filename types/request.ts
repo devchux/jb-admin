@@ -1,4 +1,5 @@
 import {
+  AppImageCategory,
   ApprovalStatus,
   ApprovalType,
   ApprovalWorkflowState,
@@ -158,4 +159,9 @@ export type ApprovalListParams = {
   requestedTo?: Date;
   limit?: number;
   cursor?: string;
+}
+
+export type AppImageListParams = {
+  category?: (typeof AppImageCategory)[keyof typeof AppImageCategory];
+  active?: "true" | "false";
 }

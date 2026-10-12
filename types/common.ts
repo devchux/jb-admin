@@ -287,3 +287,29 @@ export type Approval = {
   createdAt: string;
   updatedAt: string;
 };
+
+export const AppImageCategory = {
+  WELCOME: "WELCOME",
+  CAROUSEL: "CAROUSEL",
+  BANNER: "BANNER",
+  LOGO: "LOGO",
+  CARD_ARTWORK: "CARD_ARTWORK",
+  OTHER: "OTHER",
+} as const;
+
+export type AppImage = {
+  id: string;
+  category: (typeof AppImageCategory)[keyof typeof AppImageCategory];
+  title: string;
+  fileName: string;
+  contentType: string;
+  fileSize: number;
+  displayOrder: number;
+  active: true;
+  checksum: string;
+  contentUrl: string;
+  createdAt: string;
+  lastModifiedAt: string;
+  createdBy: string;
+  lastModifiedBy: string;
+};
