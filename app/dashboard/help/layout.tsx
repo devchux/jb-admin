@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
+import PermissionGuard from '@/components/PermissionGuard';
 
 export const metadata: Metadata = {
   title: 'Help & Support',
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return <PermissionGuard permissions={["ticket:read"]}>{children}</PermissionGuard>;
 }

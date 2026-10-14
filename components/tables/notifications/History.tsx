@@ -14,8 +14,10 @@ import CreateNewBroadcast from "@/components/modals/CreateNewBroadcast";
 import { PaginatedRequest } from "@/types/request";
 import Pagination from "@/components/Pagination";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const BroadcastHistory = () => {
+  const { hasPermission } = usePermissions();
   const [searchTerm, setSearchTerm] = useState("");
   const [initialSearchTerm, setInitialSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -119,13 +121,13 @@ const BroadcastHistory = () => {
           </div>
 
           {/* CTA */}
-          <button
+          {hasPermission("notification:create") && <button
             onClick={() => setOpenNew(true)}
             className="bg-[#193F7F] text-white px-4 py-3 text-sm rounded-full transition-colors flex items-center space-x-2"
           >
             <Megaphone className="h-4 w-4" />
             <span>Send New Broadcast</span>
-          </button>
+          </button>}
         </div>
 
         {/* Table */}
@@ -223,20 +225,20 @@ const BroadcastHistory = () => {
                               >
                                 View Details
                               </button>
-                              <button
+                              {hasPermission("notification:create") && <button
                                 onClick={() =>
                                   handleAction("duplicate", item.id)
                                 }
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                               >
                                 Duplicate
-                              </button>
-                              <button
+                              </button>}
+                              {hasPermission("notification:update") && <button
                                 onClick={() => handleAction("delete", item.id)}
                                 className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                               >
                                 Delete
-                              </button>
+                              </button>}
                         </TableActionPopover>
                     </TableCell>
                   </TableRow>
@@ -253,11 +255,11 @@ const BroadcastHistory = () => {
         </div>
       </div>
 
-      <CreateNewBroadcast
+      {hasPermission("notification:create") && <CreateNewBroadcast
         open={openNew}
         onOpenChange={setOpenNew}
         onSuccess={getNotifications}
-      />
+      />}
     </div>
   );
 };

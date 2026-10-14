@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { SupportTicket } from "@/types/common";
 import { formatTimestamp } from "@/lib/utils";
+import { usePermissions } from "@/hooks/use-permissions";
 
 interface SupportTicketDetailsProps {
   open: boolean;
@@ -26,6 +27,7 @@ const SupportTicketDetails = ({
   onOpenChange,
   ticket,
 }: SupportTicketDetailsProps) => {
+  const { hasPermission } = usePermissions();
   const [isResolved, setIsResolved] = useState(false);
 
   useEffect(() => {
@@ -131,7 +133,7 @@ const SupportTicketDetails = ({
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 mb-12">
+          {hasPermission("ticket:update") && <div className="flex items-center space-x-3 mb-12">
             <Checkbox
               id="mark-resolved"
               checked={isResolved}
@@ -144,17 +146,17 @@ const SupportTicketDetails = ({
             >
               Mark as resolved
             </Label>
-          </div>
+          </div>}
 
           <div className="flex justify-end gap-3">
             {isResolved ? (
               <DialogClose asChild>
-                <Button
+                {hasPermission("ticket:update") && <Button
                   type="button"
                   className="rounded-full px-10 h-12 bg-[#193F7F] text-white hover:bg-[#132A55] shadow-none font-medium text-[15px]"
                 >
                   Close
-                </Button>
+                </Button>}
               </DialogClose>
             ) : (
               <>

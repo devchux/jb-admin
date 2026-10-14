@@ -15,11 +15,13 @@ import { toast } from "sonner";
 import ConfirmModal from "../modals/ConfirmModal";
 import { useStore } from "@/store";
 import { formatRelativeTimestamp } from "@/lib/utils";
+import { usePermissions } from "@/hooks/use-permissions";
 
 type ConfirmAction = "activate" | "deactivate" | "unlock";
 
 const AllUsersTable = () => {
   const authUser = useStore((state) => state.user);
+  const { hasPermission } = usePermissions();
   const [searchTerm, setSearchTerm] = useState("");
   const [initialSearchTerm, setInitialSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -167,13 +169,13 @@ const AllUsersTable = () => {
               </div>
             </div>
 
-            <button
+            {hasPermission("user:create") && <button
               onClick={() => setOpen(true)}
               className=" bg-[#193F7F] text-center    text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2"
             >
               <UserPlus className="h-4 w-4" />
               <span>Add New User</span>
-            </button>
+            </button>}
           </div>
 
           {/* Users Table */}
@@ -238,7 +240,7 @@ const AllUsersTable = () => {
                         {formatRelativeTimestamp(user.lastModifiedAt)}
                       </TableCell>
                       <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
-                        <TableActionPopover
+                        {hasPermission("user:update") && <TableActionPopover
                           open={showDropdown === user.id}
                           onOpenChange={(open) =>
                             setShowDropdown(open ? user.id : null)
@@ -275,7 +277,7 @@ const AllUsersTable = () => {
                                 >
                                   Delete User
                                 </button> */}
-                        </TableActionPopover>
+                        </TableActionPopover>}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -293,11 +295,11 @@ const AllUsersTable = () => {
         </div>
       </div>
 
-      <CreateUser
+      {hasAnyUserWritePermission(hasPermission) && <CreateUser
         open={open}
         onOpenChange={toggleCreateUserModal}
         user={selectedUser}
-      />
+      />}
 
       <ConfirmModal
         open={confirmModal}
@@ -308,5 +310,9 @@ const AllUsersTable = () => {
     </div>
   );
 };
+
+const hasAnyUserWritePermission = (
+  hasPermission: ReturnType<typeof usePermissions>["hasPermission"],
+) => hasPermission("user:create") || hasPermission("user:update");
 
 export default AllUsersTable;

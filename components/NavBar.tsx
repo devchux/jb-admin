@@ -38,20 +38,28 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { usePermissions } from "@/hooks/use-permissions";
+import type { Permission } from "@/lib/constants";
 
-const retailLinks = [
+const retailLinks: Array<{
+  label: string;
+  href: string;
+  icon: typeof Home;
+  permissions?: readonly Permission[];
+}> = [
   { label: "Dashboard", href: "/dashboard", icon: Home },
-  { label: "Customer and Channels Operations", href: "/dashboard/users", icon: Users },
-  { label: "Bank Staff and Access", href: "/dashboard/users/admins", icon: UserRound },
-  { label: "Transactions", href: "/dashboard/transactions", icon: CreditCard },
-  { label: "Help and Support", href: "/dashboard/help", icon: HelpCircle },
-  { label: "Broadcast Notifications", href: "/dashboard/notifications", icon: Megaphone },
-  { label: "Reports", href: "/dashboard/reports", icon: FileBarChart },
+  { label: "Customer and Channels Operations", href: "/dashboard/users", icon: Users, permissions: ["user:read", "audit:read"] },
+  { label: "Bank Staff and Access", href: "/dashboard/users/admins", icon: UserRound, permissions: ["user:read", "role:read", "permission:read"] },
+  { label: "Transactions", href: "/dashboard/transactions", icon: CreditCard, permissions: ["transaction:read"] },
+  { label: "Help and Support", href: "/dashboard/help", icon: HelpCircle, permissions: ["ticket:read"] },
+  { label: "Broadcast Notifications", href: "/dashboard/notifications", icon: Megaphone, permissions: ["notification:read", "image:read"] },
+  { label: "Reports", href: "/dashboard/reports", icon: FileBarChart, permissions: ["report:read"] },
 ];
 
 export default function AppSidebar() {
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
+  const { hasAnyPermission } = usePermissions();
 
   const isActive = (href: string) => pathname === href;
 
@@ -88,7 +96,9 @@ export default function AppSidebar() {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub className="mx-4 mt-1 gap-1 border-[#D9E2EE] py-1 pl-3 pr-0">
-                      {retailLinks.map(({ label, href, icon: Icon }) => (
+                      {retailLinks
+                        .filter(({ permissions }) => !permissions || hasAnyPermission(permissions))
+                        .map(({ label, href, icon: Icon }) => (
                         <SidebarMenuSubItem key={href}>
                           <SidebarMenuSubButton
                             asChild
@@ -101,13 +111,13 @@ export default function AppSidebar() {
                             </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
-                      ))}
+                        ))}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
               </Collapsible>
 
-              <SidebarMenuItem>
+              {hasAnyPermission(["corporate-approval:read"]) && <SidebarMenuItem>
                 <SidebarMenuButton
                   disabled
                   size="lg"
@@ -122,7 +132,7 @@ export default function AppSidebar() {
                     Coming soon
                   </Badge>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </SidebarMenuItem>}
 
               <SidebarMenuItem>
                 <SidebarMenuButton

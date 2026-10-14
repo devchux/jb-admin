@@ -15,8 +15,10 @@ import LoadingIndicator from "../LoadingIndicator";
 import Pagination from "../Pagination";
 import AuditLogDetails from "../modals/AuditLogDetails";
 import { exportService } from "@/services/export";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const AuditLog = () => {
+  const { hasPermission } = usePermissions();
   const [searchTerm, setSearchTerm] = useState("");
   const [initialSearchTerm, setInitialSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -138,13 +140,13 @@ const AuditLog = () => {
               </div>
             </div>
 
-            <button
+            {hasPermission("audit:export") && <button
               onClick={handleExport}
               className=" bg-[#193F7F] text-center    text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2"
             >
               <ArrowUpOnSquareIcon className="h-4 w-4" />
               <span>Export Audit Report</span>
-            </button>
+            </button>}
           </div>
 
           {/* Users Table */}

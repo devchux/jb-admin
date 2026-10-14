@@ -32,6 +32,7 @@ import {
   formatTimestamp,
 } from "@/lib/utils";
 import { useStore } from "@/store";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const reportTypes = [
   "TRANSACTION_SUMMARY_REPORT",
@@ -75,6 +76,7 @@ const formatOption = (value: string) =>
     .join(" ");
 
 const ReportsPage = () => {
+  const { hasPermission } = usePermissions();
   const user = useStore((state) => state.user);
   const [reportType, setReportType] = useState("TRANSACTION_SUMMARY_REPORT");
   const [dateRange, setDateRange] = useState("LAST_7_DAYS");
@@ -275,7 +277,7 @@ const ReportsPage = () => {
               )}
               <span>Preview</span>
             </button>
-            <button
+            {hasPermission("report:create") && <button
               onClick={handleGenerate}
               disabled={generateLoading}
               className="bg-[#193F7F] text-white px-4 py-3 text-sm rounded-full transition-colors flex items-center space-x-2 disabled:opacity-60"
@@ -286,7 +288,7 @@ const ReportsPage = () => {
                 <Play className="h-4 w-4" />
               )}
               <span>Generate Report</span>
-            </button>
+            </button>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">

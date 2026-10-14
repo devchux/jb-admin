@@ -2,15 +2,26 @@
 import AdminAccessMetrics from "@/components/dashboard/AdminAccessMetrics";
 import AllUsersTable from "@/components/tables/AllUsersTable";
 import RolesPermissionsTable from "@/components/tables/RolesPermissionTable";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState("all-admin-users");
+  const { hasAnyPermission, hasPermission } = usePermissions();
 
-  const tabs = [
-    { id: "all-admin-users", label: "All Admin Users" },
-    { id: "roles-permissions", label: "Roles and Permissions" },
-  ];
+  const tabs = useMemo(
+    () => [
+      ...(hasPermission("user:read") ? [{ id: "all-admin-users", label: "All Admin Users" }] : []),
+      ...(hasAnyPermission(["role:read", "permission:read"]) ? [{ id: "roles-permissions", label: "Roles and Permissions" }] : []),
+    ],
+    [hasAnyPermission, hasPermission],
+  );
+
+  useEffect(() => {
+    if (!tabs.some((tab) => tab.id === activeTab) && tabs[0]) {
+      setActiveTab(tabs[0].id);
+    }
+  }, [activeTab, tabs]);
 
   type Tab = { id: string; label: string };
   type NavSectionProps = {

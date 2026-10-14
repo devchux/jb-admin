@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { appImageService } from "@/services/app-image";
 import { AppImage, AppImageCategory } from "@/types/common";
+import { usePermissions } from "@/hooks/use-permissions";
 
 type StatusFilter = "all" | "true" | "false";
 
@@ -47,6 +48,7 @@ const errorMessage = (error: unknown, fallback: string) => {
 };
 
 export default function AppImages() {
+  const { hasPermission, hasAnyPermission } = usePermissions();
   const [images, setImages] = useState<AppImage[]>([]);
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [category, setCategory] = useState("all");
@@ -149,9 +151,9 @@ export default function AppImages() {
             <p className="mt-1 text-sm text-[#66788A]">Manage imagery displayed in the mobile app.</p>
           </div>
         </div>
-        <Button onClick={openCreate} className="h-11 rounded-full bg-[#193F7F] px-5 text-white hover:bg-[#123466]">
+        {hasPermission("image:create") && <Button onClick={openCreate} className="h-11 rounded-full bg-[#193F7F] px-5 text-white hover:bg-[#123466]">
           <Plus className="size-4" aria-hidden="true" />Upload image
-        </Button>
+        </Button>}
       </div>
 
       <div className="my-8 grid gap-3 lg:grid-cols-[minmax(240px,1fr)_220px_180px]">
@@ -224,10 +226,10 @@ export default function AppImages() {
                   </span>
                 </TableCell>
                 <TableCell className="px-5 py-3">
-                  <TableActionPopover open={actionOpen === image.id} onOpenChange={(open) => setActionOpen(open ? image.id : null)}>
-                    <button type="button" onClick={() => { setActionOpen(null); openEdit(image); }} className="block w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#193F7F]">Edit image</button>
-                    <button type="button" onClick={() => { setActionOpen(null); setDeleteTarget(image); }} className="block w-full px-4 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-600">Delete image</button>
-                  </TableActionPopover>
+                  {hasAnyPermission(["image:update", "image:delete"]) && <TableActionPopover open={actionOpen === image.id} onOpenChange={(open) => setActionOpen(open ? image.id : null)}>
+                    {hasPermission("image:update") && <button type="button" onClick={() => { setActionOpen(null); openEdit(image); }} className="block w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#193F7F]">Edit image</button>}
+                    {hasPermission("image:delete") && <button type="button" onClick={() => { setActionOpen(null); setDeleteTarget(image); }} className="block w-full px-4 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-600">Delete image</button>}
+                  </TableActionPopover>}
                 </TableCell>
               </TableRow>
             ))}
@@ -239,7 +241,7 @@ export default function AppImages() {
                     <span className="mb-4 flex size-14 items-center justify-center rounded-full bg-[#E8EDF5] text-[#193F7F]"><ImageIcon className="size-6" aria-hidden="true" /></span>
                     <h2 className="font-semibold text-[#151B28]">{query || category !== "all" || status !== "all" ? "No matching images" : "No app images yet"}</h2>
                     <p className="mt-2 text-sm leading-6 text-[#66788A]">{query || category !== "all" || status !== "all" ? "Adjust your search or filters to see other images." : "Upload an image to start managing mobile app placements."}</p>
-                    {!query && category === "all" && status === "all" && <Button onClick={openCreate} className="mt-5 rounded-full bg-[#193F7F] text-white hover:bg-[#123466]">Upload image</Button>}
+                    {!query && category === "all" && status === "all" && hasPermission("image:create") && <Button onClick={openCreate} className="mt-5 rounded-full bg-[#193F7F] text-white hover:bg-[#123466]">Upload image</Button>}
                   </div>
                 </TableCell>
               </TableRow>
@@ -248,7 +250,7 @@ export default function AppImages() {
         </Table>
       </div>
 
-      <AppImageForm image={selected} open={formOpen} onOpenChange={setFormOpen} onSuccess={loadImages} />
+      {hasAnyPermission(["image:create", "image:update"]) && <AppImageForm image={selected} open={formOpen} onOpenChange={setFormOpen} onSuccess={loadImages} />}
 
       <Dialog open={Boolean(deleteTarget)} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <DialogContent className="sm:max-w-md">

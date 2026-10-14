@@ -2,20 +2,31 @@
 import AdminAccessMetrics from "@/components/dashboard/AdminAccessMetrics";
 import AllAppUsersTable from "@/components/tables/AllAppUsersTable";
 import AuditLog from "@/components/tables/AuditLog";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AccountActivityTable from "@/components/tables/AccountActivityTable";
+import { usePermissions } from "@/hooks/use-permissions";
+import type { Permission } from "@/lib/constants";
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState("all-users");
+  const { hasPermission } = usePermissions();
 
-  const tabs = [
-    { id: "all-users", label: "All App Users" },
-    { id: "audit-logs", label: "Audit Logs" },
-    { id: "new-registrations", label: "New Registrations" },
-    { id: "pending-first-login", label: "Pending First Login" },
-    { id: "device-registrations", label: "Device Registrations" },
-    { id: "account-creations", label: "Account Creations" },
-  ];
+  const tabs = ([
+    { id: "all-users", label: "All App Users", permission: "user:read" },
+    { id: "audit-logs", label: "Audit Logs", permission: "audit:read" },
+    { id: "new-registrations", label: "New Registrations", permission: "user:read" },
+    { id: "pending-first-login", label: "Pending First Login", permission: "user:read" },
+    { id: "device-registrations", label: "Device Registrations", permission: "user:read" },
+    { id: "account-creations", label: "Account Creations", permission: "user:read" },
+  ] satisfies Array<{ id: string; label: string; permission: Permission }>).filter(
+    (tab) => hasPermission(tab.permission),
+  );
+
+  useEffect(() => {
+    if (!tabs.some((tab) => tab.id === activeTab) && tabs[0]) {
+      setActiveTab(tabs[0].id);
+    }
+  }, [activeTab, tabs]);
 
   type Tab = { id: string; label: string };
   type NavSectionProps = {

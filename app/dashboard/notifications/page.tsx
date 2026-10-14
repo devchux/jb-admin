@@ -3,20 +3,28 @@ import BroadcastMetrics from "@/components/dashboard/BroadcastMetrics";
 import BroadcastHistory from "@/components/tables/notifications/History";
 import Notifications from "@/components/tables/notifications/Notifications";
 import AppImages from "@/components/tables/notifications/AppImages";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState("history");
+  const { hasPermission } = usePermissions();
 
   const tabs = [
-    { id: "history", label: "Broadcast History", count: 0 },
+    ...(hasPermission("notification:read") ? [{ id: "history", label: "Broadcast History", count: 0 }] : []),
     {
       id: "notifications",
       label: "My Notifications",
       count: 0,
     },
-    { id: "app-images", label: "App Images", count: 0 },
-  ];
+    ...(hasPermission("image:read") ? [{ id: "app-images", label: "App Images", count: 0 }] : []),
+  ].filter((tab) => tab.id !== "notifications" || hasPermission("notification:read"));
+
+  useEffect(() => {
+    if (!tabs.some((tab) => tab.id === activeTab) && tabs[0]) {
+      setActiveTab(tabs[0].id);
+    }
+  }, [activeTab, tabs]);
 
   type Tab = { id: string; label: string; count: number };
   type NavSectionProps = {

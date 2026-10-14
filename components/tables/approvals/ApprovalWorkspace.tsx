@@ -38,6 +38,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { usePermissions } from "@/hooks/use-permissions";
 import {
   Popover,
   PopoverContent,
@@ -179,10 +180,10 @@ function DataComparison({
         </p>
       ) : (
         keys.map((key) => {
-          const oldValue = (approval.oldData as Record<string, unknown>)[key];
+          const oldValue = (approval.oldData as Record<string, unknown>)?.[key];
           const newValue = (
             approval.newData as unknown as Record<string, unknown>
-          )[key];
+          )?.[key];
           const changed = String(oldValue ?? "") !== String(newValue ?? "");
           return (
             <div
@@ -213,6 +214,7 @@ function DataComparison({
 
 export default function ApprovalWorkspace() {
   const isMobile = useIsMobile();
+  const { hasPermission } = usePermissions();
   const [approvals, setApprovals] = useState<Approval[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -309,7 +311,15 @@ export default function ApprovalWorkspace() {
     if (selectedId) void loadDetails(selectedId);
   }, [loadDetails, selectedId]);
 
-  const actions = useMemo(() => getActions(details), [details]);
+  const actions = useMemo(
+    () =>
+      getActions(details).filter((action) =>
+        action.startsWith("RECOMMEND_")
+          ? hasPermission("corporate-approval:review")
+          : hasPermission("corporate-approval:approve"),
+      ),
+    [details, hasPermission],
+  );
   const currentPage = cursorHistory.length + 1;
 
   const closeDetails = (open: boolean) => {

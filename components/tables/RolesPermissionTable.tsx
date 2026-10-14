@@ -9,8 +9,10 @@ import { roleService } from "@/services/role";
 import { useDebounce } from "react-use";
 import CreateRole from "../modals/CreateRole";
 import LoadingIndicator from "../LoadingIndicator";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const RolesPermissionsTable = () => {
+  const { hasPermission, hasAnyPermission } = usePermissions();
   const [searchTerm, setSearchTerm] = useState("");
   const [initialSearchTerm, setInitialSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -111,13 +113,13 @@ const RolesPermissionsTable = () => {
               </div>
             </div>
 
-            <button
+            {hasPermission("role:create") && <button
               onClick={() => setOpen(true)}
               className=" bg-[#193F7F]   text-center  text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2"
             >
               <UserPlus className="h-4 w-4" />
               <span>Add New Role</span>
-            </button>
+            </button>}
           </div>
 
           {/* Users Table */}
@@ -180,33 +182,33 @@ const RolesPermissionsTable = () => {
                         </span>
                       </TableCell>
                       <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
-                        <TableActionPopover
+                        {hasAnyPermission(["role:update", "role:delete"]) && <TableActionPopover
                           open={showDropdown === role.id}
                           onOpenChange={(open) =>
                             setShowDropdown(open ? role.id : null)
                           }
                         >
-                          <button
+                          {hasPermission("role:update") && <button
                                   onClick={() => handleAction("edit", role)}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
                                   Edit Role Details
-                                </button>
-                                <button
+                                </button>}
+                                {hasPermission("role:update") && <button
                                   onClick={() =>
                                     handleAction("deactivate", role)
                                   }
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                 >
                                   Deactivate
-                                </button>
-                                <button
+                                </button>}
+                                {hasPermission("role:delete") && <button
                                   onClick={() => handleAction("delete", role)}
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
                                   Delete Role
-                                </button>
-                        </TableActionPopover>
+                                </button>}
+                        </TableActionPopover>}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -217,11 +219,11 @@ const RolesPermissionsTable = () => {
         </div>
       </div>
 
-      <CreateRole
+      {hasAnyPermission(["role:create", "role:update"]) && <CreateRole
         open={open}
         onOpenChange={toggleCreateRoleModal}
         role={selectedRole}
-      />
+      />}
     </div>
   );
 };

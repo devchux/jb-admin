@@ -34,7 +34,7 @@ const refreshAccessToken = async () => {
   if (!refreshRequest) {
     refreshRequest = axios
       .post<LoginResponse>(
-        "/api/proxy?service=base&endpoint=/v1/admin/users/refresh-token",
+        "/api/proxy?proxy=base&endpoint=/v1/admin/users/refresh-token",
         { refreshToken },
         { skipAuth: true } as AuthAxiosConfig,
       )
