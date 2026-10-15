@@ -1,6 +1,13 @@
 "use client";
 import { TableActionPopover } from "@/components/ui/table-action-popover";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { UserPlus, FunnelIcon } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
@@ -33,8 +40,7 @@ const AllUsersTable = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [confirmAction, setConfirmAction] =
-    useState<ConfirmAction>("activate");
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>("activate");
   const [confirmModal, setConfirmModal] = useState(false);
 
   const confirmModalProps = {
@@ -97,8 +103,6 @@ const AllUsersTable = () => {
       setLoading(false);
     }
   };
-
-
 
   const handleAction = (action: string, user: User) => {
     setSelectedUser(user);
@@ -169,13 +173,15 @@ const AllUsersTable = () => {
               </div>
             </div>
 
-            {hasPermission("user:create") && <button
-              onClick={() => setOpen(true)}
-              className=" bg-[#193F7F] text-center    text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2"
-            >
-              <UserPlus className="h-4 w-4" />
-              <span>Add New User</span>
-            </button>}
+            {hasPermission("user:create") && (
+              <button
+                onClick={() => setOpen(true)}
+                className=" bg-[#193F7F] text-center    text-white px-4 py-3 text-sm rounded-full  transition-colors flex items-center space-x-2"
+              >
+                <UserPlus className="h-4 w-4" />
+                <span>Add New User</span>
+              </button>
+            )}
           </div>
 
           {/* Users Table */}
@@ -192,6 +198,9 @@ const AllUsersTable = () => {
                     </TableHead>
                     <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Last Name
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
+                      Username
                     </TableHead>
                     <TableHead className="px-6 py-4 text-left text-xs font-medium text-[#9C9C9C] uppercase tracking-wider">
                       Assigned Role
@@ -223,6 +232,9 @@ const AllUsersTable = () => {
                         {user.lastName}
                       </TableCell>
                       <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {user.username}
+                      </TableCell>
+                      <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {user.role.name}
                       </TableCell>
                       <TableCell className="px-6 py-4 whitespace-nowrap">
@@ -240,44 +252,46 @@ const AllUsersTable = () => {
                         {formatRelativeTimestamp(user.lastModifiedAt)}
                       </TableCell>
                       <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
-                        {hasPermission("user:update") && <TableActionPopover
-                          open={showDropdown === user.id}
-                          onOpenChange={(open) =>
-                            setShowDropdown(open ? user.id : null)
-                          }
-                        >
-                          <button
-                                  onClick={() => handleAction("edit", user)}
-                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-                                >
-                                  Edit User Details
-                                </button>
-                                <button
-                                  disabled={authUser.id === user.id}
-                                  onClick={() => handleAction("unlock", user)}
-                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
-                                >
-                                  Unlock Account
-                                </button>
-                                <button
-                                  disabled={authUser.id === user.id}
-                                  onClick={() =>
-                                    handleAction(
-                                      user.active ? "deactivate" : "activate",
-                                      user,
-                                    )
-                                  }
-                                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
-                                >
-                                  {user.active ? "Deactivate" : "Activate"} User
-                                </button>
-                                {/* <button
+                        {hasPermission("user:update") && (
+                          <TableActionPopover
+                            open={showDropdown === user.id}
+                            onOpenChange={(open) =>
+                              setShowDropdown(open ? user.id : null)
+                            }
+                          >
+                            <button
+                              onClick={() => handleAction("edit", user)}
+                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
+                            >
+                              Edit User Details
+                            </button>
+                            <button
+                              disabled={authUser.id === user.id}
+                              onClick={() => handleAction("unlock", user)}
+                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
+                            >
+                              Unlock Account
+                            </button>
+                            <button
+                              disabled={authUser.id === user.id}
+                              onClick={() =>
+                                handleAction(
+                                  user.active ? "deactivate" : "activate",
+                                  user,
+                                )
+                              }
+                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
+                            >
+                              {user.active ? "Deactivate" : "Activate"} User
+                            </button>
+                            {/* <button
                                   onClick={() => handleAction("delete", user)}
                                   className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
                                 >
                                   Delete User
                                 </button> */}
-                        </TableActionPopover>}
+                          </TableActionPopover>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -295,11 +309,13 @@ const AllUsersTable = () => {
         </div>
       </div>
 
-      {hasAnyUserWritePermission(hasPermission) && <CreateUser
-        open={open}
-        onOpenChange={toggleCreateUserModal}
-        user={selectedUser}
-      />}
+      {hasAnyUserWritePermission(hasPermission) && (
+        <CreateUser
+          open={open}
+          onOpenChange={toggleCreateUserModal}
+          user={selectedUser}
+        />
+      )}
 
       <ConfirmModal
         open={confirmModal}
