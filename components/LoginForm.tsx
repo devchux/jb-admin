@@ -87,14 +87,14 @@ const LoginForm = () => {
               htmlFor="username"
               className="text-[#4E7397] font-medium text-[13px] ml-1"
             >
-              Username
+              Staff ID
             </Label>
             <div className="relative group">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-[#A0AEC0] group-focus-within:text-[#193F7F] transition-colors" />
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your username"
+                placeholder="Enter your staff id"
                 className="pl-12 h-14 rounded-xl border-[#E2E8F0] text-[#1A202C] text-[15px] font-medium placeholder:text-[#A0AEC0] placeholder:font-normal focus-visible:ring-1 focus-visible:ring-[#193F7F] focus-visible:border-[#193F7F] transition-all bg-white"
                 {...form.register("username")}
               />

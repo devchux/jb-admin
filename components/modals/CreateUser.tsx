@@ -42,6 +42,7 @@ const defaultValues = {
   firstName: "",
   lastName: "",
   roleId: "",
+  staffId: "",
   permissionNames: [],
 };
 
@@ -51,6 +52,7 @@ const schema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   roleId: z.string().min(1, "Role is required"),
+  staffId: z.string().min(1, 'Staff ID is required'),
   permissionNames: z.array(z.string()).min(1, "Permissions are required"),
 });
 
@@ -127,6 +129,7 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
       form.reset({
         firstName: user.firstName,
         lastName: user.lastName,
+        staffId: user.staffId,
         roleId: user.role.id,
         permissionNames: user.permissions,
       });
@@ -192,6 +195,18 @@ const CreateUser = ({ open, onOpenChange, user }: CreateUserProps) => {
                 className="h-14 rounded-xl border-[#E2E8F0] text-[#25272E] px-4 text-[15px] font-normal placeholder:text-[#25272E] focus-visible:ring-1 focus-visible:ring-[#193F7F] focus-visible:border-[#193F7F]"
                 {...form.register("email", { required: true })}
                 error={form.formState.errors.email?.message}
+              />
+            </div>
+
+            <div>
+              <Label className="text-[#4E7397] font-medium text-[13px] mb-2 block">
+                Staff Id
+              </Label>
+              <Input
+                placeholder="Staff ID"
+                className="h-14 rounded-xl border-[#E2E8F0] text-[#25272E] px-4 text-[15px] font-normal placeholder:text-[#25272E] focus-visible:ring-1 focus-visible:ring-[#193F7F] focus-visible:border-[#193F7F]"
+                {...form.register("staffId", { required: true })}
+                error={form.formState.errors.staffId?.message}
               />
             </div>
 

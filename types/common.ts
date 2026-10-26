@@ -13,6 +13,7 @@ export type Role = {
 export type User = {
   id: string;
   userId: string;
+  staffId: string;
   username: string;
   email: string;
   firstName: string;

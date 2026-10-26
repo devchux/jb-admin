@@ -23,6 +23,24 @@ import { dashboardService } from "@/services/dashboard";
 import { exportService } from "@/services/export";
 import { toast } from "sonner";
 import AccountActivityCounts from "@/components/dashboard/AccountActivityCounts";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 const Dashboard = () => {
   const [dateFilter, setDateFilter] = useState("ALL_TIME");
@@ -95,28 +113,33 @@ const Dashboard = () => {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="flex items-center rounded-full border border-[#DDE4EC] bg-white px-4 py-2.5 shadow-sm">
-            <CalendarDays className="mr-2 h-4 w-4 text-slate-400" />
-            <select
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="min-w-[140px] bg-transparent text-sm font-medium text-slate-700 outline-none"
+          <Select value={dateFilter} onValueChange={setDateFilter}>
+            <SelectTrigger
+              aria-label="Dashboard date range"
+              className="h-11 min-w-44 rounded-full bg-background px-4 shadow-sm"
             >
-              <option value="DAILY">Daily</option>
-              <option value="WEEKLY">Weekly</option>
-              <option value="MONTHLY">Monthly</option>
-              <option value="YEARLY">Yearly</option>
-              <option value="ALL_TIME">All Time</option>
-            </select>
-          </div>
+              <CalendarDays data-icon="inline-start" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="DAILY">Daily</SelectItem>
+                <SelectItem value="WEEKLY">Weekly</SelectItem>
+                <SelectItem value="MONTHLY">Monthly</SelectItem>
+                <SelectItem value="YEARLY">Yearly</SelectItem>
+                <SelectItem value="ALL_TIME">All time</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
-          <button
+          <Button
+            type="button"
             onClick={handleExport}
-            className="inline-flex items-center justify-center rounded-full bg-[#193F7F] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+            className="h-11 rounded-full bg-[#193F7F] px-5 text-white hover:bg-[#132F60]"
           >
-            <Download className="mr-2 h-4 w-4" />
-            <span>Export Report</span>
-          </button>
+            <Download data-icon="inline-start" />
+            Export report
+          </Button>
         </div>
       </div>
 
@@ -125,29 +148,35 @@ const Dashboard = () => {
           const IconComponent = metric.icon;
 
           return (
-            <div
+            <Card
               key={metric.id}
-              className="rounded-xl border border-[#E7ECF2] bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+              className="gap-5 border-[#E7ECF2] py-5 transition-shadow hover:shadow-md"
             >
-              <div className="flex items-start justify-between gap-4">
-                <p className="text-sm font-medium text-slate-500">
+              <CardHeader className="px-5">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   {metric.title}
-                </p>
-                <div
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${metric.bgColor}`}
+                </CardTitle>
+                <CardAction
+                  className={cn(
+                    "flex size-11 items-center justify-center rounded-full",
+                    metric.bgColor,
+                  )}
                 >
-                  <IconComponent className={`h-5 w-5 ${metric.iconColor}`} />
-                </div>
-              </div>
-              <div className="mt-5">
-                <h3 className="truncate text-2xl font-bold text-slate-950">
+                  <IconComponent
+                    aria-hidden="true"
+                    className={cn("size-5", metric.iconColor)}
+                  />
+                </CardAction>
+              </CardHeader>
+              <CardContent className="px-5">
+                <p className="truncate text-2xl font-bold text-foreground">
                   {metric.value}
-                </h3>
-                <p className="mt-2 text-xs font-medium uppercase text-slate-400">
-                  {dateFilter.replaceAll("_", " ").toLowerCase()}
                 </p>
-              </div>
-            </div>
+                <CardDescription className="mt-2 text-xs font-medium uppercase">
+                  {dateFilter.replaceAll("_", " ").toLowerCase()}
+                </CardDescription>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
